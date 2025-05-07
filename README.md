@@ -1,2 +1,2 @@
 # SnapSort
-AI驱动的截屏分类应用
+AI驱动的macOS截屏分类应用
