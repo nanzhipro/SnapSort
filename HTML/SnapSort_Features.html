@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SnapSort - 用户界面与技术要求</title>
+    <link rel="stylesheet" href="https://lf6-cdn-tos.bytecdntp.com/cdn/expire-100-M/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="https://lf3-cdn-tos.bytecdntp.com/cdn/expire-1-M/tailwindcss/2.2.19/tailwind.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;500;600;700&family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <script src="https://lf3-cdn-tos.bytecdntp.com/cdn/expire-1-M/mermaid/8.14.0/mermaid.min.js"></script>
+    <style>
+        :root {
+            --primary-color: #4C51BF;
+            --secondary-color: #6366F1;
+            --accent-color: #4F46E5;
+            --text-color: #1E293B;
+            --bg-color: #FFFFFF;
+            --card-bg: #F8FAFC;
+            --border-color: #E2E8F0;
+            --header-bg: #EEF2FF;
+        }
+        
+        .dark {
+            --primary-color: #818CF8;
+            --secondary-color: #6366F1;
+            --accent-color: #8B5CF6;
+            --text-color: #E2E8F0;
+            --bg-color: #1E293B;
+            --card-bg: #0F172A;
+            --border-color: #334155;
+            --header-bg: #1E1B4B;
+        }
+        
+        body {
+            font-family: 'Noto Sans SC', Tahoma, Arial, Roboto, "Droid Sans", "Helvetica Neue", "Droid Sans Fallback", "Heiti SC", "Hiragino Sans GB", Simsun, sans-serif;
+            color: var(--text-color);
+            background-color: var(--bg-color);
+            transition: all 0.3s ease;
+        }
+        
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Noto Serif SC', serif;
+        }
+        
+        .card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        
+        .header-section {
+            background-color: var(--header-bg);
+        }
+        
+        .screenshot-section {
+            page-break-after: always;
+            border-bottom: 2px dashed #6366F1;
+            padding-bottom: 2.5rem;
+            margin-bottom: 2.5rem;
+            position: relative;
+        }
+        
+        .screenshot-section::after {
+            content: "SnapSort AI驱动的系统截图分类器";
+            position: absolute;
+            bottom: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: var(--bg-color);
+            padding: 0 10px;
+            font-size: 12px;
+            color: #6366F1;
+            font-weight: bold;
+        }
+        
+        .feature-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            font-size: 1.5rem;
+        }
+        
+        /* 打印样式，用于截图 */
+        @media print {
+            .screenshot-section {
+                page-break-after: always;
+                break-after: page;
+            }
+        }
+        
+        /* 亮暗模式切换按钮 */
+        .theme-toggle {
+            position: fixed;
+            right: 20px;
+            top: 20px;
+            z-index: 100;
+        }
+        
+        .ui-mockup {
+            position: relative;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+        
+        .ui-mockup::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 24px;
+            background: #f0f0f0;
+            border-top-left-radius: 8px;
+            border-top-right-radius: 8px;
+            display: flex;
+            align-items: center;
+            padding: 0 8px;
+            z-index: 10;
+        }
+        
+        .ui-mockup::after {
+            content: '• • •';
+            position: absolute;
+            top: 2px;
+            left: 8px;
+            font-size: 24px;
+            line-height: 0.5;
+            color: #e0e0e0;
+            letter-spacing: -1px;
+            z-index: 11;
+        }
+        
+        .tech-spec {
+            position: relative;
+            overflow: hidden;
+            border-radius: 8px;
+        }
+        
+        .tech-spec::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, var(--primary-color) 0%, transparent 70%);
+            opacity: 0.1;
+            z-index: 0;
+        }
+    </style>
+</head>
+<body>
+    <!-- 亮暗模式切换按钮 -->
+    <button class="theme-toggle bg-gray-200 dark:bg-gray-800 p-2 rounded-full shadow-lg">
+        <i class="fas fa-sun text-yellow-500 dark:hidden"></i>
+        <i class="fas fa-moon text-blue-300 hidden dark:block"></i>
+    </button>
+
+    <header class="header-section py-12 px-6 md:px-12 mb-12">
+        <div class="max-w-5xl mx-auto">
+            <h1 class="text-3xl md:text-4xl font-bold text-center bg-clip-text text-transparent bg-gradient-to-r from-indigo-500 via-purple-500 to-indigo-500">SnapSort</h1>
+            <p class="text-lg text-center mb-4">智能截图分类管理应用</p>
+        </div>
+    </header>
+
+    <!-- 第三个截图区域: 用户界面 -->
+    <div class="screenshot-section">
+        <section class="max-w-5xl mx-auto px-6 md:px-12 pb-16">
+            <h2 class="text-3xl font-bold mb-10 text-center">用户界面</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-16">
+                <!-- 主界面 -->
+                <div class="card p-6 rounded-xl">
+                    <h3 class="text-xl font-bold mb-6 flex items-center">
+                        <i class="fas fa-desktop text-indigo-500 mr-3"></i>
+                        主界面
+                    </h3>
+                    <div class="ui-mockup bg-gray-100 dark:bg-gray-800 p-6 pb-16 mb-6">
+                        <div class="flex justify-between items-center px-2 pt-4">
+                            <div class="w-6"></div>
+                            <div class="flex items-center space-x-1">
+                                <div class="w-8 h-8 rounded-full bg-indigo-500 flex items-center justify-center text-white">
+                                    <i class="fas fa-crop-alt text-xs"></i>
+                                </div>
+                                <span class="text-xs font-medium">SnapSort</span>
+                            </div>
+                            <div class="text-xs text-gray-500">
+                                <i class="fas fa-chevron-down"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <ul class="space-y-3 text-sm">
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-green-500 mt-1 mr-3"></i>
+                            <span>极简设计，主要以菜单栏图标形式存在</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-green-500 mt-1 mr-3"></i>
+                            <span>无需提供截图浏览界面，用户使用 Finder 查看文件</span>
+                        </li>
+                    </ul>
+                </div>
+                
+                <!-- 设置界面 -->
+                <div class="card p-6 rounded-xl">
+                    <h3 class="text-xl font-bold mb-6 flex items-center">
+                        <i class="fas fa-sliders-h text-indigo-500 mr-3"></i>
+                        设置界面
+                    </h3>
+                    <div class="ui-mockup bg-gray-100 dark:bg-gray-800 p-6 pb-16 mb-6">
+                        <div class="flex space-x-3 mb-4 pt-4">
+                            <div class="w-1/3 p-2 bg-indigo-100 dark:bg-indigo-900 rounded text-xs text-center">分类管理</div>
+                            <div class="w-1/3 p-2 bg-gray-200 dark:bg-gray-700 rounded text-xs text-center">目录设置</div>
+                            <div class="w-1/3 p-2 bg-gray-200 dark:bg-gray-700 rounded text-xs text-center">语言设置</div>
+                        </div>
+                        <div class="space-y-3">
+                            <div class="p-2 bg-white dark:bg-gray-900 rounded flex justify-between items-center">
+                                <span class="text-xs">学术/深度学习</span>
+                                <div class="flex space-x-2">
+                                    <i class="fas fa-pen text-xs text-blue-500"></i>
+                                    <i class="fas fa-trash text-xs text-red-500"></i>
+                                </div>
+                            </div>
+                            <div class="p-2 bg-white dark:bg-gray-900 rounded flex justify-between items-center">
+                                <span class="text-xs">代码/Python</span>
+                                <div class="flex space-x-2">
+                                    <i class="fas fa-pen text-xs text-blue-500"></i>
+                                    <i class="fas fa-trash text-xs text-red-500"></i>
+                                </div>
+                            </div>
+                            <div class="p-2 bg-indigo-100 dark:bg-indigo-900 rounded-full w-8 h-8 flex items-center justify-center mx-auto mt-2">
+                                <i class="fas fa-plus text-xs"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <ul class="space-y-3 text-sm">
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-green-500 mt-1 mr-3"></i>
+                            <span>分类管理：添加、编辑、删除分类</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-green-500 mt-1 mr-3"></i>
+                            <span>目录设置：设置系统截图默认存储目录</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-green-500 mt-1 mr-3"></i>
+                            <span>关键词设置：为每个分类配置相关关键词</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-green-500 mt-1 mr-3"></i>
+                            <span>敏感信息配置：自定义敏感信息类型</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <!-- 通知 -->
+            <div class="card p-6 rounded-xl">
+                <h3 class="text-xl font-bold mb-6 flex items-center">
+                    <i class="fas fa-bell text-indigo-500 mr-3"></i>
+                    通知
+                </h3>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div class="bg-white dark:bg-gray-900 p-4 rounded-lg shadow">
+                        <div class="flex items-center mb-3">
+                            <div class="w-8 h-8 rounded-full bg-green-100 dark:bg-green-900 flex items-center justify-center mr-2">
+                                <i class="fas fa-check text-green-500 text-xs"></i>
+                            </div>
+                            <span class="font-medium">分类完成通知</span>
+                        </div>
+                        <p class="text-xs text-gray-600 dark:text-gray-400">
+                            5张新截图已分类完成
+                        </p>
+                    </div>
+                    
+                    <div class="bg-white dark:bg-gray-900 p-4 rounded-lg shadow">
+                        <div class="flex items-center mb-3">
+                            <div class="w-8 h-8 rounded-full bg-blue-100 dark:bg-blue-900 flex items-center justify-center mr-2">
+                                <i class="fas fa-lightbulb text-blue-500 text-xs"></i>
+                            </div>
+                            <span class="font-medium">新分类建议</span>
+                        </div>
+                        <p class="text-xs text-gray-600 dark:text-gray-400">
+                            是否创建"设计灵感/暗黑模式"分类？
+                        </p>
+                    </div>
+                    
+                    <div class="bg-white dark:bg-gray-900 p-4 rounded-lg shadow">
+                        <div class="flex items-center mb-3">
+                            <div class="w-8 h-8 rounded-full bg-yellow-100 dark:bg-yellow-900 flex items-center justify-center mr-2">
+                                <i class="fas fa-exclamation-triangle text-yellow-500 text-xs"></i>
+                            </div>
+                            <span class="font-medium">敏感信息警告</span>
+                        </div>
+                        <p class="text-xs text-gray-600 dark:text-gray-400">
+                            检测到敏感财务信息，已移至安全目录
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+    
+    <!-- 第四个截图区域: 技术要求 -->
+    <div class="screenshot-section">
+        <section class="max-w-5xl mx-auto px-6 md:px-12 pb-16">
+            <h2 class="text-3xl font-bold mb-10 text-center">技术要求</h2>
+            
+            <!-- 性能要求 -->
+            <div class="card p-6 rounded-xl mb-8">
+                <h3 class="text-xl font-bold mb-6 flex items-center">
+                    <i class="fas fa-tachometer-alt text-indigo-500 mr-3"></i>
+                    性能要求
+                </h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="tech-spec p-4 border border-indigo-200 dark:border-indigo-800 rounded-lg">
+                        <div class="flex items-center mb-2">
+                            <i class="fas fa-microchip text-indigo-500 mr-2"></i>
+                            <span class="font-medium">CPU 占用率</span>
+                        </div>
+                        <div class="bg-gray-200 dark:bg-gray-700 h-4 rounded-full overflow-hidden relative">
+                            <div class="bg-green-500 h-full rounded-full" style="width: 5%"></div>
+                            <span class="absolute right-2 top-0 text-xs text-gray-700 dark:text-gray-300 leading-4">&lt; 5%</span>
+                        </div>
+                    </div>
+                    
+                    <div class="tech-spec p-4 border border-indigo-200 dark:border-indigo-800 rounded-lg">
+                        <div class="flex items-center mb-2">
+                            <i class="fas fa-memory text-indigo-500 mr-2"></i>
+                            <span class="font-medium">内存占用</span>
+                        </div>
+                        <div class="bg-gray-200 dark:bg-gray-700 h-4 rounded-full overflow-hidden relative">
+                            <div class="bg-green-500 h-full rounded-full" style="width: 10%"></div>
+                            <span class="absolute right-2 top-0 text-xs text-gray-700 dark:text-gray-300 leading-4">&lt; 200MB</span>
+                        </div>
+                    </div>
+                    
+                    <div class="tech-spec p-4 border border-indigo-200 dark:border-indigo-800 rounded-lg">
+                        <div class="flex items-center mb-2">
+                            <i class="fas fa-bolt text-indigo-500 mr-2"></i>
+                            <span class="font-medium">响应时间</span>
+                        </div>
+                        <div class="bg-gray-200 dark:bg-gray-700 h-4 rounded-full overflow-hidden relative">
+                            <div class="bg-green-500 h-full rounded-full" style="width: 30%"></div>
+                            <span class="absolute right-2 top-0 text-xs text-gray-700 dark:text-gray-300 leading-4">&lt; 3秒</span>
+                        </div>
+                    </div>
+                    
+                    <div class="tech-spec p-4 border border-indigo-200 dark:border-indigo-800 rounded-lg">
+                        <div class="flex items-center mb-2">
+                            <i class="fas fa-eye text-indigo-500 mr-2"></i>
+                            <span class="font-medium">OCR 识别速度</span>
+                        </div>
+                        <div class="bg-gray-200 dark:bg-gray-700 h-4 rounded-full overflow-hidden relative">
+                            <div class="bg-green-500 h-full rounded-full" style="width: 50%"></div>
+                            <span class="absolute right-2 top-0 text-xs text-gray-700 dark:text-gray-300 leading-4">&lt; 5秒/张</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 兼容性要求 -->
+            <div class="card p-6 rounded-xl mb-8">
+                <h3 class="text-xl font-bold mb-6 flex items-center">
+                    <i class="fas fa-laptop text-indigo-500 mr-3"></i>
+                    兼容性要求
+                </h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="tech-spec p-4 border border-indigo-200 dark:border-indigo-800 rounded-lg">
+                        <div class="flex items-center">
+                            <div class="w-12 h-12 flex items-center justify-center mr-4">
+                                <i class="fab fa-apple text-3xl text-gray-700 dark:text-gray-300"></i>
+                            </div>
+                            <div>
+                                <div class="font-medium">macOS 版本支持</div>
+                                <div class="text-green-500 font-medium">macOS 15 及以上</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="tech-spec p-4 border border-indigo-200 dark:border-indigo-800 rounded-lg">
+                        <div class="flex items-center">
+                            <div class="w-12 h-12 flex items-center justify-center mr-4">
+                                <i class="fas fa-microchip text-3xl text-gray-700 dark:text-gray-300"></i>
+                            </div>
+                            <div>
+                                <div class="font-medium">处理器支持</div>
+                                <div class="text-green-500 font-medium">Apple Silicon & Intel</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 安全和隐私 -->
+            <div class="card p-6 rounded-xl">
+                <h3 class="text-xl font-bold mb-6 flex items-center">
+                    <i class="fas fa-shield-alt text-indigo-500 mr-3"></i>
+                    安全和隐私
+                </h3>
+                <ul class="space-y-4">
+                    <li class="flex items-start">
+                        <div class="w-8 h-8 rounded-full bg-green-100 dark:bg-green-900 flex items-center justify-center text-green-500 mr-4 mt-1">
+                            <i class="fas fa-lock"></i>
+                        </div>
+                        <div>
+                            <span class="font-medium block mb-1">本地处理</span>
+                            <span class="text-sm text-gray-600 dark:text-gray-400">所有处理在本地完成，不上传用户数据</span>
+                        </div>
+                    </li>
+                    
+                    <li class="flex items-start">
+                        <div class="w-8 h-8 rounded-full bg-green-100 dark:bg-green-900 flex items-center justify-center text-green-500 mr-4 mt-1">
+                            <i class="fas fa-key"></i>
+                        </div>
+                        <div>
+                            <span class="font-medium block mb-1">最小权限</span>
+                            <span class="text-sm text-gray-600 dark:text-gray-400">申请最小必要的系统权限</span>
+                        </div>
+                    </li>
+                    
+                    <li class="flex items-start">
+                        <div class="w-8 h-8 rounded-full bg-green-100 dark:bg-green-900 flex items-center justify-center text-green-500 mr-4 mt-1">
+                            <i class="fab fa-apple"></i>
+                        </div>
+                        <div>
+                            <span class="font-medium block mb-1">Apple 准则</span>
+                            <span class="text-sm text-gray-600 dark:text-gray-400">符合 Apple 隐私设计准则</span>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        // 初始化主题
+        if (localStorage.getItem('theme') === 'dark' || 
+            (!localStorage.getItem('theme') && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+        } else {
+            document.documentElement.classList.remove('dark');
+        }
+        
+        // 主题切换
+        document.querySelector('.theme-toggle').addEventListener('click', function() {
+            if (document.documentElement.classList.contains('dark')) {
+                document.documentElement.classList.remove('dark');
+                localStorage.setItem('theme', 'light');
+            } else {
+                document.documentElement.classList.add('dark');
+                localStorage.setItem('theme', 'dark');
+            }
+        });
+    </script>
+</body>
+</html> 

@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SnapSort - DeepSeek API 设计</title>
+    <link rel="stylesheet" href="https://lf6-cdn-tos.bytecdntp.com/cdn/expire-100-M/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="https://lf3-cdn-tos.bytecdntp.com/cdn/expire-1-M/tailwindcss/2.2.19/tailwind.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;500;600;700&family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <script src="https://lf3-cdn-tos.bytecdntp.com/cdn/expire-1-M/mermaid/8.14.0/mermaid.min.js"></script>
+    <style>
+        :root {
+            --primary-color: #4C51BF;
+            --secondary-color: #6366F1;
+            --accent-color: #4F46E5;
+            --text-color: #1E293B;
+            --bg-color: #FFFFFF;
+            --card-bg: #F8FAFC;
+            --border-color: #E2E8F0;
+            --header-bg: #EEF2FF;
+            --code-bg: #282c34;
+            --code-color: #ABB2BF;
+        }
+        
+        .dark {
+            --primary-color: #818CF8;
+            --secondary-color: #6366F1;
+            --accent-color: #8B5CF6;
+            --text-color: #E2E8F0;
+            --bg-color: #1E293B;
+            --card-bg: #0F172A;
+            --border-color: #334155;
+            --header-bg: #1E1B4B;
+            --code-bg: #1E2937;
+            --code-color: #E5E7EB;
+        }
+        
+        body {
+            font-family: 'Noto Sans SC', Tahoma, Arial, Roboto, "Droid Sans", "Helvetica Neue", "Droid Sans Fallback", "Heiti SC", "Hiragino Sans GB", Simsun, sans-serif;
+            color: var(--text-color);
+            background-color: var(--bg-color);
+            transition: all 0.3s ease;
+        }
+        
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Noto Serif SC', serif;
+        }
+        
+        .card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        
+        .header-section {
+            background-color: var(--header-bg);
+        }
+        
+        .screenshot-section {
+            page-break-after: always;
+            border-bottom: 2px dashed #6366F1;
+            padding-bottom: 2.5rem;
+            margin-bottom: 2.5rem;
+            position: relative;
+        }
+        
+        .screenshot-section::after {
+            content: "SnapSort AI驱动的系统截图分类器";
+            position: absolute;
+            bottom: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: var(--bg-color);
+            padding: 0 10px;
+            font-size: 12px;
+            color: #6366F1;
+            font-weight: bold;
+        }
+        
+        pre {
+            background-color: var(--code-bg);
+            color: var(--code-color);
+            padding: 1rem;
+            border-radius: 0.5rem;
+            overflow-x: auto;
+            font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
+            font-size: 0.9rem;
+            line-height: 1.5;
+            tab-size: 4;
+            margin-bottom: 1.5rem;
+        }
+        
+        pre code {
+            font-family: inherit;
+            color: inherit;
+        }
+        
+        /* 语法高亮 */
+        .token-keyword {
+            color: #C678DD;
+        }
+        
+        .token-string {
+            color: #98C379;
+        }
+        
+        .token-comment {
+            color: #5C6370;
+            font-style: italic;
+        }
+        
+        .token-punctuation {
+            color: #ABB2BF;
+        }
+        
+        .token-property {
+            color: #E06C75;
+        }
+        
+        .token-value {
+            color: #D19A66;
+        }
+        
+        .json-key {
+            color: #E06C75;
+        }
+        
+        .json-value {
+            color: #98C379;
+        }
+        
+        .json-punctuation {
+            color: #ABB2BF;
+        }
+        
+        .api-section {
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .api-section::before {
+            content: '';
+            position: absolute;
+            top: -50px;
+            right: -50px;
+            width: 200px;
+            height: 200px;
+            background: linear-gradient(135deg, rgba(76, 81, 191, 0.1), transparent);
+            border-radius: 50%;
+            z-index: 0;
+        }
+        
+        .api-tag {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 999px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            margin-right: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        /* 打印样式，用于截图 */
+        @media print {
+            .screenshot-section {
+                page-break-after: always;
+                break-after: page;
+            }
+        }
+        
+        /* 亮暗模式切换按钮 */
+        .theme-toggle {
+            position: fixed;
+            right: 20px;
+            top: 20px;
+            z-index: 100;
+        }
+        
+        /* 代码框图标 */
+        .code-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: rgba(76, 81, 191, 0.1);
+            padding: 0.5rem 1rem;
+            border-top-left-radius: 0.5rem;
+            border-top-right-radius: 0.5rem;
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: var(--primary-color);
+            border: 1px solid var(--border-color);
+            border-bottom: none;
+        }
+        
+        .code-container {
+            position: relative;
+            margin-bottom: 2rem;
+        }
+        
+        .code-container pre {
+            margin-top: 0;
+            border-top-left-radius: 0;
+            border-top-right-radius: 0;
+        }
+    </style>
+</head>
+<body>
+    <!-- 亮暗模式切换按钮 -->
+    <button class="theme-toggle bg-gray-200 dark:bg-gray-800 p-2 rounded-full shadow-lg">
+        <i class="fas fa-sun text-yellow-500 dark:hidden"></i>
+        <i class="fas fa-moon text-blue-300 hidden dark:block"></i>
+    </button>
+
+    <header class="header-section py-12 px-6 md:px-12 mb-12">
+        <div class="max-w-5xl mx-auto">
+            <h1 class="text-3xl md:text-4xl font-bold text-center bg-clip-text text-transparent bg-gradient-to-r from-indigo-500 via-purple-500 to-indigo-500">SnapSort</h1>
+            <p class="text-lg text-center mb-4">智能截图分类管理应用</p>
+        </div>
+    </header>
+
+    <!-- 第七个截图区域: DeepSeek API设计 (1) -->
+    <div class="screenshot-section">
+        <section class="max-w-5xl mx-auto px-6 md:px-12 pb-16">
+            <h2 class="text-3xl font-bold mb-10 text-center">DeepSeek API 智能分类提示词设计</h2>
+            
+            <div class="api-section card p-6 rounded-xl mb-12">
+                <div class="mb-8">
+                    <h3 class="text-xl font-bold mb-6 flex items-center">
+                        <i class="fas fa-brain text-indigo-500 mr-3"></i>
+                        基础提示词模板
+                    </h3>
+                    <p class="mb-4">为了实现高效准确的截图内容分类，SnapSort 将使用 DeepSeek API 进行 AI 分类。以下是设计的基础提示词模板：</p>
+                    
+                    <div class="code-container">
+                        <div class="code-header">
+                            <span>基础提示词模板</span>
+                            <div class="flex space-x-2">
+                                <i class="fas fa-code text-indigo-500"></i>
+                            </div>
+                        </div>
+<pre><code># 截图内容分类任务
+
+## 任务背景
+你是 SnapSort 应用中的 AI 分类助手，负责将截图的文本内容分配到最合适的分类目录中。你需要基于文本内容、用户历史分类习惯和预设分类规则来做出决策。
+
+## 输入内容
+以下是从截图中提取的 OCR 文本内容：
+"""
+{OCR_TEXT}
+"""
+
+## 当前用户已有分类目录
+用户当前已创建并使用的分类目录如下（格式为"分类名称：相关关键词"）：
+{EXISTING_CATEGORIES}
+
+## 敏感信息类型
+以下是需要特别标记的敏感信息类型：
+{SENSITIVE_TYPES}
+
+## 任务要求
+1. 分析提供的文本内容，确定其主题和关键信息。
+2. 判断文本是否包含任何敏感信息，如包含则需标记。
+3. 将内容匹配到最合适的现有分类目录中。
+4. 如果无法找到合适的现有分类，请建议创建新的分类目录。
+5. 你的回答必须简洁、明确、直接，无需解释推理过程。
+
+## 输出格式
+请使用以下 JSON 格式输出你的决策：
+```json
+{
+  "best_category": "最合适的分类目录名称",
+  "confidence_score": 0.85,  // 0-1之间的置信度
+  "contains_sensitive_info": false,  // true或false
+  "sensitive_types": [],  // 如果包含敏感信息，列出类型
+  "suggest_new_category": false,  // 是否建议创建新分类
+  "suggested_category_name": "",  // 建议的新分类名称
+  "suggested_keywords": []  // 建议与新分类关联的关键词
+}
+```</code></pre>
+                    </div>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+                    <div class="p-4 bg-indigo-50 dark:bg-indigo-900 rounded-lg">
+                        <h4 class="font-semibold mb-2 flex items-center">
+                            <i class="fas fa-exchange-alt text-indigo-500 mr-2"></i>
+                            变量替换
+                        </h4>
+                        <ul class="space-y-1 text-sm">
+                            <li class="flex items-start">
+                                <i class="fas fa-tag text-indigo-500 mr-2 mt-1"></i>
+                                <span>{OCR_TEXT} - 截图中识别的文本内容</span>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fas fa-tag text-indigo-500 mr-2 mt-1"></i>
+                                <span>{EXISTING_CATEGORIES} - 用户已有分类</span>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fas fa-tag text-indigo-500 mr-2 mt-1"></i>
+                                <span>{SENSITIVE_TYPES} - 敏感信息类型定义</span>
+                            </li>
+                        </ul>
+                    </div>
+                    
+                    <div class="p-4 bg-blue-50 dark:bg-blue-900 rounded-lg">
+                        <h4 class="font-semibold mb-2 flex items-center">
+                            <i class="fas fa-key text-blue-500 mr-2"></i>
+                            关键设计点
+                        </h4>
+                        <ul class="space-y-1 text-sm">
+                            <li class="flex items-start">
+                                <i class="fas fa-check-circle text-blue-500 mr-2 mt-1"></i>
+                                <span>明确的任务角色和背景定义</span>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fas fa-check-circle text-blue-500 mr-2 mt-1"></i>
+                                <span>结构化的输入和任务要求</span>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fas fa-check-circle text-blue-500 mr-2 mt-1"></i>
+                                <span>标准化的JSON输出格式</span>
+                            </li>
+                        </ul>
+                    </div>
+                    
+                    <div class="p-4 bg-green-50 dark:bg-green-900 rounded-lg">
+                        <h4 class="font-semibold mb-2 flex items-center">
+                            <i class="fas fa-cogs text-green-500 mr-2"></i>
+                            功能优势
+                        </h4>
+                        <ul class="space-y-1 text-sm">
+                            <li class="flex items-start">
+                                <i class="fas fa-check-circle text-green-500 mr-2 mt-1"></i>
+                                <span>支持置信度评分</span>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fas fa-check-circle text-green-500 mr-2 mt-1"></i>
+                                <span>敏感信息智能识别</span>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fas fa-check-circle text-green-500 mr-2 mt-1"></i>
+                                <span>智能推荐新分类</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div>
+                    <h4 class="font-semibold mb-4">API设计亮点标签</h4>
+                    <div class="mb-6">
+                        <span class="api-tag bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200">上下文感知</span>
+                        <span class="api-tag bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200">多维决策</span>
+                        <span class="api-tag bg-purple-100 dark:bg-purple-900 text-purple-800 dark:text-purple-200">敏感信息检测</span>
+                        <span class="api-tag bg-red-100 dark:bg-red-900 text-red-800 dark:text-red-200">自适应分类</span>
+                        <span class="api-tag bg-yellow-100 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-200">学习增强</span>
+                        <span class="api-tag bg-indigo-100 dark:bg-indigo-900 text-indigo-800 dark:text-indigo-200">JSON结构化输出</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="api-section card p-6 rounded-xl">
+                <h3 class="text-xl font-bold mb-6 flex items-center">
+                    <i class="fas fa-code text-indigo-500 mr-3"></i>
+                    分类示例参考
+                </h3>
+                <p class="mb-6">提供具体示例帮助AI理解如何分析不同类型的内容并做出分类决策：</p>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                    <div class="border border-indigo-200 dark:border-indigo-800 rounded-lg overflow-hidden">
+                        <div class="bg-indigo-50 dark:bg-indigo-900 p-3">
+                            <h4 class="font-medium">示例1 - 学术研究</h4>
+                        </div>
+                        <div class="p-4">
+                            <h5 class="text-sm font-medium mb-2">输入文本:</h5>
+                            <div class="bg-gray-50 dark:bg-gray-800 p-3 rounded text-sm mb-4">
+                                基于卷积神经网络的图像分类方法<br>
+                                ResNet-50 在 ImageNet 数据集上达到了 76.3% 的 Top-1 准确率<br>
+                                <code>model = tf.keras.applications.ResNet50(weights='imagenet')</code>
+                            </div>
+                            <h5 class="text-sm font-medium mb-2">输出JSON:</h5>
+                            <div class="bg-gray-50 dark:bg-gray-800 p-3 rounded text-sm">
+                                <pre class="text-xs p-0 m-0 bg-transparent"><code class="language-json">{
+  <span class="json-key">"best_category"</span>: <span class="json-value">"学术/深度学习"</span>,
+  <span class="json-key">"confidence_score"</span>: <span class="json-value">0.92</span>,
+  <span class="json-key">"contains_sensitive_info"</span>: <span class="json-value">false</span>,
+  <span class="json-key">"sensitive_types"</span>: [],
+  <span class="json-key">"suggest_new_category"</span>: <span class="json-value">false</span>,
+  <span class="json-key">"suggested_category_name"</span>: <span class="json-value">""</span>,
+  <span class="json-key">"suggested_keywords"</span>: []
+}</code></pre>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="border border-red-200 dark:border-red-800 rounded-lg overflow-hidden">
+                        <div class="bg-red-50 dark:bg-red-900 p-3">
+                            <h4 class="font-medium">示例2 - 包含敏感信息</h4>
+                        </div>
+                        <div class="p-4">
+                            <h5 class="text-sm font-medium mb-2">输入文本:</h5>
+                            <div class="bg-gray-50 dark:bg-gray-800 p-3 rounded text-sm mb-4">
+                                信用卡支付明细<br>
+                                卡号: 4532 **** **** 1234<br>
+                                姓名: 张三<br>
+                                交易金额: ¥1,299.00<br>
+                                日期: 2023/04/15
+                            </div>
+                            <h5 class="text-sm font-medium mb-2">输出JSON:</h5>
+                            <div class="bg-gray-50 dark:bg-gray-800 p-3 rounded text-sm">
+                                <pre class="text-xs p-0 m-0 bg-transparent"><code class="language-json">{
+  <span class="json-key">"best_category"</span>: <span class="json-value">"财务/交易记录"</span>,
+  <span class="json-key">"confidence_score"</span>: <span class="json-value">0.88</span>,
+  <span class="json-key">"contains_sensitive_info"</span>: <span class="json-value">true</span>,
+  <span class="json-key">"sensitive_types"</span>: [<span class="json-value">"信用卡信息"</span>, <span class="json-value">"财务数据"</span>],
+  <span class="json-key">"suggest_new_category"</span>: <span class="json-value">false</span>,
+  <span class="json-key">"suggested_category_name"</span>: <span class="json-value">""</span>,
+  <span class="json-key">"suggested_keywords"</span>: []
+}</code></pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="border border-green-200 dark:border-green-800 rounded-lg overflow-hidden mb-8">
+                    <div class="bg-green-50 dark:bg-green-900 p-3">
+                        <h4 class="font-medium">示例3 - 需要新分类</h4>
+                    </div>
+                    <div class="p-4">
+                        <h5 class="text-sm font-medium mb-2">输入文本:</h5>
+                        <div class="bg-gray-50 dark:bg-gray-800 p-3 rounded text-sm mb-4">
+                            健身计划 - 2023夏季<br>
+                            周一: 胸部和三头肌 (4组卧推, 3组飞鸟)<br>
+                            周三: 背部和二头肌 (3组引体向上, 4组划船)<br>
+                            周五: 腿部 (4组深蹲, 3组腿举)<br>
+                            每天: 30分钟有氧, 10分钟拉伸<br>
+                            目标: 8周内减脂5kg
+                        </div>
+                        <h5 class="text-sm font-medium mb-2">输出JSON:</h5>
+                        <div class="bg-gray-50 dark:bg-gray-800 p-3 rounded text-sm">
+                            <pre class="text-xs p-0 m-0 bg-transparent"><code class="language-json">{
+  <span class="json-key">"best_category"</span>: <span class="json-value">""</span>,
+  <span class="json-key">"confidence_score"</span>: <span class="json-value">0.3</span>,
+  <span class="json-key">"contains_sensitive_info"</span>: <span class="json-value">false</span>,
+  <span class="json-key">"sensitive_types"</span>: [],
+  <span class="json-key">"suggest_new_category"</span>: <span class="json-value">true</span>,
+  <span class="json-key">"suggested_category_name"</span>: <span class="json-value">"健康/健身计划"</span>,
+  <span class="json-key">"suggested_keywords"</span>: [<span class="json-value">"健身"</span>, <span class="json-value">"锻炼"</span>, <span class="json-value">"减脂"</span>, <span class="json-value">"健康"</span>, <span class="json-value">"运动计划"</span>]
+}</code></pre>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="bg-purple-50 dark:bg-purple-900 p-4 rounded-lg">
+                    <h4 class="font-medium mb-3 flex items-center">
+                        <i class="fas fa-language text-purple-500 mr-2"></i>
+                        多语言支持说明
+                    </h4>
+                    <p class="text-sm">
+                        请注意，输入的文本可能包含中文、日文或英文。你需要能够理解并正确分类这三种语言的内容。未来可能会扩展支持其他语言。
+                    </p>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        // 初始化主题
+        if (localStorage.getItem('theme') === 'dark' || 
+            (!localStorage.getItem('theme') && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+        } else {
+            document.documentElement.classList.remove('dark');
+        }
+        
+        // 主题切换
+        document.querySelector('.theme-toggle').addEventListener('click', function() {
+            if (document.documentElement.classList.contains('dark')) {
+                document.documentElement.classList.remove('dark');
+                localStorage.setItem('theme', 'light');
+            } else {
+                document.documentElement.classList.add('dark');
+                localStorage.setItem('theme', 'dark');
+            }
+        });
+    </script>
+</body>
+</html> 

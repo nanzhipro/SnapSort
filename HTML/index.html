@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SnapSort - 页面导航</title>
+    <link rel="stylesheet" href="https://lf6-cdn-tos.bytecdntp.com/cdn/expire-100-M/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="https://lf3-cdn-tos.bytecdntp.com/cdn/expire-1-M/tailwindcss/2.2.19/tailwind.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;500;600;700&family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #4C51BF;
+            --secondary-color: #6366F1;
+            --accent-color: #4F46E5;
+            --text-color: #1E293B;
+            --bg-color: #FFFFFF;
+            --card-bg: #F8FAFC;
+            --border-color: #E2E8F0;
+            --header-bg: #EEF2FF;
+        }
+        
+        .dark {
+            --primary-color: #818CF8;
+            --secondary-color: #6366F1;
+            --accent-color: #8B5CF6;
+            --text-color: #E2E8F0;
+            --bg-color: #1E293B;
+            --card-bg: #0F172A;
+            --border-color: #334155;
+            --header-bg: #1E1B4B;
+        }
+        
+        body {
+            font-family: 'Noto Sans SC', Tahoma, Arial, Roboto, "Droid Sans", "Helvetica Neue", "Droid Sans Fallback", "Heiti SC", "Hiragino Sans GB", Simsun, sans-serif;
+            color: var(--text-color);
+            background-color: var(--bg-color);
+            transition: all 0.3s ease;
+        }
+        
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Noto Serif SC', serif;
+        }
+        
+        .card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        
+        .header-section {
+            background-color: var(--header-bg);
+        }
+        
+        /* 亮暗模式切换按钮 */
+        .theme-toggle {
+            position: fixed;
+            right: 20px;
+            top: 20px;
+            z-index: 100;
+        }
+        
+        .nav-link {
+            display: flex;
+            align-items: center;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-link:hover {
+            background-color: rgba(99, 102, 241, 0.1);
+        }
+        
+        .nav-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            font-size: 1.5rem;
+            margin-right: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <!-- 亮暗模式切换按钮 -->
+    <button class="theme-toggle bg-gray-200 dark:bg-gray-800 p-2 rounded-full shadow-lg">
+        <i class="fas fa-sun text-yellow-500 dark:hidden"></i>
+        <i class="fas fa-moon text-blue-300 hidden dark:block"></i>
+    </button>
+
+    <header class="header-section py-16 px-6 md:px-12 mb-12">
+        <div class="max-w-4xl mx-auto">
+            <h1 class="text-4xl md:text-6xl font-bold text-center bg-clip-text text-transparent bg-gradient-to-r from-indigo-500 via-purple-500 to-indigo-500 mb-6">SnapSort</h1>
+            <p class="text-xl text-center max-w-2xl mx-auto">智能截图分类管理应用 - 页面导航</p>
+        </div>
+    </header>
+
+    <main class="max-w-4xl mx-auto px-6 md:px-12 pb-16">
+        <div class="grid grid-cols-1 gap-6">
+            <!-- 产品概述 -->
+            <a href="SnapSort_Overview.html" class="card nav-link">
+                <div class="nav-icon">
+                    <i class="fas fa-info-circle"></i>
+                </div>
+                <div>
+                    <h2 class="text-xl font-bold mb-1">产品概述</h2>
+                    <p class="text-sm text-gray-600 dark:text-gray-400">了解 SnapSort 的基本信息和核心功能</p>
+                </div>
+            </a>
+            
+            <!-- 用户界面和技术要求 -->
+            <a href="SnapSort_Features.html" class="card nav-link">
+                <div class="nav-icon">
+                    <i class="fas fa-desktop"></i>
+                </div>
+                <div>
+                    <h2 class="text-xl font-bold mb-1">用户界面与技术要求</h2>
+                    <p class="text-sm text-gray-600 dark:text-gray-400">查看应用界面设计和技术规格</p>
+                </div>
+            </a>
+            
+            <!-- 用户场景 (1) -->
+            <a href="SnapSort_UserScenarios_1.html" class="card nav-link">
+                <div class="nav-icon">
+                    <i class="fas fa-users"></i>
+                </div>
+                <div>
+                    <h2 class="text-xl font-bold mb-1">用户场景 (第1部分)</h2>
+                    <p class="text-sm text-gray-600 dark:text-gray-400">探索研究员、设计师和自由职业者的使用案例</p>
+                </div>
+            </a>
+            
+            <!-- 用户场景 (2) -->
+            <a href="SnapSort_UserScenarios_2.html" class="card nav-link">
+                <div class="nav-icon">
+                    <i class="fas fa-user-graduate"></i>
+                </div>
+                <div>
+                    <h2 class="text-xl font-bold mb-1">用户场景 (第2部分)</h2>
+                    <p class="text-sm text-gray-600 dark:text-gray-400">了解金融分析师和学生的使用场景</p>
+                </div>
+            </a>
+            
+            <!-- API设计 -->
+            <a href="SnapSort_API_Design.html" class="card nav-link">
+                <div class="nav-icon">
+                    <i class="fas fa-code"></i>
+                </div>
+                <div>
+                    <h2 class="text-xl font-bold mb-1">DeepSeek API 设计</h2>
+                    <p class="text-sm text-gray-600 dark:text-gray-400">查看智能分类API提示词设计</p>
+                </div>
+            </a>
+            
+            <!-- 未来迭代 -->
+            <a href="SnapSort_Future.html" class="card nav-link">
+                <div class="nav-icon">
+                    <i class="fas fa-rocket"></i>
+                </div>
+                <div>
+                    <h2 class="text-xl font-bold mb-1">优化提示词与未来迭代</h2>
+                    <p class="text-sm text-gray-600 dark:text-gray-400">探索应用的优化方向和未来发展计划</p>
+                </div>
+            </a>
+        </div>
+        
+        <div class="mt-16 text-center">
+            <p class="text-sm text-gray-600 dark:text-gray-400">所有页面均支持SnapSort AI驱动的系统截图分类器分割线，方便生成3:4比例的PNG图片</p>
+            <p class="text-sm text-gray-500 dark:text-gray-500 mt-2">© 2024 SnapSort. 智能截图分类管理应用</p>
+        </div>
+    </main>
+
+    <script>
+        // 初始化主题
+        if (localStorage.getItem('theme') === 'dark' || 
+            (!localStorage.getItem('theme') && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+        } else {
+            document.documentElement.classList.remove('dark');
+        }
+        
+        // 主题切换
+        document.querySelector('.theme-toggle').addEventListener('click', function() {
+            if (document.documentElement.classList.contains('dark')) {
+                document.documentElement.classList.remove('dark');
+                localStorage.setItem('theme', 'light');
+            } else {
+                document.documentElement.classList.add('dark');
+                localStorage.setItem('theme', 'dark');
+            }
+        });
+    </script>
+</body>
+</html> 

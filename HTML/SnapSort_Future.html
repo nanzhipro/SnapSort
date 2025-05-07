@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SnapSort - 优化提示词与未来迭代</title>
+    <link rel="stylesheet" href="https://lf6-cdn-tos.bytecdntp.com/cdn/expire-100-M/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="https://lf3-cdn-tos.bytecdntp.com/cdn/expire-1-M/tailwindcss/2.2.19/tailwind.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;500;600;700&family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <script src="https://lf3-cdn-tos.bytecdntp.com/cdn/expire-1-M/mermaid/8.14.0/mermaid.min.js"></script>
+    <style>
+        :root {
+            --primary-color: #4C51BF;
+            --secondary-color: #6366F1;
+            --accent-color: #4F46E5;
+            --text-color: #1E293B;
+            --bg-color: #FFFFFF;
+            --card-bg: #F8FAFC;
+            --border-color: #E2E8F0;
+            --header-bg: #EEF2FF;
+        }
+        
+        .dark {
+            --primary-color: #818CF8;
+            --secondary-color: #6366F1;
+            --accent-color: #8B5CF6;
+            --text-color: #E2E8F0;
+            --bg-color: #1E293B;
+            --card-bg: #0F172A;
+            --border-color: #334155;
+            --header-bg: #1E1B4B;
+        }
+        
+        body {
+            font-family: 'Noto Sans SC', Tahoma, Arial, Roboto, "Droid Sans", "Helvetica Neue", "Droid Sans Fallback", "Heiti SC", "Hiragino Sans GB", Simsun, sans-serif;
+            color: var(--text-color);
+            background-color: var(--bg-color);
+            transition: all 0.3s ease;
+        }
+        
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Noto Serif SC', serif;
+        }
+        
+        .card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        
+        .header-section {
+            background-color: var(--header-bg);
+        }
+        
+        .screenshot-section {
+            page-break-after: always;
+            border-bottom: 2px dashed #6366F1;
+            padding-bottom: 2.5rem;
+            margin-bottom: 2.5rem;
+            position: relative;
+        }
+        
+        .screenshot-section::after {
+            content: "SnapSort AI驱动的系统截图分类器";
+            position: absolute;
+            bottom: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: var(--bg-color);
+            padding: 0 10px;
+            font-size: 12px;
+            color: #6366F1;
+            font-weight: bold;
+        }
+        
+        pre {
+            background-color: #282c34;
+            color: #ABB2BF;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            overflow-x: auto;
+            margin-bottom: 1.5rem;
+        }
+        
+        .dark pre {
+            background-color: #1E2937;
+            color: #E5E7EB;
+        }
+        
+        .future-item {
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .future-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: linear-gradient(to bottom, var(--primary-color), var(--secondary-color));
+            border-radius: 2px;
+        }
+        
+        /* 打印样式，用于截图 */
+        @media print {
+            .screenshot-section {
+                page-break-after: always;
+                break-after: page;
+            }
+        }
+        
+        /* 亮暗模式切换按钮 */
+        .theme-toggle {
+            position: fixed;
+            right: 20px;
+            top: 20px;
+            z-index: 100;
+        }
+    </style>
+</head>
+<body>
+    <!-- 亮暗模式切换按钮 -->
+    <button class="theme-toggle bg-gray-200 dark:bg-gray-800 p-2 rounded-full shadow-lg">
+        <i class="fas fa-sun text-yellow-500 dark:hidden"></i>
+        <i class="fas fa-moon text-blue-300 hidden dark:block"></i>
+    </button>
+
+    <header class="header-section py-12 px-6 md:px-12 mb-12">
+        <div class="max-w-5xl mx-auto">
+            <h1 class="text-3xl md:text-4xl font-bold text-center bg-clip-text text-transparent bg-gradient-to-r from-indigo-500 via-purple-500 to-indigo-500">SnapSort</h1>
+            <p class="text-lg text-center mb-4">智能截图分类管理应用</p>
+        </div>
+    </header>
+
+    <!-- 第八个截图区域: 优化提示词 -->
+    <div class="screenshot-section">
+        <section class="max-w-5xl mx-auto px-6 md:px-12 pb-16">
+            <h2 class="text-3xl font-bold mb-10 text-center">优化提示词设计</h2>
+            
+            <div class="card p-6 rounded-xl mb-12">
+                <h3 class="text-xl font-bold mb-6 flex items-center">
+                    <i class="fas fa-lightbulb text-yellow-500 mr-3"></i>
+                    分类决策优先级
+                </h3>
+                <div class="bg-yellow-50 dark:bg-yellow-900 p-6 rounded-lg mb-8">
+                    <p class="mb-4 font-medium">在做出分类决策时，请按照以下优先级考虑：</p>
+                    <ol class="space-y-4 ml-6 list-decimal">
+                        <li class="pl-2">
+                            <span class="font-medium">精确关键词匹配：</span>
+                            <span class="text-gray-700 dark:text-gray-300">如果文本中出现与某分类关联的精确关键词，优先考虑该分类。</span>
+                        </li>
+                        <li class="pl-2">
+                            <span class="font-medium">主题语义理解：</span>
+                            <span class="text-gray-700 dark:text-gray-300">即使没有精确关键词匹配，也要理解文本的整体主题和上下文。</span>
+                        </li>
+                        <li class="pl-2">
+                            <span class="font-medium">用户历史偏好：</span>
+                            <span class="text-gray-700 dark:text-gray-300">考虑用户过去的分类决策模式，特别是对类似内容的处理。</span>
+                        </li>
+                        <li class="pl-2">
+                            <span class="font-medium">内容重要性：</span>
+                            <span class="text-gray-700 dark:text-gray-300">对正式文档、代码、学术内容等重要信息给予特别关注。</span>
+                        </li>
+                    </ol>
+                </div>
+                
+                <h3 class="text-xl font-bold mb-6 flex items-center">
+                    <i class="fas fa-shield-alt text-red-500 mr-3"></i>
+                    敏感信息识别指南
+                </h3>
+                <div class="bg-red-50 dark:bg-red-900 p-6 rounded-lg mb-8">
+                    <p class="mb-4 font-medium">识别以下类型的敏感信息，但不限于此：</p>
+                    <ul class="space-y-3 ml-6 list-disc">
+                        <li class="pl-2">
+                            <span class="font-medium">个人身份信息：</span>
+                            <span class="text-gray-700 dark:text-gray-300">姓名、身份证号、地址、电话等</span>
+                        </li>
+                        <li class="pl-2">
+                            <span class="font-medium">财务信息：</span>
+                            <span class="text-gray-700 dark:text-gray-300">银行账号、信用卡信息、交易记录、工资单等</span>
+                        </li>
+                        <li class="pl-2">
+                            <span class="font-medium">账户凭证：</span>
+                            <span class="text-gray-700 dark:text-gray-300">用户名、密码、API密钥、访问令牌等</span>
+                        </li>
+                        <li class="pl-2">
+                            <span class="font-medium">商业机密：</span>
+                            <span class="text-gray-700 dark:text-gray-300">未公开的财报、产品计划、商业协议等</span>
+                        </li>
+                        <li class="pl-2">
+                            <span class="font-medium">健康信息：</span>
+                            <span class="text-gray-700 dark:text-gray-300">病历、处方、诊断结果等</span>
+                        </li>
+                    </ul>
+                </div>
+                
+                <h3 class="text-xl font-bold mb-6 flex items-center">
+                    <i class="fas fa-language text-green-500 mr-3"></i>
+                    跨语言理解增强
+                </h3>
+                <div class="bg-green-50 dark:bg-green-900 p-6 rounded-lg">
+                    <p class="mb-4">你需要理解不同语言中表达相同概念的方式。例如：</p>
+                    
+                    <div class="mb-6">
+                        <h4 class="font-medium mb-3">编程相关：</h4>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 ml-4">
+                            <div>
+                                <span class="inline-block py-1 px-2 bg-blue-100 dark:bg-blue-800 rounded text-blue-800 dark:text-blue-200 text-sm font-medium mb-2">中文</span>
+                                <ul class="text-sm space-y-1">
+                                    <li>"变量声明"</li>
+                                    <li>"函数调用"</li>
+                                    <li>"循环结构"</li>
+                                </ul>
+                            </div>
+                            <div>
+                                <span class="inline-block py-1 px-2 bg-red-100 dark:bg-red-800 rounded text-red-800 dark:text-red-200 text-sm font-medium mb-2">英文</span>
+                                <ul class="text-sm space-y-1">
+                                    <li>"variable declaration"</li>
+                                    <li>"function call"</li>
+                                    <li>"loop structure"</li>
+                                </ul>
+                            </div>
+                            <div>
+                                <span class="inline-block py-1 px-2 bg-yellow-100 dark:bg-yellow-800 rounded text-yellow-800 dark:text-yellow-200 text-sm font-medium mb-2">日文</span>
+                                <ul class="text-sm space-y-1">
+                                    <li>"変数宣言"</li>
+                                    <li>"関数呼び出し"</li>
+                                    <li>"ループ構造"</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <h4 class="font-medium mb-3">财务相关：</h4>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 ml-4">
+                            <div>
+                                <span class="inline-block py-1 px-2 bg-blue-100 dark:bg-blue-800 rounded text-blue-800 dark:text-blue-200 text-sm font-medium mb-2">中文</span>
+                                <ul class="text-sm space-y-1">
+                                    <li>"资产负债表"</li>
+                                    <li>"利润表"</li>
+                                    <li>"现金流量"</li>
+                                </ul>
+                            </div>
+                            <div>
+                                <span class="inline-block py-1 px-2 bg-red-100 dark:bg-red-800 rounded text-red-800 dark:text-red-200 text-sm font-medium mb-2">英文</span>
+                                <ul class="text-sm space-y-1">
+                                    <li>"balance sheet"</li>
+                                    <li>"income statement"</li>
+                                    <li>"cash flow"</li>
+                                </ul>
+                            </div>
+                            <div>
+                                <span class="inline-block py-1 px-2 bg-yellow-100 dark:bg-yellow-800 rounded text-yellow-800 dark:text-yellow-200 text-sm font-medium mb-2">日文</span>
+                                <ul class="text-sm space-y-1">
+                                    <li>"貸借対照表"</li>
+                                    <li>"損益計算書"</li>
+                                    <li>"キャッシュフロー"</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card p-6 rounded-xl">
+                <h3 class="text-xl font-bold mb-6 flex items-center">
+                    <i class="fas fa-exclamation-circle text-purple-500 mr-3"></i>
+                    最终注意事项
+                </h3>
+                
+                <div class="bg-purple-50 dark:bg-purple-900 p-6 rounded-lg">
+                    <h4 class="font-medium mb-4">重要提示</h4>
+                    <ol class="space-y-4 ml-6 list-decimal">
+                        <li class="pl-2">分类决策应当简洁明确，直接提供JSON结果，不要包含解释或分析。</li>
+                        <li class="pl-2">保持低计算资源消耗，确保分类过程高效快速。</li>
+                        <li class="pl-2">尊重用户隐私，不存储或传输任何敏感信息内容。</li>
+                        <li class="pl-2">如果置信度低于0.6，建议考虑创建新分类或将内容归入"未分类"目录。</li>
+                        <li class="pl-2">当内容非常短或信息量不足时，不要过度解读，可以标记为"信息不足"。</li>
+                    </ol>
+                </div>
+            </div>
+        </section>
+    </div>
+    
+    <!-- 第九个截图区域: 未来迭代考虑 -->
+    <div class="screenshot-section">
+        <section class="max-w-5xl mx-auto px-6 md:px-12 pb-16">
+            <h2 class="text-3xl font-bold mb-10 text-center">未来迭代考虑</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- 功能扩展 -->
+                <div class="card p-6 rounded-xl">
+                    <h3 class="text-xl font-bold mb-6 flex items-center text-blue-500">
+                        <i class="fas fa-expand-alt mr-3"></i>
+                        功能扩展
+                    </h3>
+                    
+                    <ul class="space-y-4">
+                        <li class="future-item pl-6">
+                            <h4 class="font-medium mb-1">支持更多截图来源</h4>
+                            <p class="text-sm text-gray-600 dark:text-gray-400">扩展到第三方应用的截图支持</p>
+                        </li>
+                        <li class="future-item pl-6">
+                            <h4 class="font-medium mb-1">简单截图编辑功能</h4>
+                            <p class="text-sm text-gray-600 dark:text-gray-400">提供基础编辑工具，如裁剪、标注等</p>
+                        </li>
+                        <li class="future-item pl-6">
+                            <h4 class="font-medium mb-1">云同步功能</h4>
+                            <p class="text-sm text-gray-600 dark:text-gray-400">保持多设备分类一致</p>
+                        </li>
+                        <li class="future-item pl-6">
+                            <h4 class="font-medium mb-1">统计分析功能</h4>
+                            <p class="text-sm text-gray-600 dark:text-gray-400">查看截图习惯和分类分布</p>
+                        </li>
+                        <li class="future-item pl-6">
+                            <h4 class="font-medium mb-1">批量处理历史截图</h4>
+                            <p class="text-sm text-gray-600 dark:text-gray-400">自动整理过去积累的截图文件</p>
+                        </li>
+                    </ul>
+                </div>
+                
+                <!-- 技术优化 -->
+                <div class="card p-6 rounded-xl">
+                    <h3 class="text-xl font-bold mb-6 flex items-center text-green-500">
+                        <i class="fas fa-cogs mr-3"></i>
+                        技术优化
+                    </h3>
+                    
+                    <ul class="space-y-4">
+                        <li class="future-item pl-6">
+                            <h4 class="font-medium mb-1">优化OCR识别</h4>
+                            <p class="text-sm text-gray-600 dark:text-gray-400">提升速度和准确性</p>
+                        </li>
+                        <li class="future-item pl-6">
+                            <h4 class="font-medium mb-1">改进AI分类算法</h4>
+                            <p class="text-sm text-gray-600 dark:text-gray-400">降低误分类率</p>
+                        </li>
+                        <li class="future-item pl-6">
+                            <h4 class="font-medium mb-1">提高系统资源使用效率</h4>
+                            <p class="text-sm text-gray-600 dark:text-gray-400">减少内存和CPU占用</p>
+                        </li>
+                        <li class="future-item pl-6">
+                            <h4 class="font-medium mb-1">扩展语言支持</h4>
+                            <p class="text-sm text-gray-600 dark:text-gray-400">增加更多语言识别能力</p>
+                        </li>
+                    </ul>
+                </div>
+                
+                <!-- 用户体验提升 -->
+                <div class="card p-6 rounded-xl">
+                    <h3 class="text-xl font-bold mb-6 flex items-center text-purple-500">
+                        <i class="fas fa-magic mr-3"></i>
+                        用户体验提升
+                    </h3>
+                    
+                    <ul class="space-y-4">
+                        <li class="future-item pl-6">
+                            <h4 class="font-medium mb-1">更丰富的通知选项</h4>
+                            <p class="text-sm text-gray-600 dark:text-gray-400">自定义通知方式和频率</p>
+                        </li>
+                        <li class="future-item pl-6">
+                            <h4 class="font-medium mb-1">键盘快捷键自定义</h4>
+                            <p class="text-sm text-gray-600 dark:text-gray-400">允许用户设置个性化快捷键</p>
+                        </li>
+                        <li class="future-item pl-6">
+                            <h4 class="font-medium mb-1">集成第三方服务</h4>
+                            <p class="text-sm text-gray-600 dark:text-gray-400">如云存储、协作工具等</p>
+                        </li>
+                        <li class="future-item pl-6">
+                            <h4 class="font-medium mb-1">移动端配套应用</h4>
+                            <p class="text-sm text-gray-600 dark:text-gray-400">开发iOS/iPadOS配套应用</p>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="mt-12 bg-gradient-to-r from-indigo-500 via-purple-500 to-indigo-500 p-1 rounded-lg">
+                <div class="bg-white dark:bg-gray-900 p-8 rounded-lg text-center">
+                    <h3 class="text-2xl font-bold mb-4">构建智能截图管理的未来</h3>
+                    <p class="max-w-2xl mx-auto">
+                        SnapSort 致力于通过持续迭代和创新，打造更加智能、高效的截图管理体验，让用户的数字资产井然有序，触手可及。
+                    </p>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        // 初始化主题
+        if (localStorage.getItem('theme') === 'dark' || 
+            (!localStorage.getItem('theme') && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+        } else {
+            document.documentElement.classList.remove('dark');
+        }
+        
+        // 主题切换
+        document.querySelector('.theme-toggle').addEventListener('click', function() {
+            if (document.documentElement.classList.contains('dark')) {
+                document.documentElement.classList.remove('dark');
+                localStorage.setItem('theme', 'light');
+            } else {
+                document.documentElement.classList.add('dark');
+                localStorage.setItem('theme', 'dark');
+            }
+        });
+    </script>
+</body>
+</html> 

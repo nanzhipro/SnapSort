@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SnapSort - 用户场景 (1)</title>
+    <link rel="stylesheet" href="https://lf6-cdn-tos.bytecdntp.com/cdn/expire-100-M/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="https://lf3-cdn-tos.bytecdntp.com/cdn/expire-1-M/tailwindcss/2.2.19/tailwind.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;500;600;700&family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <script src="https://lf3-cdn-tos.bytecdntp.com/cdn/expire-1-M/mermaid/8.14.0/mermaid.min.js"></script>
+    <style>
+        :root {
+            --primary-color: #4C51BF;
+            --secondary-color: #6366F1;
+            --accent-color: #4F46E5;
+            --text-color: #1E293B;
+            --bg-color: #FFFFFF;
+            --card-bg: #F8FAFC;
+            --border-color: #E2E8F0;
+            --header-bg: #EEF2FF;
+        }
+        
+        .dark {
+            --primary-color: #818CF8;
+            --secondary-color: #6366F1;
+            --accent-color: #8B5CF6;
+            --text-color: #E2E8F0;
+            --bg-color: #1E293B;
+            --card-bg: #0F172A;
+            --border-color: #334155;
+            --header-bg: #1E1B4B;
+        }
+        
+        body {
+            font-family: 'Noto Sans SC', Tahoma, Arial, Roboto, "Droid Sans", "Helvetica Neue", "Droid Sans Fallback", "Heiti SC", "Hiragino Sans GB", Simsun, sans-serif;
+            color: var(--text-color);
+            background-color: var(--bg-color);
+            transition: all 0.3s ease;
+        }
+        
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Noto Serif SC', serif;
+        }
+        
+        .card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        
+        .header-section {
+            background-color: var(--header-bg);
+        }
+        
+        .screenshot-section {
+            page-break-after: always;
+            border-bottom: 2px dashed #6366F1;
+            padding-bottom: 2.5rem;
+            margin-bottom: 2.5rem;
+            position: relative;
+        }
+        
+        .screenshot-section::after {
+            content: "SnapSort AI驱动的系统截图分类器";
+            position: absolute;
+            bottom: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: var(--bg-color);
+            padding: 0 10px;
+            font-size: 12px;
+            color: #6366F1;
+            font-weight: bold;
+        }
+        
+        .scenario-card {
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .scenario-card::before {
+            content: '';
+            position: absolute;
+            top: -10px;
+            right: -10px;
+            width: 80px;
+            height: 80px;
+            background-color: var(--primary-color);
+            opacity: 0.1;
+            border-radius: 50%;
+            z-index: 0;
+        }
+        
+        .timeline-item {
+            position: relative;
+            padding-left: 30px;
+            padding-bottom: 20px;
+        }
+        
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 6px;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background-color: var(--primary-color);
+            z-index: 1;
+        }
+        
+        .timeline-item::after {
+            content: '';
+            position: absolute;
+            left: 5px;
+            top: 18px;
+            bottom: 0;
+            width: 2px;
+            background-color: var(--border-color);
+            z-index: 0;
+        }
+        
+        .timeline-item:last-child::after {
+            display: none;
+        }
+        
+        .benefit-badge {
+            background: linear-gradient(135deg, #6EE7B7, #3B82F6);
+            border-radius: 30px;
+            padding: 6px 16px;
+            color: white;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+        }
+        
+        .dark .benefit-badge {
+            background: linear-gradient(135deg, #10B981, #3B82F6);
+        }
+        
+        /* 打印样式，用于截图 */
+        @media print {
+            .screenshot-section {
+                page-break-after: always;
+                break-after: page;
+            }
+        }
+        
+        /* 亮暗模式切换按钮 */
+        .theme-toggle {
+            position: fixed;
+            right: 20px;
+            top: 20px;
+            z-index: 100;
+        }
+    </style>
+</head>
+<body>
+    <!-- 亮暗模式切换按钮 -->
+    <button class="theme-toggle bg-gray-200 dark:bg-gray-800 p-2 rounded-full shadow-lg">
+        <i class="fas fa-sun text-yellow-500 dark:hidden"></i>
+        <i class="fas fa-moon text-blue-300 hidden dark:block"></i>
+    </button>
+
+    <header class="header-section py-12 px-6 md:px-12 mb-12">
+        <div class="max-w-5xl mx-auto">
+            <h1 class="text-3xl md:text-4xl font-bold text-center bg-clip-text text-transparent bg-gradient-to-r from-indigo-500 via-purple-500 to-indigo-500">SnapSort</h1>
+            <p class="text-lg text-center mb-4">智能截图分类管理应用</p>
+        </div>
+    </header>
+
+    <!-- 第五个截图区域: 用户场景 (1-3) -->
+    <div class="screenshot-section">
+        <section class="max-w-5xl mx-auto px-6 md:px-12 pb-16">
+            <h2 class="text-3xl font-bold mb-10 text-center">用户场景</h2>
+            
+            <!-- 场景一：研究员小李的学术资料整理 -->
+            <div class="scenario-card card p-6 rounded-xl mb-12">
+                <div class="flex flex-col md:flex-row gap-6 mb-8">
+                    <div class="md:w-1/3">
+                        <div class="bg-indigo-100 dark:bg-indigo-900 w-20 h-20 rounded-full flex items-center justify-center mb-4 mx-auto md:mx-0">
+                            <i class="fas fa-microscope text-indigo-600 dark:text-indigo-300 text-3xl"></i>
+                        </div>
+                        <h3 class="text-xl font-bold mb-2 text-center md:text-left">研究员小李</h3>
+                        <p class="text-sm text-gray-600 dark:text-gray-400 text-center md:text-left">计算机视觉研究员，每天阅读大量学术论文和技术博客</p>
+                    </div>
+                    <div class="md:w-2/3">
+                        <h4 class="text-lg font-semibold mb-4 flex items-center">
+                            <i class="fas fa-book-reader text-indigo-500 mr-2"></i>
+                            学术资料整理
+                        </h4>
+                        <div class="space-y-4">
+                            <div class="timeline-item">
+                                <h5 class="font-medium">早上9点</h5>
+                                <p class="text-sm text-gray-600 dark:text-gray-400">
+                                    小李阅读最新的一篇关于神经网络的论文，截取了5张包含关键公式和数据的图片。SnapSort检测到这些截图，进行OCR识别，将它们分类到"学术/深度学习"目录下。
+                                </p>
+                            </div>
+                            <div class="timeline-item">
+                                <h5 class="font-medium">下午</h5>
+                                <p class="text-sm text-gray-600 dark:text-gray-400">
+                                    小李查看了一些Python代码示例，截取了3张代码片段。SnapSort识别出代码内容，将这些截图归类到"代码/Python"目录。
+                                </p>
+                            </div>
+                            <div class="timeline-item">
+                                <h5 class="font-medium">晚上</h5>
+                                <p class="text-sm text-gray-600 dark:text-gray-400">
+                                    回顾时，小李只需打开对应目录，所有相关截图已经按主题整齐归类，不必在默认截图文件夹中筛选数十张无序的图片。
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="flex justify-center">
+                    <div class="benefit-badge">
+                        <i class="fas fa-check-circle mr-2"></i>
+                        <span>收益：每天节省约20分钟的文件整理时间，研究资料更有条理</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 场景二：设计师小王的灵感收集 -->
+            <div class="scenario-card card p-6 rounded-xl mb-12">
+                <div class="flex flex-col md:flex-row gap-6 mb-8">
+                    <div class="md:w-1/3">
+                        <div class="bg-pink-100 dark:bg-pink-900 w-20 h-20 rounded-full flex items-center justify-center mb-4 mx-auto md:mx-0">
+                            <i class="fas fa-paint-brush text-pink-600 dark:text-pink-300 text-3xl"></i>
+                        </div>
+                        <h3 class="text-xl font-bold mb-2 text-center md:text-left">设计师小王</h3>
+                        <p class="text-sm text-gray-600 dark:text-gray-400 text-center md:text-left">UI设计师，经常浏览各种设计网站和应用寻找灵感</p>
+                    </div>
+                    <div class="md:w-2/3">
+                        <h4 class="text-lg font-semibold mb-4 flex items-center">
+                            <i class="fas fa-lightbulb text-yellow-500 mr-2"></i>
+                            灵感收集
+                        </h4>
+                        <div class="space-y-4">
+                            <div class="timeline-item">
+                                <h5 class="font-medium">周一</h5>
+                                <p class="text-sm text-gray-600 dark:text-gray-400">
+                                    小王浏览了一个电商网站的新首页设计，截取了多张展示创新布局的截图。SnapSort识别出截图内容包含"购物车"、"商品列表"等电商特征词，自动将它们分类到"设计灵感/电商"目录。
+                                </p>
+                            </div>
+                            <div class="timeline-item">
+                                <h5 class="font-medium">周三</h5>
+                                <p class="text-sm text-gray-600 dark:text-gray-400">
+                                    她研究了几款流行应用的暗黑模式实现，截取了7张展示不同元素的截图。系统检测到这些截图的共同特点是"暗色背景"和"UI元素"，弹出提示："检测到多张暗黑模式UI设计截图，是否创建新分类?"小王确认创建"设计灵感/暗黑模式"分类。
+                                </p>
+                            </div>
+                            <div class="timeline-item">
+                                <h5 class="font-medium">周五</h5>
+                                <p class="text-sm text-gray-600 dark:text-gray-400">
+                                    她需要向客户展示暗黑模式的设计参考，只需打开对应目录即可找到所有相关素材。
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="flex justify-center">
+                    <div class="benefit-badge">
+                        <i class="fas fa-check-circle mr-2"></i>
+                        <span>收益：灵感素材库始终保持有序，提高工作专业度和效率</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 场景三：自由职业者小张的项目管理 -->
+            <div class="scenario-card card p-6 rounded-xl">
+                <div class="flex flex-col md:flex-row gap-6 mb-8">
+                    <div class="md:w-1/3">
+                        <div class="bg-blue-100 dark:bg-blue-900 w-20 h-20 rounded-full flex items-center justify-center mb-4 mx-auto md:mx-0">
+                            <i class="fas fa-laptop-code text-blue-600 dark:text-blue-300 text-3xl"></i>
+                        </div>
+                        <h3 class="text-xl font-bold mb-2 text-center md:text-left">自由职业者小张</h3>
+                        <p class="text-sm text-gray-600 dark:text-gray-400 text-center md:text-left">同时处理多个客户项目，需要管理各类资料</p>
+                    </div>
+                    <div class="md:w-2/3">
+                        <h4 class="text-lg font-semibold mb-4 flex items-center">
+                            <i class="fas fa-tasks text-blue-500 mr-2"></i>
+                            项目管理
+                        </h4>
+                        <div class="space-y-4">
+                            <div class="timeline-item">
+                                <h5 class="font-medium">上午</h5>
+                                <p class="text-sm text-gray-600 dark:text-gray-400">
+                                    小张与A客户视频会议，截取了包含项目时间线和预算的聊天记录。SnapSort识别出截图内容包含"项目A"、"预算"等关键信息，将截图分类到"客户/A公司"目录，同时标记为"包含财务敏感信息"。
+                                </p>
+                            </div>
+                            <div class="timeline-item">
+                                <h5 class="font-medium">中午</h5>
+                                <p class="text-sm text-gray-600 dark:text-gray-400">
+                                    小张收到B客户的邮件，截取了邮件中的技术规格说明。系统智能识别内容，将截图移动到"客户/B公司/技术规格"目录。
+                                </p>
+                            </div>
+                            <div class="timeline-item">
+                                <h5 class="font-medium">下午</h5>
+                                <p class="text-sm text-gray-600 dark:text-gray-400">
+                                    小张查看了一些有助于完成项目的技术教程，截取了多张代码和配置示例。这些截图被自动分类到"参考资料/技术"目录。
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="flex justify-center">
+                    <div class="benefit-badge">
+                        <i class="fas fa-check-circle mr-2"></i>
+                        <span>收益：多个项目资料互不混淆，提高工作组织性</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        // 初始化主题
+        if (localStorage.getItem('theme') === 'dark' || 
+            (!localStorage.getItem('theme') && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+        } else {
+            document.documentElement.classList.remove('dark');
+        }
+        
+        // 主题切换
+        document.querySelector('.theme-toggle').addEventListener('click', function() {
+            if (document.documentElement.classList.contains('dark')) {
+                document.documentElement.classList.remove('dark');
+                localStorage.setItem('theme', 'light');
+            } else {
+                document.documentElement.classList.add('dark');
+                localStorage.setItem('theme', 'dark');
+            }
+        });
+    </script>
+</body>
+</html> 
