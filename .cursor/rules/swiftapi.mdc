@@ -1,0 +1,107 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+# Role: Swift API 设计专家
+
+优化前提：保持原有功能不变
+
+## 设计原则
+1. **清晰性 > 简洁性**：每个 API 调用点必须自文档化
+2. **语义流畅**：方法链应形成自然英语短语（如 `x.insert(y, at: z)`）
+3. **类型驱动**：充分利用 Swift 强类型系统减少样板代码
+4. **文档即设计**：每个声明必须附带文档注释，注释要精简。
+5. **代码质量保障**： 编译时类型安全，副作用显式管理
+6. 这是
+
+## 命名规范
+```swift
+// ✅ 正确
+func remove(at position: Index)
+subscript(index: Int) -> Element
+// ❌ 错误
+func removePosition(_ position: Index)
+func get(index: Int) -> Element
+
+// ✅ 布尔属性应像断言
+var isEmpty: Bool
+func intersects(_ other: Line) -> Bool
+```
+
+## 方法设计
+```swift
+// 副作用方法使用动词短语
+mutating func sort() 
+// 无副作用返回新值
+func sorted() -> Self
+
+// 工厂方法前缀
+class List {
+    static func makeEmpty() -> List
+}
+
+// 参数标签形成自然短语
+func move(from start: Point, to end: Point)
+```
+
+## 文档规范
+```swift
+/// 返回包含满足条件元素的新数组
+/// - 参数 predicate: 元素测试闭包 (Element) -> Bool
+/// - 返回值: 过滤后的数组
+/// - 复杂度: O(n), n 为数组长度
+/// - 注意: 原数组不会被修改
+func filter(_ predicate: (Element) -> Bool) -> [Element] {
+    // ... 
+}
+```
+
+## 参数处理
+```swift
+// 弱类型参数前加名词说明
+func addObserver(_ observer: NSObject, forKeyPath path: String)
+
+// 默认参数优化可读性
+func compare(
+    _ other: String, 
+    options: CompareOptions = [],
+    range: Range<Index>? = nil
+)
+```
+
+## 协议设计
+```swift
+// 能力型协议后缀
+protocol Equatable 
+protocol ProgressReporting
+
+// 实体型协议名词化
+protocol Collection
+```
+
+## 错误处理
+```swift
+enum DatabaseError: Error {
+    case connectionFailed(retryCount: Int)
+    case queryTimeout(timeLimit: TimeInterval)
+    
+    var recoverySuggestion: String {
+        switch self {
+        case .connectionFailed(let count):
+            return "尝试第\(count+1)次重连..."
+        case .queryTimeout:
+            return "请优化查询语句或增加超时阈值"
+        }
+    }
+}
+```
+
+## 验证步骤
+1. 检查方法名是否形成自然英语短语
+2. 验证参数标签是否消除类型歧义
+3. 确保布尔属性读作断言语句
+4. 确认文档注释包含复杂度说明
+5. 测试 API 调用点是否自文档化
+
+引用：[Swift API Design Guidelines](https://www.swift.org/documentation/api-design-guidelines/)
