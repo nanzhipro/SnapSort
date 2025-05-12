@@ -1,0 +1,40 @@
+{
+  "configurations": [
+    {
+      "type": "swift",
+      "request": "launch",
+      "args": [],
+      "cwd": "${workspaceFolder:SnapSort}/ScreenshotMonitor",
+      "name": "Debug ScreenshotMonitorCLI (ScreenshotMonitor)",
+      "program": "${workspaceFolder:SnapSort}/ScreenshotMonitor/.build/debug/ScreenshotMonitorCLI",
+      "preLaunchTask": "swift: Build Debug ScreenshotMonitorCLI (ScreenshotMonitor)"
+    },
+    {
+      "type": "swift",
+      "request": "launch",
+      "args": [],
+      "cwd": "${workspaceFolder:SnapSort}/ScreenshotMonitor",
+      "name": "Release ScreenshotMonitorCLI (ScreenshotMonitor)",
+      "program": "${workspaceFolder:SnapSort}/ScreenshotMonitor/.build/release/ScreenshotMonitorCLI",
+      "preLaunchTask": "swift: Build Release ScreenshotMonitorCLI (ScreenshotMonitor)"
+    },
+    {
+      "type": "swift",
+      "request": "launch",
+      "args": [],
+      "cwd": "${workspaceFolder:SnapSort}/Demos/ScreenshotMonitor",
+      "name": "Debug ScreenshotMonitorCLI (Demos/ScreenshotMonitor)",
+      "program": "${workspaceFolder:SnapSort}/Demos/ScreenshotMonitor/.build/debug/ScreenshotMonitorCLI",
+      "preLaunchTask": "swift: Build Debug ScreenshotMonitorCLI (Demos/ScreenshotMonitor)"
+    },
+    {
+      "type": "swift",
+      "request": "launch",
+      "args": [],
+      "cwd": "${workspaceFolder:SnapSort}/Demos/ScreenshotMonitor",
+      "name": "Release ScreenshotMonitorCLI (Demos/ScreenshotMonitor)",
+      "program": "${workspaceFolder:SnapSort}/Demos/ScreenshotMonitor/.build/release/ScreenshotMonitorCLI",
+      "preLaunchTask": "swift: Build Release ScreenshotMonitorCLI (Demos/ScreenshotMonitor)"
+    }
+  ]
+}
