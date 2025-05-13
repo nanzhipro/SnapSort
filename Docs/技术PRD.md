@@ -60,34 +60,7 @@ SnapSort 是一款专为 macOS 用户设计的截图管理工具，旨在通过�
 - 监听查询通知，处理新截图事件，响应时间控制在 3 秒内。
 - 使用 `LaunchAtLogin` 实现开机自动启动，用户可通过设置启用/禁用。这是一个github的开源项目，地址是：<https://github.com/sindresorhus/LaunchAtLogin-Modern。>
 
-**代码示例**：
-
-```swift
-func getScreenshotLocation() -> String {
-    let process = Process()
-    process.launchPath = "/usr/bin/defaults"
-    process.arguments = ["read", "com.apple.screencapture", "location"]
-    let pipe = Pipe()
-    process.standardOutput = pipe
-    process.launch()
-    process.waitUntilExit()
-    let data = pipe.fileHandleForReading.readDataToEndOfFile()
-    if let output = String(data: data, encoding: .utf8)?.trimmingCharacters(in: .whitespacesAndNewlines) {
-        return (output as NSString).expandingTildeInPath
-    }
-    return (NSHomeDirectory() as NSString).appendingPathComponent("Desktop")
-}
-
-func setupMetadataQuery() {
-    let query = NSMetadataQuery()
-    query.predicate = NSPredicate(format: "kMDItemIsScreenCapture == 1")
-    query.searchScopes = [getScreenshotLocation()]
-    NotificationCenter.default.addObserver(forName: .NSMetadataQueryDidUpdate, object: query, queue: .main) { notification in
-        // 处理新截图
-    }
-    query.start()
-}
-```
+- 示例代码见： Demos/ScreenshotMonitor/Sources/ScreenshotMonitor/ScreenshotMonitor.swift
 
 **最佳实践**：
 
@@ -134,7 +107,7 @@ func performOCR(on imageURL: URL, languages: [String], completion: @escaping (St
 - 处理 OCR 失败情况，标记截图以供手动审查。
 - 使用 DispatchQueue 异步处理，确保主线程流畅。
 
-### 3. 敏感信息检测（SensitiveInfoDetector）
+<!-- ### 3. 敏感信息检测（SensitiveInfoDetector）
 
 **功能**：标记包含敏感信息（如密码、信用卡号）的截图，支持用户自定义规则。
 
@@ -142,7 +115,7 @@ func performOCR(on imageURL: URL, languages: [String], completion: @escaping (St
 
 - 使用正则表达式匹配常见敏感数据模式（如信用卡号、邮箱地址）。
 - 允许用户在设置中添加自定义正则表达式或关键词。
-- 检测到敏感信息后，标记截图并可选移动到“敏感”目录。
+- 检测到敏感信息后，标记截图并可选移动到"敏感"目录。
 
 **正则表达式示例**：
 
@@ -172,7 +145,7 @@ func detectSensitiveInfo(in text: String, patterns: [String]) -> Bool {
 
 - 提供默认敏感数据模式，允许用户测试自定义模式。
 - 记录检测结果，供用户审查。
-- 确保正则表达式性能优化，避免复杂模式导致延迟。
+- 确保正则表达式性能优化，避免复杂模式导致延迟。 -->
 
 ### 4. AI 智能分类（Classifier）
 
@@ -182,41 +155,57 @@ func detectSensitiveInfo(in text: String, patterns: [String]) -> Bool {
 
 - **本地分类**：
   - 存储用户定义的类别及其关键词（使用 UserDefaults，JSON 编码）。
-  - 对 OCR 文本进行关键词匹配，计算每个类别的匹配分数。
-  - 选择得分最高的类别，低于阈值则标记为未分类。
+  - 对 OCR 文本进行关键词匹配。
 - **云端分类**：
   - 使用 DeepSeek API（兼容 OpenAI 格式，基 URL 为 `https://api.deepseek.com/v1`）。
   - 构造提示，包含 OCR 文本和类别列表，调用 `deepseek-chat` 模型。
   - 解析响应，获取分类结果，若为新类别，提示用户确认。
-- 未分类截图存储在“未分类”目录，供用户后续处理。
+- 未分类截图存储在"未分类"目录，供用户后续处理。
+- **DeepSeek API接口文档**：
+本地： Docs/DSAPI.md
+URL：<https://api-docs.deepseek.com/zh-cn/>
+- **DeepSeak JSON Output**:
+本地：Docs/DeepSeekJSONOutput.md
+URL：<https://api-docs.deepseek.com/zh-cn/guides/json_mode>
 
-**代码示例（云端分类）**：
+**JSON Outout示例代码**：
 
-```swift
-func classifyWithDeepSeek(text: String, categories: [String], apiKey: String, completion: @escaping (String?) -> Void) {
-    let url = URL(string: "https://api.deepseek.com/v1/chat/completions")!
-    var request = URLRequest(url: url)
-    request.httpMethod = "POST"
-    request.addValue("Bearer \(apiKey)", forHTTPHeaderField: "Authorization")
-    request.addValue("application/json", forHTTPHeaderField: "Content-Type")
-    let prompt = "Classify the following text into one of these categories: \(categories.joined(separator: ", ")). Text: \(text)"
-    let body: [String: Any] = [
-        "model": "deepseek-chat",
-        "messages": [["role": "user", "content": prompt]],
-        "max_tokens": 50
-    ]
-    request.httpBody = try? JSONSerialization.data(withJSONObject: body)
-    URLSession.shared.dataTask(with: request) { data, response, error in
-        guard let data = data, let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
-              let choices = json["choices"] as? [[String: Any]],
-              let message = choices.first?["message"] as? [String: Any],
-              let content = message["content"] as? String else {
-            completion(nil)
-            return
-        }
-        completion(content)
-    }.resume()
+```python
+import json
+from openai import OpenAI
+
+client = OpenAI(
+    api_key="<your api key>",
+    base_url="https://api.deepseek.com",
+)
+
+system_prompt = """
+The user will provide some exam text. Please parse the "question" and "answer" and output them in JSON format. 
+
+EXAMPLE INPUT: 
+Which is the highest mountain in the world? Mount Everest.
+
+EXAMPLE JSON OUTPUT:
+{
+    "question": "Which is the highest mountain in the world?",
+    "answer": "Mount Everest"
 }
+"""
+
+user_prompt = "Which is the longest river in the world? The Nile River."
+
+messages = [{"role": "system", "content": system_prompt},
+            {"role": "user", "content": user_prompt}]
+
+response = client.chat.completions.create(
+    model="deepseek-chat",
+    messages=messages,
+    response_format={
+        'type': 'json_object'
+    }
+)
+
+print(json.loads(response.choices[0].message.content))
 ```
 
 **最佳实践**：
@@ -266,31 +255,23 @@ func moveScreenshot(from sourceURL: URL, to category: String, baseDirectory: Str
 
 **实现**：
 
-- 使用 Core Data 存储截图元数据，实体包括：
-  - `Screenshot`：`filePath`（字符串）、`ocrText`（字符串）、`isSensitive`（布尔值）。
-- 提供搜索功能，查询 `ocrText` 匹配用户输入的关键词。
-- 使用 `NSWorkspace` 打开 Finder，选中搜索结果文件。
-
-**代码示例**：
-
-```swift
-func searchScreenshots(with query: String, context: NSManagedObjectContext) -> [URL] {
-    let fetchRequest: NSFetchRequest<Screenshot> = Screenshot.fetchRequest()
-    fetchRequest.predicate = NSPredicate(format: "ocrText CONTAINS[c] %@", query)
-    let results = try? context.fetch(fetchRequest)
-    return results?.compactMap { URL(fileURLWithPath: $0.filePath) } ?? []
-}
-
-func openInFinder(urls: [URL]) {
-    NSWorkspace.shared.activateFileViewerSelecting(urls)
-}
-```
+- 使用 SQLite 数据库存储截图元数据，表结构包括：
+  - 表名：`Screenshots`
+  - 字段：`imageFilePath`（TEXT, 主键）、`classification`（TEXT）、`fullText`（TEXT）
+- 使用 Swift 标准库中的 `SQLite.swift` 轻量级封装，简化数据库操作
+- 提供搜索功能，查询 `fullText` 匹配用户输入的关键词
+- 使用 `NSWorkspace` 打开 Finder，选中搜索结果文件
+- SQLite.swift(A type-safe, Swift-language layer over SQLite3): <https://github.com/stephencelis/SQLite.swift>
+- SQLite.swift文档： Docs/SQLiteSwiftDoc.md
+<https://raw.githubusercontent.com/stephencelis/SQLite.swift/refs/heads/master/Documentation/Index.md>
 
 **最佳实践**：
 
-- 优化查询性能，使用索引。
-- 定期清理无效记录（如已删除的文件）。
-- 确保线程安全，使用 Core Data 的并发模型。
+- 使用 SQL 索引优化文本搜索性能
+- 实现数据库文件的自动备份机制，防止数据损坏
+- 使用事务处理批量操作，提高数据库写入效率
+- 错误处理机制确保数据库操作失败不会崩溃应用
+- 实现定期清理无效记录（如已删除的文件）的维护例程
 
 ### 7. 用户界面（SettingsManager & UI）
 
@@ -298,7 +279,7 @@ func openInFinder(urls: [URL]) {
 
 **实现**：
 
-- **菜单栏**：使用 `NSStatusBar` 和 `NSStatusItem` 创建图标，提供“打开设置”和“退出”选项。
+- **菜单栏**：使用 `NSStatusBar` 和 `NSStatusItem` 创建图标，提供"打开设置"和"退出"选项。
 - **设置窗口**：使用 SwiftUI 构建，包含以下部分：
   - 通用：自动启动、通知偏好。
   - 类别：添加/编辑/删除类别及其关键词。
@@ -309,8 +290,10 @@ func openInFinder(urls: [URL]) {
 - 使用 `@AppStorage` 绑定 UserDefaults 设置，动态更新 UI。
 
 参考文档：
-menubarextra： <https://developer.apple.com/documentation/swiftui/menubarextra>
-MenuBarExtraStyle 类型使用window。
+
+- SwiftUI Setting： <https://developer.apple.com/documentation/swiftui/settings>
+- SwiftUI menubarextra： <https://developer.apple.com/documentation/swiftui/menubarextra>
+.menuBarExtraStyle(.menu)
 
 **最佳实践**：
 
@@ -325,7 +308,7 @@ MenuBarExtraStyle 类型使用window。
 **实现**：
 
 - 使用 `UNUserNotificationCenter` 发送通知，请求用户授权。
-- 定义通知类别，如“未分类”和“敏感信息”，支持操作（如打开设置）。
+- 定义通知类别，如"未分类"和"敏感信息"，支持操作（如打开设置）。
 - 异步调度通知，避免影响主线程。
 
 **代码示例**：
