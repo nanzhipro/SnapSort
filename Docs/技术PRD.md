@@ -279,21 +279,22 @@ func moveScreenshot(from sourceURL: URL, to category: String, baseDirectory: Str
 
 **实现**：
 
-- **菜单栏**：使用 `NSStatusBar` 和 `NSStatusItem` 创建图标，提供"打开设置"和"退出"选项。
-- **设置窗口**：使用 SwiftUI 构建，包含以下部分：
+- **菜单栏**：使用SwiftUI `menubarextra` ,且`.menuBarExtraStyle(.menu)`。并提供：设置和退出两个菜单选项
+- **设置窗口**：使用 SwiftUI Setting 构建，包含以下 SettingLink 部分：
   - 通用：自动启动、通知偏好。
   - 类别：添加/编辑/删除类别及其关键词。
-  - 目录：设置分类基目录。
-  - OCR：选择识别语言。
+  - 目录：设置分类基础目录。
   - 隐私：定义敏感信息模式。
-  - AI 分类：选择本地/云端，输入 API 密钥。
+  - AI Key：选择本地/云端，输入 API 密钥。
 - 使用 `@AppStorage` 绑定 UserDefaults 设置，动态更新 UI。
 
 参考文档：
 
+- SwiftUI SettingLink： <https://developer.apple.com/documentation/swiftui/settingslink>
 - SwiftUI Setting： <https://developer.apple.com/documentation/swiftui/settings>
 - SwiftUI menubarextra： <https://developer.apple.com/documentation/swiftui/menubarextra>
 .menuBarExtraStyle(.menu)
+- 详见： Docs/设置页面.md
 
 **最佳实践**：
 
@@ -366,16 +367,12 @@ func sendNotification(title: String, body: String, category: String) {
 - **边缘情况**：
   - 多张截图：批量处理，限制并发。
   - 截图格式：Vision 支持 PNG、JPEG 等常见格式。
-  - API 失败：降级到本地分类。
-  - 目录冲突：自动处理文件名冲突。
+  - API 失败：给出失败反馈。
+  - 目录冲突：自动处理文件名冲突，增加编号。
 - **测试计划**：
   - 单元测试：分类逻辑、文件移动。
   - 集成测试：完整工作流程。
   - 性能测试：使用 Instruments 验证 CPU 和内存占用。
-
-## 潜在问题与澄清
-
-您提到使用 DeepSeek API，但 PRD 中同时强调本地处理和隐私优先。如果云端分类涉及敏感数据上传，您是否希望强制用户同意或提供额外的隐私保护措施？此外，PRD 未明确说明截图格式支持范围，您是否需要支持非标准格式（如第三方工具生成的截图）？如果有其他需求或细节需要补充，请告诉我！
 
 ## 关键引用
 
@@ -387,3 +384,4 @@ func sendNotification(title: String, body: String, category: String) {
 - [Security 框架官方文档](https://developer.apple.com/documentation/security)
 - [Apple 人机交互指南](https://developer.apple.com/design/human-interface-guidelines/)
 - [DeepSeek API 官方文档](https://api-docs.deepseek.com/)
+- ollama文档： <https://github.com/ollama/ollama/blob/main/docs/api.md>
