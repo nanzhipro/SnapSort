@@ -1,0 +1,24 @@
+// Common
+"app.name" = "截图分类助手";
+"ok" = "确定";
+"cancel" = "取消";
+"save" = "保存";
+"delete" = "删除";
+"edit" = "编辑";
+
+// Settings
+"settings.title" = "设置";
+"settings.general" = "通用";
+"settings.categories" = "分类";
+"settings.directories" = "目录";
+"settings.ai" = "AI分类";
+
+// Categories
+"category.new" = "新建分类";
+"category.delete.confirm" = "您确定要删除这个分类吗？";
+"category.keywords" = "关键词";
+
+// Screenshots
+"screenshot.unclassified" = "未分类";
+"screenshot.processing" = "处理中...";
+"screenshot.classified" = "已分类至 %@";

@@ -1,0 +1,24 @@
+// Common
+"app.name" = "スクリーンショット整理";
+"ok" = "OK";
+"cancel" = "キャンセル";
+"save" = "保存";
+"delete" = "削除";
+"edit" = "編集";
+
+// Settings
+"settings.title" = "設定";
+"settings.general" = "一般";
+"settings.categories" = "カテゴリ";
+"settings.directories" = "ディレクトリ";
+"settings.ai" = "AI分類";
+
+// Categories
+"category.new" = "新規カテゴリ";
+"category.delete.confirm" = "このカテゴリを削除してもよろしいですか？";
+"category.keywords" = "キーワード";
+
+// Screenshots
+"screenshot.unclassified" = "未分類";
+"screenshot.processing" = "処理中...";
+"screenshot.classified" = "%@ に分類されました";

@@ -1,0 +1,24 @@
+// Common
+"app.name" = "SnapSort";
+"ok" = "OK";
+"cancel" = "Cancel";
+"save" = "Save";
+"delete" = "Delete";
+"edit" = "Edit";
+
+// Settings
+"settings.title" = "Settings";
+"settings.general" = "General";
+"settings.categories" = "Categories";
+"settings.directories" = "Directories";
+"settings.ai" = "AI Classification";
+
+// Categories
+"category.new" = "New Category";
+"category.delete.confirm" = "Are you sure you want to delete this category?";
+"category.keywords" = "Keywords";
+
+// Screenshots
+"screenshot.unclassified" = "Unclassified";
+"screenshot.processing" = "Processing...";
+"screenshot.classified" = "Classified to %@";
