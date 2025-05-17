@@ -7,6 +7,9 @@
 xcuserdata/
 DerivedData/
 
+# 可忽略Demos目录，让AI专注于核心代码
+Demos
+
 ## Obj-C/Swift specific
 *.hmap
 

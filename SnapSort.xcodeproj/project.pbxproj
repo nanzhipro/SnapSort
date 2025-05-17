@@ -6,6 +6,11 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		D562FB692DD891BB00D0FB9B /* OpenAI in Frameworks */ = {isa = PBXBuildFile; productRef = D562FB682DD891BB00D0FB9B /* OpenAI */; };
+		D562FB6C2DD891C800D0FB9B /* LaunchAtLogin in Frameworks */ = {isa = PBXBuildFile; productRef = D562FB6B2DD891C800D0FB9B /* LaunchAtLogin */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXContainerItemProxy section */
 		D517E8922DCADEBC006FE803 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -52,6 +57,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D562FB6C2DD891C800D0FB9B /* LaunchAtLogin in Frameworks */,
+				D562FB692DD891BB00D0FB9B /* OpenAI in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -112,6 +119,8 @@
 			);
 			name = SnapSort;
 			packageProductDependencies = (
+				D562FB682DD891BB00D0FB9B /* OpenAI */,
+				D562FB6B2DD891C800D0FB9B /* LaunchAtLogin */,
 			);
 			productName = SnapSort;
 			productReference = D517E8802DCADEBB006FE803 /* SnapSort.app */;
@@ -197,6 +206,10 @@
 			);
 			mainGroup = D517E8772DCADEBB006FE803;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				D562FB672DD891BB00D0FB9B /* XCRemoteSwiftPackageReference "OpenAI" */,
+				D562FB6A2DD891C800D0FB9B /* XCRemoteSwiftPackageReference "LaunchAtLogin-Modern" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = D517E8812DCADEBB006FE803 /* Products */;
 			projectDirPath = "";
@@ -551,6 +564,38 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		D562FB672DD891BB00D0FB9B /* XCRemoteSwiftPackageReference "OpenAI" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/MacPaw/OpenAI.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.4.3;
+			};
+		};
+		D562FB6A2DD891C800D0FB9B /* XCRemoteSwiftPackageReference "LaunchAtLogin-Modern" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/sindresorhus/LaunchAtLogin-Modern";
+			requirement = {
+				branch = main;
+				kind = branch;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		D562FB682DD891BB00D0FB9B /* OpenAI */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = D562FB672DD891BB00D0FB9B /* XCRemoteSwiftPackageReference "OpenAI" */;
+			productName = OpenAI;
+		};
+		D562FB6B2DD891C800D0FB9B /* LaunchAtLogin */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = D562FB6A2DD891C800D0FB9B /* XCRemoteSwiftPackageReference "LaunchAtLogin-Modern" */;
+			productName = LaunchAtLogin;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = D517E8782DCADEBB006FE803 /* Project object */;
 }

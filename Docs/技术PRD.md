@@ -82,30 +82,12 @@ NSMetadataQuery：<https://developer.apple.com/documentation/foundation/nsmetada
 - 使用 `VNImageRequestHandler` 处理截图图像，异步执行以优化性能。
 - 配置 `recognitionLevel` 为 `.accurate`，确保高精度。
 
-**代码示例**：
-
-```swift
-func performOCR(on imageURL: URL, languages: [String], completion: @escaping (String?) -> Void) {
-    let request = VNRecognizeTextRequest { request, error in
-        guard let observations = request.results as? [VNRecognizedTextObservation], error == nil else {
-            completion(nil)
-            return
-        }
-        let text = observations.compactMap { $0.topCandidates(1).first?.string }.joined(separator: "\n")
-        completion(text)
-    }
-    request.recognitionLanguages = languages
-    request.recognitionLevel = .accurate
-    let handler = VNImageRequestHandler(url: imageURL, options: [:])
-    try? handler.perform([request])
-}
-```
-
 **最佳实践**：
 
 - 支持用户自定义语言，动态调整 `recognitionLanguages`。
 - 处理 OCR 失败情况，标记截图以供手动审查。
 - 使用 DispatchQueue 异步处理，确保主线程流畅。
+- 使用并继续完善现有组件： QuestOCR模块： SnapSort/Infrastructure/Services/QuestOCR
 
 <!-- ### 3. 敏感信息检测（SensitiveInfoDetector）
 
@@ -147,15 +129,12 @@ func detectSensitiveInfo(in text: String, patterns: [String]) -> Bool {
 - 记录检测结果，供用户审查。
 - 确保正则表达式性能优化，避免复杂模式导致延迟。 -->
 
-### 4. AI 智能分类（Classifier）
+### 4. AI 智能分类（AIClassifier）
 
-**功能**：基于 OCR 结果进行智能分类，支持用户定义类别和关键词，集成 DeepSeek API，低资源占用。
+**功能**：基于 OCR 识别后的文本结果进行智能分类，支持用户定义类别和关键词列表，集成 DeepSeek API，低资源占用。
 
 **实现**：
 
-- **本地分类**：
-  - 存储用户定义的类别及其关键词（使用 UserDefaults，JSON 编码）。
-  - 对 OCR 文本进行关键词匹配。
 - **云端分类**：
   - 使用 DeepSeek API（兼容 OpenAI 格式，基 URL 为 `https://api.deepseek.com/v1`）。
   - 构造提示，包含 OCR 文本和类别列表，调用 `deepseek-chat` 模型。
@@ -210,7 +189,7 @@ print(json.loads(response.choices[0].message.content))
 
 **最佳实践**：
 
-- 提供本地和云端选项，明确告知用户云端数据传输。
+- 提供云端选项，明确告知用户云端数据传输。
 - 使用 Keychain 存储 API 密钥，确保安全。
 - 处理 API 失败情况，降级到本地分类或标记为未分类。
 
