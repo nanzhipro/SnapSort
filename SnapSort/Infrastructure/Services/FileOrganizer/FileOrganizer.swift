@@ -6,8 +6,7 @@
 //
 
 import Foundation
-// 导入自定义模块
-@_implementationOnly import os.log
+import os.log
 
 /// 文件组织器
 ///

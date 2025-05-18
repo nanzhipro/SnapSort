@@ -6,7 +6,7 @@
 //
 
 import Foundation
-import os.log
+import os
 
 /// 文件系统操作日志记录器
 ///
