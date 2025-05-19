@@ -1,172 +1,239 @@
+[Skip to content](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#start-of-content)
+
+You signed in with another tab or window. [Reload](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md) to refresh your session.You signed out in another tab or window. [Reload](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md) to refresh your session.You switched accounts on another tab or window. [Reload](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md) to refresh your session.Dismiss alert
+
+[stephencelis](https://github.com/stephencelis)/ **[SQLite.swift](https://github.com/stephencelis/SQLite.swift)** Public
+
+- [Sponsor](https://github.com/sponsors/nathanfallet)
+- [Notifications](https://github.com/login?return_to=%2Fstephencelis%2FSQLite.swift) You must be signed in to change notification settings
+- [Fork\\
+1.6k](https://github.com/login?return_to=%2Fstephencelis%2FSQLite.swift)
+- [Star\\
+9.9k](https://github.com/login?return_to=%2Fstephencelis%2FSQLite.swift)
+
+## Files
+
+master
+
+/
+
+# Index.md
+
+Copy path
+
+Blame
+
+Blame
+
+## Latest commit
+
+[![nathanfallet](https://avatars.githubusercontent.com/u/30439790?v=4&size=40)](https://github.com/nathanfallet)[nathanfallet](https://github.com/stephencelis/SQLite.swift/commits?author=nathanfallet)
+
+[v0.15.3 (oups)](https://github.com/stephencelis/SQLite.swift/commit/a95fc6df17d108bd99210db5e8a9bac90fe984b8)
+
+Apr 18, 2024
+
+[a95fc6d](https://github.com/stephencelis/SQLite.swift/commit/a95fc6df17d108bd99210db5e8a9bac90fe984b8) · Apr 18, 2024
+
+## History
+
+[History](https://github.com/stephencelis/SQLite.swift/commits/master/Documentation/Index.md)
+
+2245 lines (1677 loc) · 69 KB
+
+/
+
+# Index.md
+
+Top
+
+## File metadata and controls
+
+- Preview
+
+- Code
+
+- Blame
+
+2245 lines (1677 loc) · 69 KB
+
+[Raw](https://github.com/stephencelis/SQLite.swift/raw/refs/heads/master/Documentation/Index.md)
+
 # SQLite.swift Documentation
 
-- [SQLite.swift Documentation](#sqliteswift-documentation)
-  - [Installation](#installation)
-    - [Swift Package Manager](#swift-package-manager)
-    - [Carthage](#carthage)
-    - [CocoaPods](#cocoapods)
-      - [Requiring a specific version of SQLite](#requiring-a-specific-version-of-sqlite)
-      - [Using SQLite.swift with SQLCipher](#using-sqliteswift-with-sqlcipher)
-    - [Manual](#manual)
-  - [Getting Started](#getting-started)
-    - [Connecting to a Database](#connecting-to-a-database)
-      - [Read-Write Databases](#read-write-databases)
-      - [Read-Only Databases](#read-only-databases)
-      - [In a shared group container](#in-a-shared-group-container)
-      - [In-Memory Databases](#in-memory-databases)
-      - [URI parameters](#uri-parameters)
-      - [Thread-Safety](#thread-safety)
-  - [Building Type-Safe SQL](#building-type-safe-sql)
-    - [Expressions](#expressions)
-    - [Compound Expressions](#compound-expressions)
-    - [Queries](#queries)
-  - [Creating a Table](#creating-a-table)
-    - [Create Table Options](#create-table-options)
-    - [Column Constraints](#column-constraints)
-    - [Table Constraints](#table-constraints)
-  - [Inserting Rows](#inserting-rows)
-    - [Handling SQLite errors](#handling-sqlite-errors)
-    - [Setters](#setters)
-          - [Infix Setters](#infix-setters)
-          - [Postfix Setters](#postfix-setters)
-  - [Selecting Rows](#selecting-rows)
-    - [Iterating and Accessing Values](#iterating-and-accessing-values)
-      - [Failable iteration](#failable-iteration)
-    - [Plucking Rows](#plucking-rows)
-    - [Building Complex Queries](#building-complex-queries)
-      - [Selecting Columns](#selecting-columns)
-      - [Joining Other Tables](#joining-other-tables)
-        - [Column Namespacing](#column-namespacing)
-        - [Table Aliasing](#table-aliasing)
-      - [Filtering Rows](#filtering-rows)
-        - [Filter Operators and Functions](#filter-operators-and-functions)
-          - [Infix Filter Operators](#infix-filter-operators)
-          - [Prefix Filter Operators](#prefix-filter-operators)
-          - [Filtering Functions](#filtering-functions)
-      - [Sorting Rows](#sorting-rows)
-      - [Limiting and Paging Results](#limiting-and-paging-results)
-      - [Recursive and Hierarchical Queries](#recursive-and-hierarchical-queries)
-      - [Aggregation](#aggregation)
-  - [Upserting Rows](#upserting-rows)
-  - [Updating Rows](#updating-rows)
-  - [Deleting Rows](#deleting-rows)
-  - [Transactions and Savepoints](#transactions-and-savepoints)
-  - [Querying the Schema](#querying-the-schema)
-    - [Indexes and Columns](#indexes-and-columns)
-  - [Altering the Schema](#altering-the-schema)
-    - [Renaming Tables](#renaming-tables)
-    - [Dropping Tables](#dropping-tables)
-    - [Adding Columns](#adding-columns)
-      - [Added Column Constraints](#added-column-constraints)
-    - [SchemaChanger](#schemachanger)
-      - [Adding Columns](#adding-columns-1)
-      - [Renaming Columns](#renaming-columns)
-      - [Dropping Columns](#dropping-columns)
-      - [Renaming/Dropping Tables](#renamingdropping-tables)
-    - [Indexes](#indexes)
-      - [Creating Indexes](#creating-indexes)
-      - [Dropping Indexes](#dropping-indexes)
-    - [Migrations and Schema Versioning](#migrations-and-schema-versioning)
-  - [Custom Types](#custom-types)
-    - [Date-Time Values](#date-time-values)
-    - [Binary Data](#binary-data)
-  - [Codable Types](#codable-types)
-    - [Inserting Codable Types](#inserting-codable-types)
-    - [Updating Codable Types](#updating-codable-types)
-    - [Retrieving Codable Types](#retrieving-codable-types)
-    - [Restrictions](#restrictions)
-  - [Other Operators](#other-operators)
-          - [Other Infix Operators](#other-infix-operators)
-          - [Other Prefix Operators](#other-prefix-operators)
-  - [Core SQLite Functions](#core-sqlite-functions)
-  - [Aggregate SQLite Functions](#aggregate-sqlite-functions)
-  - [Window SQLite Functions](#window-sqlite-functions)
-  - [Date and Time functions](#date-and-time-functions)
-  - [Custom SQL Functions](#custom-sql-functions)
-  - [Custom Aggregations](#custom-aggregations)
-  - [Custom Collations](#custom-collations)
-  - [Full-text Search](#full-text-search)
-    - [FTS5](#fts5)
-  - [Executing Arbitrary SQL](#executing-arbitrary-sql)
-  - [Online Database Backup](#online-database-backup)
-  - [Attaching and detaching databases](#attaching-and-detaching-databases)
-  - [Logging](#logging)
-  - [Vacuum](#vacuum)
+[Permalink: SQLite.swift Documentation](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#sqliteswift-documentation)
+
+- [SQLite.swift Documentation](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#sqliteswift-documentation)
+  - [Installation](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#installation)
+    - [Swift Package Manager](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#swift-package-manager)
+    - [Carthage](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#carthage)
+    - [CocoaPods](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#cocoapods)
+      - [Requiring a specific version of SQLite](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#requiring-a-specific-version-of-sqlite)
+      - [Using SQLite.swift with SQLCipher](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#using-sqliteswift-with-sqlcipher)
+    - [Manual](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#manual)
+  - [Getting Started](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#getting-started)
+    - [Connecting to a Database](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#connecting-to-a-database)
+      - [Read-Write Databases](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#read-write-databases)
+      - [Read-Only Databases](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#read-only-databases)
+      - [In a shared group container](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#in-a-shared-group-container)
+      - [In-Memory Databases](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#in-memory-databases)
+      - [URI parameters](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#uri-parameters)
+      - [Thread-Safety](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#thread-safety)
+  - [Building Type-Safe SQL](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#building-type-safe-sql)
+    - [Expressions](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#expressions)
+    - [Compound Expressions](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#compound-expressions)
+    - [Queries](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#queries)
+  - [Creating a Table](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#creating-a-table)
+    - [Create Table Options](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#create-table-options)
+    - [Column Constraints](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#column-constraints)
+    - [Table Constraints](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#table-constraints)
+  - [Inserting Rows](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#inserting-rows)
+    - [Handling SQLite errors](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#handling-sqlite-errors)
+    - [Setters](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#setters)
+      \- [Infix Setters](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#infix-setters)
+      \- [Postfix Setters](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#postfix-setters)
+  - [Selecting Rows](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#selecting-rows)
+    - [Iterating and Accessing Values](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#iterating-and-accessing-values)
+      - [Failable iteration](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#failable-iteration)
+    - [Plucking Rows](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#plucking-rows)
+    - [Building Complex Queries](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#building-complex-queries)
+      - [Selecting Columns](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#selecting-columns)
+      - [Joining Other Tables](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#joining-other-tables)
+        - [Column Namespacing](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#column-namespacing)
+        - [Table Aliasing](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#table-aliasing)
+      - [Filtering Rows](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#filtering-rows)
+        - [Filter Operators and Functions](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#filter-operators-and-functions)
+          - [Infix Filter Operators](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#infix-filter-operators)
+          - [Prefix Filter Operators](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#prefix-filter-operators)
+          - [Filtering Functions](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#filtering-functions)
+      - [Sorting Rows](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#sorting-rows)
+      - [Limiting and Paging Results](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#limiting-and-paging-results)
+      - [Recursive and Hierarchical Queries](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#recursive-and-hierarchical-queries)
+      - [Aggregation](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#aggregation)
+  - [Upserting Rows](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#upserting-rows)
+  - [Updating Rows](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#updating-rows)
+  - [Deleting Rows](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#deleting-rows)
+  - [Transactions and Savepoints](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#transactions-and-savepoints)
+  - [Querying the Schema](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#querying-the-schema)
+    - [Indexes and Columns](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#indexes-and-columns)
+  - [Altering the Schema](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#altering-the-schema)
+    - [Renaming Tables](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#renaming-tables)
+    - [Dropping Tables](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#dropping-tables)
+    - [Adding Columns](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#adding-columns)
+      - [Added Column Constraints](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#added-column-constraints)
+    - [SchemaChanger](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#schemachanger)
+      - [Adding Columns](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#adding-columns-1)
+      - [Renaming Columns](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#renaming-columns)
+      - [Dropping Columns](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#dropping-columns)
+      - [Renaming/Dropping Tables](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#renamingdropping-tables)
+    - [Indexes](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#indexes)
+      - [Creating Indexes](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#creating-indexes)
+      - [Dropping Indexes](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#dropping-indexes)
+    - [Migrations and Schema Versioning](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#migrations-and-schema-versioning)
+  - [Custom Types](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#custom-types)
+    - [Date-Time Values](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#date-time-values)
+    - [Binary Data](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#binary-data)
+  - [Codable Types](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#codable-types)
+    - [Inserting Codable Types](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#inserting-codable-types)
+    - [Updating Codable Types](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#updating-codable-types)
+    - [Retrieving Codable Types](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#retrieving-codable-types)
+    - [Restrictions](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#restrictions)
+  - [Other Operators](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#other-operators)
+    \- [Other Infix Operators](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#other-infix-operators)
+    \- [Other Prefix Operators](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#other-prefix-operators)
+  - [Core SQLite Functions](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#core-sqlite-functions)
+  - [Aggregate SQLite Functions](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#aggregate-sqlite-functions)
+  - [Window SQLite Functions](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#window-sqlite-functions)
+  - [Date and Time functions](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#date-and-time-functions)
+  - [Custom SQL Functions](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#custom-sql-functions)
+  - [Custom Aggregations](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#custom-aggregations)
+  - [Custom Collations](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#custom-collations)
+  - [Full-text Search](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#full-text-search)
+    - [FTS5](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#fts5)
+  - [Executing Arbitrary SQL](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#executing-arbitrary-sql)
+  - [Online Database Backup](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#online-database-backup)
+  - [Attaching and detaching databases](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#attaching-and-detaching-databases)
+  - [Logging](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#logging)
+  - [Vacuum](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#vacuum)
 
 ## Installation
 
+[Permalink: Installation](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#installation)
+
 ### Swift Package Manager
 
-The [Swift Package Manager][] is a tool for managing the distribution of
+[Permalink: Swift Package Manager](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#swift-package-manager)
+
+The [Swift Package Manager](https://swift.org/package-manager) is a tool for managing the distribution of
 Swift code. It’s integrated with the Swift build system to automate the
 process of downloading, compiling, and linking dependencies.
 
- 1. Add the following to your `Package.swift` file:
+1. Add the following to your `Package.swift` file:
 
-  ```swift
-  dependencies: [
-    .package(url: "https://github.com/stephencelis/SQLite.swift.git", from: "0.15.3")
-  ]
-  ```
+```
+dependencies: [\
+  .package(url: "https://github.com/stephencelis/SQLite.swift.git", from: "0.15.3")\
+]
+```
 
- 2. Build your project:
+2. Build your project:
 
-  ```sh
-  swift build
-  ```
-
-[Swift Package Manager]: https://swift.org/package-manager
+```
+swift build
+```
 
 ### Carthage
 
-[Carthage][] is a simple, decentralized dependency manager for Cocoa. To
+[Permalink: Carthage](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#carthage)
+
+[Carthage](https://github.com/Carthage/Carthage) is a simple, decentralized dependency manager for Cocoa. To
 install SQLite.swift with Carthage:
 
- 1. Make sure Carthage is [installed][Carthage Installation].
+1. Make sure Carthage is [installed](https://github.com/Carthage/Carthage#installing-carthage).
 
- 2. Update your Cartfile to include the following:
+2. Update your Cartfile to include the following:
 
-    ```ruby
-    github "stephencelis/SQLite.swift" ~> 0.15.3
-    ```
+```
+github "stephencelis/SQLite.swift" ~> 0.15.3
+```
 
- 3. Run `carthage update` and [add the appropriate framework][Carthage Usage].
-
-[Carthage]: https://github.com/Carthage/Carthage
-[Carthage Installation]: https://github.com/Carthage/Carthage#installing-carthage
-[Carthage Usage]: https://github.com/Carthage/Carthage#adding-frameworks-to-an-application
+3. Run `carthage update` and [add the appropriate framework](https://github.com/Carthage/Carthage#adding-frameworks-to-an-application).
 
 ### CocoaPods
 
-[CocoaPods][] is a dependency manager for Cocoa projects. To install SQLite.swift with CocoaPods:
+[Permalink: CocoaPods](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#cocoapods)
 
- 1. Make sure CocoaPods is [installed][CocoaPods Installation] (SQLite.swift
-    requires version 1.6.1 or greater).
+[CocoaPods](https://cocoapods.org/) is a dependency manager for Cocoa projects. To install SQLite.swift with CocoaPods:
 
-    ```sh
-    # Using the default Ruby install will require you to use sudo when
-    # installing and updating gems.
-    [sudo] gem install cocoapods
-    ```
+1. Make sure CocoaPods is [installed](https://guides.cocoapods.org/using/getting-started.html#getting-started) (SQLite.swift
+requires version 1.6.1 or greater).
 
- 2. Update your Podfile to include the following:
+```
+# Using the default Ruby install will require you to use sudo when
+# installing and updating gems.
+[sudo] gem install cocoapods
+```
 
-    ```ruby
-    use_frameworks!
+2. Update your Podfile to include the following:
 
-    target 'YourAppTargetName' do
-        pod 'SQLite.swift', '~> 0.15.3'
-    end
-    ```
+```
+use_frameworks!
 
- 3. Run `pod install --repo-update`.
+target 'YourAppTargetName' do
+       pod 'SQLite.swift', '~> 0.15.3'
+end
+```
+
+3. Run `pod install --repo-update`.
 
 #### Requiring a specific version of SQLite
+
+[Permalink: Requiring a specific version of SQLite](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#requiring-a-specific-version-of-sqlite)
 
 If you want to use a more recent version of SQLite than what is provided
 with the OS you can require the `standalone` subspec:
 
-```ruby
+```
 target 'YourAppTargetName' do
   pod 'SQLite.swift/standalone', '~> 0.15.3'
 end
@@ -176,21 +243,23 @@ By default this will use the most recent version of SQLite without any
 extras. If you want you can further customize this by adding another
 dependency to sqlite3 or one of its subspecs:
 
-```ruby
+```
 target 'YourAppTargetName' do
   pod 'SQLite.swift/standalone', '~> 0.15.3'
   pod 'sqlite3/fts5', '= 3.15.0'  # SQLite 3.15.0 with FTS5 enabled
 end
 ```
 
-See the [sqlite3 podspec][sqlite3pod] for more details.
+See the [sqlite3 podspec](https://github.com/clemensg/sqlite3pod) for more details.
 
 #### Using SQLite.swift with SQLCipher
 
-If you want to use [SQLCipher][] with SQLite.swift you can require the
+[Permalink: Using SQLite.swift with SQLCipher](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#using-sqliteswift-with-sqlcipher)
+
+If you want to use [SQLCipher](https://www.zetetic.net/sqlcipher/) with SQLite.swift you can require the
 `SQLCipher` subspec in your Podfile (SPM is not supported yet, see [#1084](https://github.com/stephencelis/SQLite.swift/issues/1084)):
 
-```ruby
+```
 target 'YourAppTargetName' do
   # Make sure you only require the subspec, otherwise you app might link against
   # the system SQLite, which means the SQLCipher-specific methods won't work.
@@ -201,7 +270,7 @@ end
 This will automatically add a dependency to the SQLCipher pod as well as
 extend `Connection` with methods to change the database key:
 
-```swift
+```
 import SQLite
 
 let db = try Connection("path/to/encrypted.sqlite3")
@@ -211,33 +280,30 @@ try db.rekey("new secret") // changes encryption key on already encrypted db
 
 To encrypt an existing database:
 
-```swift
+```
 let db = try Connection("path/to/unencrypted.sqlite3")
 try db.sqlcipher_export(.uri("encrypted.sqlite3"), key: "secret")
 ```
 
-[CocoaPods]: https://cocoapods.org
-[CocoaPods Installation]: https://guides.cocoapods.org/using/getting-started.html#getting-started
-[sqlite3pod]: https://github.com/clemensg/sqlite3pod
-[SQLCipher]: https://www.zetetic.net/sqlcipher/
-
 ### Manual
+
+[Permalink: Manual](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#manual)
 
 To install SQLite.swift as an Xcode sub-project:
 
- 1. Drag the **SQLite.xcodeproj** file into your own project.
-    ([Submodule](http://git-scm.com/book/en/Git-Tools-Submodules), clone, or
-    [download](https://github.com/stephencelis/SQLite.swift/archive/master.zip)
-    the project first.)
+1. Drag the **SQLite.xcodeproj** file into your own project.
+( [Submodule](http://git-scm.com/book/en/Git-Tools-Submodules), clone, or
+[download](https://github.com/stephencelis/SQLite.swift/archive/master.zip)
+the project first.)
 
-    ![Installation Screen Shot](Resources/installation@2x.png)
+[![Installation Screen Shot](https://github.com/stephencelis/SQLite.swift/raw/master/Documentation/Resources/installation@2x.png)](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Resources/installation@2x.png)
 
- 2. In your target’s **General** tab, click the **+** button under **Linked
-    Frameworks and Libraries**.
+2. In your target’s **General** tab, click the **+** button under **Linked**
+**Frameworks and Libraries**.
 
- 3. Select the appropriate **SQLite.framework** for your platform.
+3. Select the appropriate **SQLite.framework** for your platform.
 
- 4. **Add**.
+4. **Add**.
 
 You should now be able to `import SQLite` from any of your target’s source
 files and begin using SQLite.swift.
@@ -245,38 +311,44 @@ files and begin using SQLite.swift.
 Some additional steps are required to install the application on an actual
 device:
 
- 5. In the **General** tab, click the **+** button under **Embedded
-    Binaries**.
+5. In the **General** tab, click the **+** button under **Embedded**
+**Binaries**.
 
- 6. Select the appropriate **SQLite.framework** for your platform.
+6. Select the appropriate **SQLite.framework** for your platform.
 
- 7. **Add**.
+7. **Add**.
 
 ## Getting Started
+
+[Permalink: Getting Started](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#getting-started)
 
 To use SQLite.swift classes or structures in your target’s source file, first
 import the `SQLite` module.
 
-```swift
+```
 import SQLite
 ```
 
 ### Connecting to a Database
 
+[Permalink: Connecting to a Database](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#connecting-to-a-database)
+
 Database connections are established using the `Connection` class. A
 connection is initialized with a path to a database. SQLite will attempt to
 create the database file if it does not already exist.
 
-```swift
+```
 let db = try Connection("path/to/db.sqlite3")
 ```
 
 #### Read-Write Databases
 
+[Permalink: Read-Write Databases](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#read-write-databases)
+
 On iOS, you can create a writable database in your app’s **Documents**
 directory.
 
-```swift
+```
 let path = NSSearchPathForDirectoriesInDomains(
     .documentDirectory, .userDomainMask, true
 ).first!
@@ -286,7 +358,7 @@ let db = try Connection("\(path)/db.sqlite3")
 
 If you have bundled it in your application, you can use FileManager to copy it to the Documents directory:
 
-```swift
+```
 func copyDatabaseIfNeeded(sourcePath: String) -> Bool {
     let documents = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true).first!
     let destinationPath = documents + "/db.sqlite3"
@@ -304,7 +376,7 @@ func copyDatabaseIfNeeded(sourcePath: String) -> Bool {
 
 On macOS, you can use your app’s **Application Support** directory:
 
-```swift
+```
 // set the path corresponding to application support
 var path = NSSearchPathForDirectoriesInDomains(
     .applicationSupportDirectory, .userDomainMask, true
@@ -320,11 +392,13 @@ let db = try Connection("\(path)/db.sqlite3")
 
 #### Read-Only Databases
 
-If you bundle a database with your app (_i.e._, you’ve copied a database file
+[Permalink: Read-Only Databases](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#read-only-databases)
+
+If you bundle a database with your app ( _i.e._, you’ve copied a database file
 into your Xcode project and added it to your application target), you can
 establish a _read-only_ connection to it.
 
-```swift
+```
 let path = Bundle.main.path(forResource: "db", ofType: "sqlite3")!
 
 let db = try Connection(path, readonly: true)
@@ -333,7 +407,7 @@ let db = try Connection(path, readonly: true)
 > _Note:_ Signed applications cannot modify their bundle resources. If you
 > bundle a database file with your app for the purpose of bootstrapping, copy
 > it to a writable location _before_ establishing a connection (see
-> [Read-Write Databases](#read-write-databases), above, for typical, writable
+> [Read-Write Databases](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#read-write-databases), above, for typical, writable
 > locations).
 >
 > See these two Stack Overflow questions for more information about iOS apps
@@ -344,23 +418,25 @@ let db = try Connection(path, readonly: true)
 
 #### In a shared group container
 
-It is not recommend to store databases in a [shared group container],
-some users have reported crashes ([#1042](https://github.com/stephencelis/SQLite.swift/issues/1042)).
+[Permalink: In a shared group container](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#in-a-shared-group-container)
 
-[shared group container]: https://developer.apple.com/documentation/foundation/filemanager/1412643-containerurl#
+It is not recommend to store databases in a [shared group container](https://developer.apple.com/documentation/foundation/filemanager/1412643-containerurl#),
+some users have reported crashes ( [#1042](https://github.com/stephencelis/SQLite.swift/issues/1042)).
 
 #### In-Memory Databases
 
-If you omit the path, SQLite.swift will provision an [in-memory
+[Permalink: In-Memory Databases](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#in-memory-databases)
+
+If you omit the path, SQLite.swift will provision an [in-memory\\
 database](https://www.sqlite.org/inmemorydb.html).
 
-```swift
+```
 let db = try Connection() // equivalent to `Connection(.inMemory)`
 ```
 
 To create a temporary, disk-backed database, pass an empty file name.
 
-```swift
+```
 let db = try Connection(.temporary)
 ```
 
@@ -369,16 +445,20 @@ closed.
 
 #### URI parameters
 
-We can pass `.uri` to the `Connection` initializer to control more aspects of
-the database connection with the help of `URIQueryParameter`s:
+[Permalink: URI parameters](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#uri-parameters)
 
-```swift
+We can pass `.uri` to the `Connection` initializer to control more aspects of
+the database connection with the help of `URIQueryParameter` s:
+
+```
 let db = try Connection(.uri("file.sqlite", parameters: [.cache(.private), .noLock(true)]))
 ```
 
 See [Uniform Resource Identifiers](https://www.sqlite.org/uri.html#recognized_query_parameters) for more details.
 
 #### Thread-Safety
+
+[Permalink: Thread-Safety](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#thread-safety)
 
 Every Connection comes equipped with its own serial queue for statement
 execution and can be safely accessed across threads. Threads that open
@@ -389,7 +469,7 @@ If you maintain multiple connections for a single database, consider setting a t
 (in seconds) _or_ a busy handler. There can only be one active at a time, so setting a busy
 handler will effectively override `busyTimeout`.
 
-```swift
+```
 db.busyTimeout = 5 // error after 5 seconds (does multiple retries)
 
 db.busyHandler({ tries in
@@ -403,46 +483,49 @@ db.busyHandler({ tries in
 
 ## Building Type-Safe SQL
 
+[Permalink: Building Type-Safe SQL](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#building-type-safe-sql)
+
 SQLite.swift comes with a typed expression layer that directly maps
 [Swift types](https://developer.apple.com/library/prerelease/ios/documentation/General/Reference/SwiftStandardLibraryReference/)
 to their [SQLite counterparts](https://www.sqlite.org/datatype3.html).
 
-| Swift Type      | SQLite Type |
-| --------------- | ----------- |
-| `Int64`*        | `INTEGER`   |
-| `Double`        | `REAL`      |
-| `String`        | `TEXT`      |
-| `nil`           | `NULL`      |
-| `SQLite.Blob`†  | `BLOB`      |
-| `URL`           | `TEXT`      |
-| `UUID`          | `TEXT`      |
-| `Date`          | `TEXT`      |
+| Swift Type | SQLite Type |
+| --- | --- |
+| `Int64`\* | `INTEGER` |
+| `Double` | `REAL` |
+| `String` | `TEXT` |
+| `nil` | `NULL` |
+| `SQLite.Blob`† | `BLOB` |
+| `URL` | `TEXT` |
+| `UUID` | `TEXT` |
+| `Date` | `TEXT` |
 
-> *While `Int64` is the basic, raw type (to preserve 64-bit integers on
+> \*While `Int64` is the basic, raw type (to preserve 64-bit integers on
 > 32-bit platforms), `Int` and `Bool` work transparently.
 >
 > †SQLite.swift defines its own `Blob` structure, which safely wraps the
 > underlying bytes.
 >
-> See [Custom Types](#custom-types) for more information about extending
+> See [Custom Types](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#custom-types) for more information about extending
 > other classes and structures to work with SQLite.swift.
 >
-> See [Executing Arbitrary SQL](#executing-arbitrary-sql) to forego the typed
+> See [Executing Arbitrary SQL](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#executing-arbitrary-sql) to forego the typed
 > layer and execute raw SQL, instead.
 
 These expressions (in the form of the structure,
-[`Expression`](#expressions)) build on one another and, with a query
-([`QueryType`](#queries)), can create and execute SQL statements.
+[`Expression`](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#expressions)) build on one another and, with a query
+( [`QueryType`](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#queries)), can create and execute SQL statements.
 
 ### Expressions
 
-Expressions are generic structures associated with a type ([built-in
-](#building-type-safe-sql) or [custom](#custom-types)), raw SQL, and
+[Permalink: Expressions](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#expressions)
+
+Expressions are generic structures associated with a type ( [built-in](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#building-type-safe-sql) or [custom](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#custom-types)), raw SQL, and
 (optionally) values to bind to that SQL. Typically, you will only explicitly
 create expressions to describe your columns, and typically only once per
 column.
 
-```swift
+```
 let id = Expression<Int64>("id")
 let email = Expression<String>("email")
 let balance = Expression<Double>("balance")
@@ -451,45 +534,49 @@ let verified = Expression<Bool>("verified")
 
 Use optional generics for expressions that can evaluate to `NULL`.
 
-```swift
+```
 let name = Expression<String?>("name")
 ```
 
-> _Note:_ The default `Expression` initializer is for [quoted
-> identifiers](https://www.sqlite.org/lang_keywords.html) (_i.e._, column
+> _Note:_ The default `Expression` initializer is for [quoted\\
+> identifiers](https://www.sqlite.org/lang_keywords.html) ( _i.e._, column
 > names). To build a literal SQL expression, use `init(literal:)`.
-> <!-- FIXME -->
 
 ### Compound Expressions
 
+[Permalink: Compound Expressions](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#compound-expressions)
+
 Expressions can be combined with other expressions and types using
-[filter operators and functions](#filter-operators-and-functions)
-(as well as other [non-filter operators](#other-operators) and
-[functions](#core-sqlite-functions)). These building blocks can create complex SQLite statements.
+[filter operators and functions](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#filter-operators-and-functions)
+(as well as other [non-filter operators](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#other-operators) and
+[functions](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#core-sqlite-functions)). These building blocks can create complex SQLite statements.
 
 ### Queries
+
+[Permalink: Queries](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#queries)
 
 Queries are structures that reference a database and table name, and can be
 used to build a variety of statements using expressions. We can create a
 query by initializing a `Table`, `View`, or `VirtualTable`.
 
-```swift
+```
 let users = Table("users")
 ```
 
-Assuming [the table exists](#creating-a-table), we can immediately [insert
-](#inserting-rows), [select](#selecting-rows), [update](#updating-rows), and
-[delete](#deleting-rows) rows.
+Assuming [the table exists](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#creating-a-table), we can immediately [insert](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#inserting-rows), [select](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#selecting-rows), [update](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#updating-rows), and
+[delete](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#deleting-rows) rows.
 
 ## Creating a Table
 
-We can build [`CREATE TABLE`
+[Permalink: Creating a Table](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#creating-a-table)
+
+We can build [`CREATE TABLE`\\
 statements](https://www.sqlite.org/lang_createtable.html) by calling the
 `create` function on a `Table`. The following is a basic example of
-SQLite.swift code (using the [expressions](#expressions) and
-[query](#queries) above) and the corresponding SQL it generates.
+SQLite.swift code (using the [expressions](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#expressions) and
+[query](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#queries) above) and the corresponding SQL it generates.
 
-```swift
+```
 try db.run(users.create { t in     // CREATE TABLE "users" (
     t.column(id, primaryKey: true) //     "id" INTEGER PRIMARY KEY NOT NULL,
     t.column(email, unique: true)  //     "email" TEXT UNIQUE NOT NULL,
@@ -499,181 +586,185 @@ try db.run(users.create { t in     // CREATE TABLE "users" (
 
 > _Note:_ `Expression<T>` structures (in this case, the `id` and `email`
 > columns), generate `NOT NULL` constraints automatically, while
-> `Expression<T?>` structures (`name`) do not.
+> `Expression<T?>` structures ( `name`) do not.
 
 ### Create Table Options
+
+[Permalink: Create Table Options](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#create-table-options)
 
 The `Table.create` function has several default parameters we can override.
 
 - `temporary` adds a `TEMPORARY` clause to the `CREATE TABLE` statement (to
-    create a temporary table that will automatically drop when the database
-    connection closes). Default: `false`.
+create a temporary table that will automatically drop when the database
+connection closes). Default: `false`.
 
-    ```swift
-    try db.run(users.create(temporary: true) { t in /* ... */ })
-    // CREATE TEMPORARY TABLE "users" -- ...
-    ```
+```
+try db.run(users.create(temporary: true) { t in /* ... */ })
+// CREATE TEMPORARY TABLE "users" -- ...
+```
 
 - `ifNotExists` adds an `IF NOT EXISTS` clause to the `CREATE TABLE`
-    statement (which will bail out gracefully if the table already exists).
-    Default: `false`.
+statement (which will bail out gracefully if the table already exists).
+Default: `false`.
 
-    ```swift
-    try db.run(users.create(ifNotExists: true) { t in /* ... */ })
-    // CREATE TABLE "users" IF NOT EXISTS -- ...
-    ```
+```
+try db.run(users.create(ifNotExists: true) { t in /* ... */ })
+// CREATE TABLE "users" IF NOT EXISTS -- ...
+```
 
 ### Column Constraints
 
+[Permalink: Column Constraints](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#column-constraints)
+
 The `column` function is used for a single column definition. It takes an
-[expression](#expressions) describing the column name and type, and accepts
+[expression](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#expressions) describing the column name and type, and accepts
 several parameters that map to various column constraints and clauses.
 
 - `primaryKey` adds a `PRIMARY KEY` constraint to a single column.
 
-    ```swift
-    t.column(id, primaryKey: true)
-    // "id" INTEGER PRIMARY KEY NOT NULL
+```
+t.column(id, primaryKey: true)
+// "id" INTEGER PRIMARY KEY NOT NULL
 
-    t.column(id, primaryKey: .autoincrement)
-    // "id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL
-    ```
+t.column(id, primaryKey: .autoincrement)
+// "id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL
+```
 
-    > _Note:_ The `primaryKey` parameter cannot be used alongside
-    > `references`. If you need to create a column that has a default value
-    > and is also a primary and/or foreign key, use the `primaryKey` and
-    > `foreignKey` functions mentioned under
-    > [Table Constraints](#table-constraints).
-    >
-    > Primary keys cannot be optional (_e.g._, `Expression<Int64?>`).
-    >
-    > Only an `INTEGER PRIMARY KEY` can take `.autoincrement`.
+> _Note:_ The `primaryKey` parameter cannot be used alongside
+> `references`. If you need to create a column that has a default value
+> and is also a primary and/or foreign key, use the `primaryKey` and
+> `foreignKey` functions mentioned under
+> [Table Constraints](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#table-constraints).
+>
+> Primary keys cannot be optional ( _e.g._, `Expression<Int64?>`).
+>
+> Only an `INTEGER PRIMARY KEY` can take `.autoincrement`.
 
 - `unique` adds a `UNIQUE` constraint to the column. (See the `unique`
-    function under [Table Constraints](#table-constraints) for uniqueness
-    over multiple columns).
+function under [Table Constraints](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#table-constraints) for uniqueness
+over multiple columns).
 
-    ```swift
-    t.column(email, unique: true)
-    // "email" TEXT UNIQUE NOT NULL
-    ```
+```
+t.column(email, unique: true)
+// "email" TEXT UNIQUE NOT NULL
+```
 
 - `check` attaches a `CHECK` constraint to a column definition in the form
-    of a boolean expression (`Expression<Bool>`). Boolean expressions can be
-    easily built using
-    [filter operators and functions](#filter-operators-and-functions).
-    (See also the `check` function under
-    [Table Constraints](#table-constraints).)
+of a boolean expression ( `Expression<Bool>`). Boolean expressions can be
+easily built using
+[filter operators and functions](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#filter-operators-and-functions).
+(See also the `check` function under
+[Table Constraints](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#table-constraints).)
 
-    ```swift
-    t.column(email, check: email.like("%@%"))
-    // "email" TEXT NOT NULL CHECK ("email" LIKE '%@%')
-    ```
+```
+t.column(email, check: email.like("%@%"))
+// "email" TEXT NOT NULL CHECK ("email" LIKE '%@%')
+```
 
 - `defaultValue` adds a `DEFAULT` clause to a column definition and _only_
-    accepts a value (or expression) matching the column’s type. This value is
-    used if none is explicitly provided during
-    [an `INSERT`](#inserting-rows).
+accepts a value (or expression) matching the column’s type. This value is
+used if none is explicitly provided during
+[an `INSERT`](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#inserting-rows).
 
-    ```swift
-    t.column(name, defaultValue: "Anonymous")
-    // "name" TEXT DEFAULT 'Anonymous'
-    ```
+```
+t.column(name, defaultValue: "Anonymous")
+// "name" TEXT DEFAULT 'Anonymous'
+```
 
-    > _Note:_ The `defaultValue` parameter cannot be used alongside
-    > `primaryKey` and `references`. If you need to create a column that has
-    > a default value and is also a primary and/or foreign key, use the
-    > `primaryKey` and `foreignKey` functions mentioned under
-    > [Table Constraints](#table-constraints).
+> _Note:_ The `defaultValue` parameter cannot be used alongside
+> `primaryKey` and `references`. If you need to create a column that has
+> a default value and is also a primary and/or foreign key, use the
+> `primaryKey` and `foreignKey` functions mentioned under
+> [Table Constraints](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#table-constraints).
 
 - `collate` adds a `COLLATE` clause to `Expression<String>` (and
-    `Expression<String?>`) column definitions with
-    [a collating sequence](https://www.sqlite.org/datatype3.html#collation)
-    defined in the `Collation` enumeration.
+`Expression<String?>`) column definitions with
+[a collating sequence](https://www.sqlite.org/datatype3.html#collation)
+defined in the `Collation` enumeration.
 
-    ```swift
-    t.column(email, collate: .nocase)
-    // "email" TEXT NOT NULL COLLATE "NOCASE"
+```
+t.column(email, collate: .nocase)
+// "email" TEXT NOT NULL COLLATE "NOCASE"
 
-    t.column(name, collate: .rtrim)
-    // "name" TEXT COLLATE "RTRIM"
-    ```
+t.column(name, collate: .rtrim)
+// "name" TEXT COLLATE "RTRIM"
+```
 
 - `references` adds a `REFERENCES` clause to `Expression<Int64>` (and
-    `Expression<Int64?>`) column definitions and accepts a table
-    (`SchemaType`) or namespaced column expression. (See the `foreignKey`
-    function under [Table Constraints](#table-constraints) for non-integer
-    foreign key support.)
+`Expression<Int64?>`) column definitions and accepts a table
+( `SchemaType`) or namespaced column expression. (See the `foreignKey`
+function under [Table Constraints](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#table-constraints) for non-integer
+foreign key support.)
 
-    ```swift
-    t.column(user_id, references: users, id)
-    // "user_id" INTEGER REFERENCES "users" ("id")
-    ```
+```
+t.column(user_id, references: users, id)
+// "user_id" INTEGER REFERENCES "users" ("id")
+```
 
-    > _Note:_ The `references` parameter cannot be used alongside
-    > `primaryKey` and `defaultValue`. If you need to create a column that
-    > has a default value and is also a primary and/or foreign key, use the
-    > `primaryKey` and `foreignKey` functions mentioned under
-    > [Table Constraints](#table-constraints).
+> _Note:_ The `references` parameter cannot be used alongside
+> `primaryKey` and `defaultValue`. If you need to create a column that
+> has a default value and is also a primary and/or foreign key, use the
+> `primaryKey` and `foreignKey` functions mentioned under
+> [Table Constraints](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#table-constraints).
 
 ### Table Constraints
+
+[Permalink: Table Constraints](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#table-constraints)
 
 Additional constraints may be provided outside the scope of a single column
 using the following functions.
 
-- `primaryKey` adds a `PRIMARY KEY` constraint to the table. Unlike [the
-    column constraint, above](#column-constraints), it supports all SQLite
-    types, [ascending and descending orders](#sorting-rows), and composite
-    (multiple column) keys.
+- `primaryKey` adds a `PRIMARY KEY` constraint to the table. Unlike [the\\
+column constraint, above](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#column-constraints), it supports all SQLite
+types, [ascending and descending orders](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#sorting-rows), and composite
+(multiple column) keys.
 
-    ```swift
-    t.primaryKey(email.asc, name)
-    // PRIMARY KEY("email" ASC, "name")
-    ```
+```
+t.primaryKey(email.asc, name)
+// PRIMARY KEY("email" ASC, "name")
+```
 
 - `unique` adds a `UNIQUE` constraint to the table. Unlike
-    [the column constraint, above](#column-constraints), it
-    supports composite (multiplecolumn) constraints.
+[the column constraint, above](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#column-constraints), it
+supports composite (multiplecolumn) constraints.
 
-    ```swift
-    t.unique(local, domain)
-    // UNIQUE("local", "domain")
-    ```
+```
+t.unique(local, domain)
+// UNIQUE("local", "domain")
+```
 
 - `check` adds a `CHECK` constraint to the table in the form of a boolean
-    expression (`Expression<Bool>`). Boolean expressions can be easily built
-    using [filter operators and functions](#filter-operators-and-functions).
-    (See also the `check` parameter under
-    [Column Constraints](#column-constraints).)
+expression ( `Expression<Bool>`). Boolean expressions can be easily built
+using [filter operators and functions](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#filter-operators-and-functions).
+(See also the `check` parameter under
+[Column Constraints](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#column-constraints).)
 
-    ```swift
-    t.check(balance >= 0)
-    // CHECK ("balance" >= 0.0)
-    ```
+```
+t.check(balance >= 0)
+// CHECK ("balance" >= 0.0)
+```
 
-- `foreignKey` adds a `FOREIGN KEY` constraint to the table. Unlike [the
-    `references` constraint, above](#column-constraints), it supports all
-    SQLite types, both [`ON UPDATE` and `ON DELETE`
-    actions](https://www.sqlite.org/foreignkeys.html#fk_actions), and
-    composite (multiple column) keys.
+- `foreignKey` adds a `FOREIGN KEY` constraint to the table. Unlike [the\\
+`references` constraint, above](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#column-constraints), it supports all
+SQLite types, both [`ON UPDATE` and `ON DELETE`\\
+actions](https://www.sqlite.org/foreignkeys.html#fk_actions), and
+composite (multiple column) keys.
 
-    ```swift
-    t.foreignKey(user_id, references: users, id, delete: .setNull)
-    // FOREIGN KEY("user_id") REFERENCES "users"("id") ON DELETE SET NULL
-    ```
-
-<!-- TODO
-### Creating a Table from a Select Statement
--->
+```
+t.foreignKey(user_id, references: users, id, delete: .setNull)
+// FOREIGN KEY("user_id") REFERENCES "users"("id") ON DELETE SET NULL
+```
 
 ## Inserting Rows
 
-We can insert rows into a table by calling a [query’s](#queries) `insert`
-function with a list of [setters](#setters)—typically [typed column
-expressions](#expressions) and values (which can also be expressions)—each
+[Permalink: Inserting Rows](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#inserting-rows)
+
+We can insert rows into a table by calling a [query’s](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#queries) `insert`
+function with a list of [setters](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#setters)—typically [typed column\\
+expressions](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#expressions) and values (which can also be expressions)—each
 joined by the `<-` operator.
 
-```swift
+```
 try db.run(users.insert(email <- "alice@mac.com", name <- "Alice"))
 // INSERT INTO "users" ("email", "name") VALUES ('alice@mac.com', 'Alice')
 
@@ -682,9 +773,9 @@ try db.run(users.insert(or: .replace, email <- "alice@mac.com", name <- "Alice B
 ```
 
 The `insert` function, when run successfully, returns an `Int64` representing
-the inserted row’s [`ROWID`][ROWID].
+the inserted row’s [`ROWID`](https://sqlite.org/lang_createtable.html#rowid).
 
-```swift
+```
 do {
     let rowid = try db.run(users.insert(email <- "alice@mac.com"))
     print("inserted id: \(rowid)")
@@ -694,9 +785,9 @@ do {
 ```
 
 Multiple rows can be inserted at once by similarly calling `insertMany` with an array of
-per-row [setters](#setters).
+per-row [setters](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#setters).
 
-```swift
+```
 do {
     let lastRowid = try db.run(users.insertMany([mail <- "alice@mac.com"], [email <- "geoff@mac.com"]))
     print("last inserted id: \(lastRowid)")
@@ -705,24 +796,26 @@ do {
 }
 ```
 
-The [`update`](#updating-rows) and [`delete`](#deleting-rows) functions
+The [`update`](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#updating-rows) and [`delete`](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#deleting-rows) functions
 follow similar patterns.
 
 > _Note:_ If `insert` is called without any arguments, the statement will run
 > with a `DEFAULT VALUES` clause. The table must not have any constraints
 > that aren’t fulfilled by default values.
 >
-> ```swift
+> ```
 > try db.run(timestamps.insert())
 > // INSERT INTO "timestamps" DEFAULT VALUES
 > ```
 
 ### Handling SQLite errors
 
-You can pattern match on the error to selectively catch SQLite errors. For example, to
-specifically handle constraint errors ([SQLITE_CONSTRAINT](https://sqlite.org/rescode.html#constraint)):
+[Permalink: Handling SQLite errors](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#handling-sqlite-errors)
 
-```swift
+You can pattern match on the error to selectively catch SQLite errors. For example, to
+specifically handle constraint errors ( [SQLITE\_CONSTRAINT](https://sqlite.org/rescode.html#constraint)):
+
+```
 do {
     try db.run(users.insert(email <- "alice@mac.com"))
     try db.run(users.insert(email <- "alice@mac.com"))
@@ -733,16 +826,17 @@ do {
 }
 ```
 
-The `Result.error` type contains the English-language text that describes the error (`message`),
+The `Result.error` type contains the English-language text that describes the error ( `message`),
 the error `code` (see [SQLite result code list](https://sqlite.org/rescode.html#primary_result_code_list)
 for details) and a optional reference to the `statement` which produced the error.
 
 ### Setters
 
-SQLite.swift typically uses the `<-` operator to set values during [inserts
-](#inserting-rows) and [updates](#updating-rows).
+[Permalink: Setters](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#setters)
 
-```swift
+SQLite.swift typically uses the `<-` operator to set values during [inserts](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#inserting-rows) and [updates](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#updating-rows).
+
+```
 try db.run(counter.update(count <- 0))
 // UPDATE "counters" SET "count" = 0 WHERE ("id" = 1)
 ```
@@ -752,14 +846,14 @@ into account using native Swift operators.
 
 For example, to atomically increment a column, we can use `++`:
 
-```swift
+```
 try db.run(counter.update(count++)) // equivalent to `counter.update(count -> count + 1)`
 // UPDATE "counters" SET "count" = "count" + 1 WHERE ("id" = 1)
 ```
 
 To take an amount and “move” it via transaction, we can use `-=` and `+=`:
 
-```swift
+```
 let amount = 100.0
 try db.transaction {
     try db.run(alice.update(balance -= amount))
@@ -773,41 +867,48 @@ try db.transaction {
 
 ###### Infix Setters
 
-| Operator | Types              |
-| -------- | ------------------ |
-| `<-`     | `Value -> Value`   |
-| `+=`     | `Number -> Number` |
-| `-=`     | `Number -> Number` |
-| `*=`     | `Number -> Number` |
-| `/=`     | `Number -> Number` |
-| `%=`     | `Int -> Int`       |
-| `<<=`    | `Int -> Int`       |
-| `>>=`    | `Int -> Int`       |
-| `&=`     | `Int -> Int`       |
-| `\|\|=`  | `Int -> Int`       |
-| `^=`     | `Int -> Int`       |
-| `+=`     | `String -> String` |
+[Permalink: Infix Setters](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#infix-setters)
+
+| Operator | Types |
+| --- | --- |
+| `<-` | `Value -> Value` |
+| `+=` | `Number -> Number` |
+| `-=` | `Number -> Number` |
+| `*=` | `Number -> Number` |
+| `/=` | `Number -> Number` |
+| `%=` | `Int -> Int` |
+| `<<=` | `Int -> Int` |
+| `>>=` | `Int -> Int` |
+| `&=` | `Int -> Int` |
+| `||=` | `Int -> Int` |
+| `^=` | `Int -> Int` |
+| `+=` | `String -> String` |
 
 ###### Postfix Setters
 
-| Operator | Types        |
-| -------- | ------------ |
-| `++`     | `Int -> Int` |
-| `--`     | `Int -> Int` |
+[Permalink: Postfix Setters](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#postfix-setters)
+
+| Operator | Types |
+| --- | --- |
+| `++` | `Int -> Int` |
+| `--` | `Int -> Int` |
 
 ## Selecting Rows
 
-[Query structures](#queries) are `SELECT` statements waiting to happen. They
-execute via [iteration](#iterating-and-accessing-values) and [other means
-](#plucking-values) of sequence access.
+[Permalink: Selecting Rows](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#selecting-rows)
+
+[Query structures](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#queries) are `SELECT` statements waiting to happen. They
+execute via [iteration](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#iterating-and-accessing-values) and [other means](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#plucking-values) of sequence access.
 
 ### Iterating and Accessing Values
 
-Prepared [queries](#queries) execute lazily upon iteration. Each row is
-returned as a `Row` object, which can be subscripted with a [column
-expression](#expressions) matching one of the columns returned.
+[Permalink: Iterating and Accessing Values](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#iterating-and-accessing-values)
 
-```swift
+Prepared [queries](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#queries) execute lazily upon iteration. Each row is
+returned as a `Row` object, which can be subscripted with a [column\\
+expression](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#expressions) matching one of the columns returned.
+
+```
 for user in try db.prepare(users) {
     print("id: \(user[id]), email: \(user[email]), name: \(user[name])")
     // id: 1, email: alice@mac.com, name: Optional("Alice")
@@ -822,7 +923,7 @@ values remain wrapped.
 ⚠ Column subscripts on `Row` will force try and abort execution in error cases.
 If you want to handle this yourself, use `Row.get(_ column: Expression<V>)`:
 
-```swift
+```
 for user in try db.prepare(users) {
     do {
         print("name: \(try user.get(name))")
@@ -835,7 +936,7 @@ for user in try db.prepare(users) {
 Note that the iterator can throw _undeclared_ database errors at any point during
 iteration:
 
-```swift
+```
 let query = try db.prepare(users)
 for user in query {
     // 💥 can throw an error here
@@ -844,10 +945,12 @@ for user in query {
 
 #### Failable iteration
 
+[Permalink: Failable iteration](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#failable-iteration)
+
 It is therefore recommended using the `RowIterator` API instead,
 which has explicit error handling:
 
-```swift
+```
 // option 1: convert results into an Array of rows
 let rowIterator = try db.prepareRowIterator(users)
 for user in try Array(rowIterator) {
@@ -870,10 +973,12 @@ do {
 
 ### Plucking Rows
 
+[Permalink: Plucking Rows](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#plucking-rows)
+
 We can pluck the first row by passing a query to the `pluck` function on a
 database connection.
 
-```swift
+```
 if let user = try db.pluck(users) { /* ... */ } // Row
 // SELECT * FROM "users" LIMIT 1
 ```
@@ -881,19 +986,21 @@ if let user = try db.pluck(users) { /* ... */ } // Row
 To collect all rows into an array, we can simply wrap the sequence (though
 this is not always the most memory-efficient idea).
 
-```swift
+```
 let all = Array(try db.prepare(users))
 // SELECT * FROM "users"
 ```
 
 ### Building Complex Queries
 
-[Queries](#queries) have a number of chainable functions that can be used
-(with [expressions](#expressions)) to add and modify [a number of
+[Permalink: Building Complex Queries](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#building-complex-queries)
+
+[Queries](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#queries) have a number of chainable functions that can be used
+(with [expressions](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#expressions)) to add and modify [a number of\\
 clauses](https://www.sqlite.org/lang_select.html) to the underlying
 statement.
 
-```swift
+```
 let query = users.select(email)           // SELECT "email" FROM "users"
                  .filter(name != nil)     // WHERE "name" IS NOT NULL
                  .order(email.desc, name) // ORDER BY "email" DESC, "name"
@@ -902,11 +1009,13 @@ let query = users.select(email)           // SELECT "email" FROM "users"
 
 #### Selecting Columns
 
-By default, [queries](#queries) select every column of the result set (using
-`SELECT *`). We can use the `select` function with a list of
-[expressions](#expressions) to return specific columns instead.
+[Permalink: Selecting Columns](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#selecting-columns)
 
-```swift
+By default, [queries](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#queries) select every column of the result set (using
+`SELECT *`). We can use the `select` function with a list of
+[expressions](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#expressions) to return specific columns instead.
+
+```
 for user in try db.prepare(users.select(id, email)) {
     print("id: \(user[id]), email: \(user[email])")
     // id: 1, email: alice@mac.com
@@ -917,7 +1026,7 @@ for user in try db.prepare(users.select(id, email)) {
 We can access the results of more complex expressions by holding onto a
 reference of the expression itself.
 
-```swift
+```
 let sentence = name + " is " + cast(age) as Expression<String?> + " years old!"
 for user in users.select(sentence) {
     print(user[sentence])
@@ -928,54 +1037,60 @@ for user in users.select(sentence) {
 
 #### Joining Other Tables
 
-We can join tables using a [query’s](#queries) `join` function.
+[Permalink: Joining Other Tables](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#joining-other-tables)
 
-```swift
+We can join tables using a [query’s](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#queries) `join` function.
+
+```
 users.join(posts, on: user_id == users[id])
 // SELECT * FROM "users" INNER JOIN "posts" ON ("user_id" = "users"."id")
 ```
 
-The `join` function takes a [query](#queries) object (for the table being
-joined on), a join condition (`on`), and is prefixed with an optional join
-type (default: `.inner`). Join conditions can be built using [filter
-operators and functions](#filter-operators-and-functions), generally require
-[namespacing](#column-namespacing), and sometimes require
-[aliasing](#table-aliasing).
+The `join` function takes a [query](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#queries) object (for the table being
+joined on), a join condition ( `on`), and is prefixed with an optional join
+type (default: `.inner`). Join conditions can be built using [filter\\
+operators and functions](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#filter-operators-and-functions), generally require
+[namespacing](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#column-namespacing), and sometimes require
+[aliasing](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#table-aliasing).
 
 ##### Column Namespacing
+
+[Permalink: Column Namespacing](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#column-namespacing)
 
 When joining tables, column names can become ambiguous. _E.g._, both tables
 may have an `id` column.
 
-```swift
+```
 let query = users.join(posts, on: user_id == id)
 // assertion failure: ambiguous column 'id'
 ```
 
 We can disambiguate by namespacing `id`.
 
-```swift
+```
 let query = users.join(posts, on: user_id == users[id])
 // SELECT * FROM "users" INNER JOIN "posts" ON ("user_id" = "users"."id")
 ```
 
-Namespacing is achieved by subscripting a [query](#queries) with a [column
-expression](#expressions) (_e.g._, `users[id]` above becomes `users.id`).
+Namespacing is achieved by subscripting a [query](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#queries) with a [column\\
+expression](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#expressions) ( _e.g._, `users[id]` above becomes `users.id`).
 
 > _Note:_ We can namespace all of a table’s columns using `*`.
 >
-> ```swift
+> ```
 > let query = users.select(users[*])
 > // SELECT "users".* FROM "users"
 > ```
 
 ##### Table Aliasing
 
+[Permalink: Table Aliasing](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#table-aliasing)
+
 Occasionally, we need to join a table to itself, in which case we must alias
 the table with another name. We can achieve this using the
-[query’s](#queries) `alias` function.
+[query’s](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#queries) `alias` function.
 
-```swift
+```
 let managers = users.alias("managers")
 
 let query = users.join(managers, on: managers[id] == users[managerId])
@@ -984,10 +1099,10 @@ let query = users.join(managers, on: managers[id] == users[managerId])
 ```
 
 If query results can have ambiguous column names, row values should be
-accessed with namespaced [column expressions](#expressions). In the above
+accessed with namespaced [column expressions](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#expressions). In the above
 case, `SELECT *` immediately namespaces all columns of the result set.
 
-```swift
+```
 let user = try db.pluck(query)
 user[id]           // fatal error: ambiguous column 'id'
                    // (please disambiguate: ["users"."id", "managers"."id"])
@@ -998,10 +1113,12 @@ user[managers[id]] // returns "managers"."id"
 
 #### Filtering Rows
 
-SQLite.swift filters rows using a [query’s](#queries) `filter` function with
-a boolean [expression](#expressions) (`Expression<Bool>`).
+[Permalink: Filtering Rows](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#filtering-rows)
 
-```swift
+SQLite.swift filters rows using a [query’s](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#queries) `filter` function with
+a boolean [expression](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#expressions) ( `Expression<Bool>`).
+
+```
 users.filter(id == 1)
 // SELECT * FROM "users" WHERE ("id" = 1)
 
@@ -1018,17 +1135,19 @@ users.filter(verified || balance >= 10_000)
 // SELECT * FROM "users" WHERE ("verified" OR ("balance" >= 10000.0))
 ```
 
-We can build our own boolean expressions by using one of the many [filter
-operators and functions](#filter-operators-and-functions).
+We can build our own boolean expressions by using one of the many [filter\\
+operators and functions](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#filter-operators-and-functions).
 
 Instead of `filter` we can also use the `where` function which is an alias:
 
-```swift
+```
 users.where(id == 1)
 // SELECT * FROM "users" WHERE ("id" = 1)
 ```
 
 ##### Filter Operators and Functions
+
+[Permalink: Filter Operators and Functions](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#filter-operators-and-functions)
 
 SQLite.swift defines a number of operators for building filtering predicates.
 Operators and functions work together in a type-safe manner, so attempting to
@@ -1036,70 +1155,76 @@ equate or compare different types will prevent compilation.
 
 ###### Infix Filter Operators
 
-| Swift | Types                            | SQLite         |
-| ----- | -------------------------------- | -------------- |
-| `==`  | `Equatable -> Bool`              | `=`/`IS`*      |
-| `!=`  | `Equatable -> Bool`              | `!=`/`IS NOT`* |
-| `>`   | `Comparable -> Bool`             | `>`            |
-| `>=`  | `Comparable -> Bool`             | `>=`           |
-| `<`   | `Comparable -> Bool`             | `<`            |
-| `<=`  | `Comparable -> Bool`             | `<=`           |
-| `~=`  | `(Interval, Comparable) -> Bool` | `BETWEEN`      |
-| `&&`  | `Bool -> Bool`                   | `AND`          |
-| `\|\|`| `Bool -> Bool`                   | `OR`           |
-| `===` | `Equatable -> Bool`              | `IS`           |
-| `!==` | `Equatable -> Bool`              | `IS NOT`       |
+[Permalink: Infix Filter Operators](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#infix-filter-operators)
+
+| Swift | Types | SQLite |
+| --- | --- | --- |
+| `==` | `Equatable -> Bool` | `=`/ `IS`\* |
+| `!=` | `Equatable -> Bool` | `!=`/ `IS NOT`\* |
+| `>` | `Comparable -> Bool` | `>` |
+| `>=` | `Comparable -> Bool` | `>=` |
+| `<` | `Comparable -> Bool` | `<` |
+| `<=` | `Comparable -> Bool` | `<=` |
+| `~=` | `(Interval, Comparable) -> Bool` | `BETWEEN` |
+| `&&` | `Bool -> Bool` | `AND` |
+| `||` | `Bool -> Bool` | `OR` |
+| `===` | `Equatable -> Bool` | `IS` |
+| `!==` | `Equatable -> Bool` | `IS NOT` |
 
 > - When comparing against `nil`, SQLite.swift will use `IS` and `IS NOT`
-> accordingly.
+>   accordingly.
 
 ###### Prefix Filter Operators
 
-| Swift | Types              | SQLite |
-| ----- | ------------------ | ------ |
-| `!`   | `Bool -> Bool`     | `NOT`  |
+[Permalink: Prefix Filter Operators](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#prefix-filter-operators)
+
+| Swift | Types | SQLite |
+| --- | --- | --- |
+| `!` | `Bool -> Bool` | `NOT` |
 
 ###### Filtering Functions
 
-| Swift      | Types                   | SQLite  |
-| ---------- | ----------------------- | ------- |
-| `like`     | `String -> Bool`        | `LIKE`  |
-| `glob`     | `String -> Bool`        | `GLOB`  |
-| `match`    | `String -> Bool`        | `MATCH` |
-| `contains` | `(Array<T>, T) -> Bool` | `IN`    |
+[Permalink: Filtering Functions](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#filtering-functions)
 
-<!-- TODO
-#### Grouping Results
--->
+| Swift | Types | SQLite |
+| --- | --- | --- |
+| `like` | `String -> Bool` | `LIKE` |
+| `glob` | `String -> Bool` | `GLOB` |
+| `match` | `String -> Bool` | `MATCH` |
+| `contains` | `(Array<T>, T) -> Bool` | `IN` |
 
 #### Sorting Rows
 
-We can pre-sort returned rows using the [query’s](#queries) `order` function.
+[Permalink: Sorting Rows](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#sorting-rows)
+
+We can pre-sort returned rows using the [query’s](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#queries) `order` function.
 
 _E.g._, to return users sorted by `email`, then `name`, in ascending order:
 
-```swift
+```
 users.order(email, name)
 // SELECT * FROM "users" ORDER BY "email", "name"
 ```
 
-The `order` function takes a list of [column expressions](#expressions).
+The `order` function takes a list of [column expressions](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#expressions).
 
 `Expression` objects have two computed properties to assist sorting: `asc`
 and `desc`. These properties append the expression with `ASC` and `DESC` to
 mark ascending and descending order respectively.
 
-```swift
+```
 users.order(email.desc, name.asc)
 // SELECT * FROM "users" ORDER BY "email" DESC, "name" ASC
 ```
 
 #### Limiting and Paging Results
 
-We can limit and skip returned rows using a [query’s](#queries) `limit`
+[Permalink: Limiting and Paging Results](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#limiting-and-paging-results)
+
+We can limit and skip returned rows using a [query’s](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#queries) `limit`
 function (and its optional `offset` parameter).
 
-```swift
+```
 users.limit(5)
 // SELECT * FROM "users" LIMIT 5
 
@@ -1109,10 +1234,11 @@ users.limit(5, offset: 5)
 
 #### Recursive and Hierarchical Queries
 
-We can perform a recursive or hierarchical query using a [query's](#queries)
-[`WITH`](https://sqlite.org/lang_with.html) function.
+[Permalink: Recursive and Hierarchical Queries](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#recursive-and-hierarchical-queries)
 
-```swift
+We can perform a recursive or hierarchical query using a [query's](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#queries) [`WITH`](https://sqlite.org/lang_with.html) function.
+
+```
 // Get the management chain for the manager with id == 8
 
 let chain = Table("chain")
@@ -1136,7 +1262,7 @@ chain.with(chain, recursive: true, as: query)
 
 Column names and a materialization hint can optionally be provided.
 
-```swift
+```
 // Add a "level" column to the query representing manager's position in the chain
 let level = Expression<Int64>("level")
 
@@ -1167,100 +1293,104 @@ chain.with(chain,
 
 #### Aggregation
 
-[Queries](#queries) come with a number of functions that quickly return
-aggregate scalar values from the table. These mirror the [core aggregate
-functions](#aggregate-sqlite-functions) and are executed immediately against
+[Permalink: Aggregation](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#aggregation)
+
+[Queries](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#queries) come with a number of functions that quickly return
+aggregate scalar values from the table. These mirror the [core aggregate\\
+functions](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#aggregate-sqlite-functions) and are executed immediately against
 the query.
 
-```swift
+```
 let count = try db.scalar(users.count)
 // SELECT count(*) FROM "users"
 ```
 
 Filtered queries will appropriately filter aggregate values.
 
-```swift
+```
 let count = try db.scalar(users.filter(name != nil).count)
 // SELECT count(*) FROM "users" WHERE "name" IS NOT NULL
 ```
 
 - `count` as a computed property on a query (see examples above) returns
-    the total number of rows matching the query.
+the total number of rows matching the query.
 
-    `count` as a computed property on a column expression returns the total
-    number of rows where that column is not `NULL`.
+`count` as a computed property on a column expression returns the total
+number of rows where that column is not `NULL`.
 
-    ```swift
-    let count = try db.scalar(users.select(name.count)) // -> Int
-    // SELECT count("name") FROM "users"
-    ```
+```
+let count = try db.scalar(users.select(name.count)) // -> Int
+// SELECT count("name") FROM "users"
+```
 
 - `max` takes a comparable column expression and returns the largest value
-    if any exists.
+if any exists.
 
-    ```swift
-    let max = try db.scalar(users.select(id.max)) // -> Int64?
-    // SELECT max("id") FROM "users"
-    ```
+```
+let max = try db.scalar(users.select(id.max)) // -> Int64?
+// SELECT max("id") FROM "users"
+```
 
 - `min` takes a comparable column expression and returns the smallest value
-    if any exists.
+if any exists.
 
-    ```swift
-    let min = try db.scalar(users.select(id.min)) // -> Int64?
-    // SELECT min("id") FROM "users"
-    ```
+```
+let min = try db.scalar(users.select(id.min)) // -> Int64?
+// SELECT min("id") FROM "users"
+```
 
 - `average` takes a numeric column expression and returns the average row
-    value (as a `Double`) if any exists.
+value (as a `Double`) if any exists.
 
-    ```swift
-    let average = try db.scalar(users.select(balance.average)) // -> Double?
-    // SELECT avg("balance") FROM "users"
-    ```
+```
+let average = try db.scalar(users.select(balance.average)) // -> Double?
+// SELECT avg("balance") FROM "users"
+```
 
 - `sum` takes a numeric column expression and returns the sum total of all
-    rows if any exist.
+rows if any exist.
 
-    ```swift
-    let sum = try db.scalar(users.select(balance.sum)) // -> Double?
-    // SELECT sum("balance") FROM "users"
-    ```
+```
+let sum = try db.scalar(users.select(balance.sum)) // -> Double?
+// SELECT sum("balance") FROM "users"
+```
 
 - `total`, like `sum`, takes a numeric column expression and returns the
-    sum total of all rows, but in this case always returns a `Double`, and
-    returns `0.0` for an empty query.
+sum total of all rows, but in this case always returns a `Double`, and
+returns `0.0` for an empty query.
 
-    ```swift
-    let total = try db.scalar(users.select(balance.total)) // -> Double
-    // SELECT total("balance") FROM "users"
-    ```
+```
+let total = try db.scalar(users.select(balance.total)) // -> Double
+// SELECT total("balance") FROM "users"
+```
 
 > _Note:_ Expressions can be prefixed with a `DISTINCT` clause by calling the
 > `distinct` computed property.
 >
-> ```swift
+> ```
 > let count = try db.scalar(users.select(name.distinct.count) // -> Int
 > // SELECT count(DISTINCT "name") FROM "users"
 > ```
 
 ## Upserting Rows
 
-We can upsert rows into a table by calling a [query’s](#queries) `upsert`
-function with a list of [setters](#setters)—typically [typed column
-expressions](#expressions) and values (which can also be expressions)—each
+[Permalink: Upserting Rows](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#upserting-rows)
+
+We can upsert rows into a table by calling a [query’s](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#queries) `upsert`
+function with a list of [setters](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#setters)—typically [typed column\\
+expressions](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#expressions) and values (which can also be expressions)—each
 joined by the `<-` operator. Upserting is like inserting, except if there is a
 conflict on the specified column value, SQLite will perform an update on the row instead.
 
-```swift
+```
 try db.run(users.upsert(email <- "alice@mac.com", name <- "Alice", onConflictOf: email))
 // INSERT INTO "users" ("email", "name") VALUES ('alice@mac.com', 'Alice') ON CONFLICT (\"email\") DO UPDATE SET \"name\" = \"excluded\".\"name\"
 ```
 
 The `upsert` function, when run successfully, returns an `Int64` representing
-the inserted row’s [`ROWID`][ROWID].
+the inserted row’s [`ROWID`](https://sqlite.org/lang_createtable.html#rowid).
 
-```swift
+```
 do {
     let rowid = try db.run(users.upsert(email <- "alice@mac.com", name <- "Alice", onConflictOf: email))
     print("inserted id: \(rowid)")
@@ -1269,28 +1399,29 @@ do {
 }
 ```
 
-The [`insert`](#inserting-rows), [`update`](#updating-rows), and [`delete`](#deleting-rows) functions
+The [`insert`](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#inserting-rows), [`update`](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#updating-rows), and [`delete`](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#deleting-rows) functions
 follow similar patterns.
 
 ## Updating Rows
 
-We can update a table’s rows by calling a [query’s](#queries) `update`
-function with a list of [setters](#setters)—typically [typed column
-expressions](#expressions) and values (which can also be expressions)—each
+[Permalink: Updating Rows](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#updating-rows)
+
+We can update a table’s rows by calling a [query’s](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#queries) `update`
+function with a list of [setters](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#setters)—typically [typed column\\
+expressions](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#expressions) and values (which can also be expressions)—each
 joined by the `<-` operator.
 
 When an unscoped query calls `update`, it will update _every_ row in the
 table.
 
-```swift
+```
 try db.run(users.update(email <- "alice@me.com"))
 // UPDATE "users" SET "email" = 'alice@me.com'
 ```
 
-Be sure to scope `UPDATE` statements beforehand using [the `filter` function
-](#filtering-rows).
+Be sure to scope `UPDATE` statements beforehand using [the `filter` function](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#filtering-rows).
 
-```swift
+```
 let alice = users.filter(id == 1)
 try db.run(alice.update(email <- "alice@me.com"))
 // UPDATE "users" SET "email" = 'alice@me.com' WHERE ("id" = 1)
@@ -1299,7 +1430,7 @@ try db.run(alice.update(email <- "alice@me.com"))
 The `update` function returns an `Int` representing the number of updated
 rows.
 
-```swift
+```
 do {
     if try db.run(alice.update(email <- "alice@me.com")) > 0 {
         print("updated alice")
@@ -1313,21 +1444,23 @@ do {
 
 ## Deleting Rows
 
-We can delete rows from a table by calling a [query’s](#queries) `delete`
+[Permalink: Deleting Rows](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#deleting-rows)
+
+We can delete rows from a table by calling a [query’s](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#queries) `delete`
 function.
 
 When an unscoped query calls `delete`, it will delete _every_ row in the
 table.
 
-```swift
+```
 try db.run(users.delete())
 // DELETE FROM "users"
 ```
 
 Be sure to scope `DELETE` statements beforehand using
-[the `filter` function](#filtering-rows).
+[the `filter` function](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#filtering-rows).
 
-```swift
+```
 let alice = users.filter(id == 1)
 try db.run(alice.delete())
 // DELETE FROM "users" WHERE ("id" = 1)
@@ -1336,7 +1469,7 @@ try db.run(alice.delete())
 The `delete` function returns an `Int` representing the number of deleted
 rows.
 
-```swift
+```
 do {
     if try db.run(alice.delete()) > 0 {
         print("deleted alice")
@@ -1350,11 +1483,13 @@ do {
 
 ## Transactions and Savepoints
 
+[Permalink: Transactions and Savepoints](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#transactions-and-savepoints)
+
 Using the `transaction` and `savepoint` functions, we can run a series of
 statements in a transaction. If a single statement fails or the block throws
 an error, the changes will be rolled back.
 
-```swift
+```
 try db.transaction {
     let rowid = try db.run(users.insert(email <- "betty@icloud.com"))
     try db.run(users.insert(email <- "cathy@icloud.com", managerId <- rowid))
@@ -1369,15 +1504,17 @@ try db.transaction {
 
 ## Querying the Schema
 
+[Permalink: Querying the Schema](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#querying-the-schema)
+
 We can obtain generic information about objects in the current schema with a `SchemaReader`:
 
-```swift
+```
 let schema = db.schema
 ```
 
 To query the data:
 
-```swift
+```
 let indexes = try schema.objectDefinitions(type: .index)
 let tables = try schema.objectDefinitions(type: .table)
 let triggers = try schema.objectDefinitions(type: .trigger)
@@ -1385,9 +1522,11 @@ let triggers = try schema.objectDefinitions(type: .trigger)
 
 ### Indexes and Columns
 
+[Permalink: Indexes and Columns](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#indexes-and-columns)
+
 Specialized methods are available to get more detailed information:
 
-```swift
+```
 let indexes = try schema.indexDefinitions("users")
 let columns = try schema.columnDefinitions("users")
 
@@ -1401,26 +1540,32 @@ for column in columns {
 
 ## Altering the Schema
 
+[Permalink: Altering the Schema](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#altering-the-schema)
+
 SQLite.swift comes with several functions (in addition to `Table.create`) for
 altering a database schema in a type-safe manner.
 
 ### Renaming Tables
 
+[Permalink: Renaming Tables](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#renaming-tables)
+
 We can build an `ALTER TABLE … RENAME TO` statement by calling the `rename`
 function on a `Table` or `VirtualTable`.
 
-```swift
+```
 try db.run(users.rename(Table("users_old")))
 // ALTER TABLE "users" RENAME TO "users_old"
 ```
 
 ### Dropping Tables
 
+[Permalink: Dropping Tables](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#dropping-tables)
+
 We can build
 [`DROP TABLE` statements](https://www.sqlite.org/lang_droptable.html)
 by calling the `dropTable` function on a `SchemaType`.
 
-```swift
+```
 try db.run(users.drop())
 // DROP TABLE "users"
 ```
@@ -1428,75 +1573,81 @@ try db.run(users.drop())
 The `drop` function has one additional parameter, `ifExists`, which (when
 `true`) adds an `IF EXISTS` clause to the statement.
 
-```swift
+```
 try db.run(users.drop(ifExists: true))
 // DROP TABLE IF EXISTS "users"
 ```
 
 ### Adding Columns
 
+[Permalink: Adding Columns](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#adding-columns)
+
 We can add columns to a table by calling `addColumn` function on a `Table`.
 SQLite.swift enforces
 [the same limited subset](https://www.sqlite.org/lang_altertable.html) of
 `ALTER TABLE` that SQLite supports.
 
-```swift
+```
 try db.run(users.addColumn(suffix))
 // ALTER TABLE "users" ADD COLUMN "suffix" TEXT
 ```
 
 #### Added Column Constraints
 
-The `addColumn` function shares several of the same [`column` function
-parameters](#column-constraints) used when [creating
-tables](#creating-a-table).
+[Permalink: Added Column Constraints](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#added-column-constraints)
+
+The `addColumn` function shares several of the same [`column` function\\
+parameters](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#column-constraints) used when [creating\\
+tables](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#creating-a-table).
 
 - `check` attaches a `CHECK` constraint to a column definition in the form
-    of a boolean expression (`Expression<Bool>`). (See also the `check`
-    function under [Table Constraints](#table-constraints).)
+of a boolean expression ( `Expression<Bool>`). (See also the `check`
+function under [Table Constraints](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#table-constraints).)
 
-    ```swift
-    try db.run(users.addColumn(suffix, check: ["JR", "SR"].contains(suffix)))
-    // ALTER TABLE "users" ADD COLUMN "suffix" TEXT CHECK ("suffix" IN ('JR', 'SR'))
-    ```
+```
+try db.run(users.addColumn(suffix, check: ["JR", "SR"].contains(suffix)))
+// ALTER TABLE "users" ADD COLUMN "suffix" TEXT CHECK ("suffix" IN ('JR', 'SR'))
+```
 
 - `defaultValue` adds a `DEFAULT` clause to a column definition and _only_
-    accepts a value matching the column’s type. This value is used if none is
-    explicitly provided during [an `INSERT`](#inserting-rows).
+accepts a value matching the column’s type. This value is used if none is
+explicitly provided during [an `INSERT`](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#inserting-rows).
 
-    ```swift
-    try db.run(users.addColumn(suffix, defaultValue: "SR"))
-    // ALTER TABLE "users" ADD COLUMN "suffix" TEXT DEFAULT 'SR'
-    ```
+```
+try db.run(users.addColumn(suffix, defaultValue: "SR"))
+// ALTER TABLE "users" ADD COLUMN "suffix" TEXT DEFAULT 'SR'
+```
 
-    > _Note:_ Unlike the [`CREATE TABLE` constraint](#table-constraints),
-    > default values may not be expression structures (including
-    > `CURRENT_TIME`, `CURRENT_DATE`, or `CURRENT_TIMESTAMP`).
+> _Note:_ Unlike the [`CREATE TABLE` constraint](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#table-constraints),
+> default values may not be expression structures (including
+> `CURRENT_TIME`, `CURRENT_DATE`, or `CURRENT_TIMESTAMP`).
 
 - `collate` adds a `COLLATE` clause to `Expression<String>` (and
-    `Expression<String?>`) column definitions with [a collating
-    sequence](https://www.sqlite.org/datatype3.html#collation) defined in the
-    `Collation` enumeration.
+`Expression<String?>`) column definitions with [a collating\\
+sequence](https://www.sqlite.org/datatype3.html#collation) defined in the
+`Collation` enumeration.
 
-    ```swift
-    try db.run(users.addColumn(email, collate: .nocase))
-    // ALTER TABLE "users" ADD COLUMN "email" TEXT NOT NULL COLLATE "NOCASE"
+```
+try db.run(users.addColumn(email, collate: .nocase))
+// ALTER TABLE "users" ADD COLUMN "email" TEXT NOT NULL COLLATE "NOCASE"
 
-    try db.run(users.addColumn(name, collate: .rtrim))
-    // ALTER TABLE "users" ADD COLUMN "name" TEXT COLLATE "RTRIM"
-    ```
+try db.run(users.addColumn(name, collate: .rtrim))
+// ALTER TABLE "users" ADD COLUMN "name" TEXT COLLATE "RTRIM"
+```
 
 - `references` adds a `REFERENCES` clause to `Int64` (and `Int64?`) column
-    definitions and accepts a table or namespaced column expression. (See the
-    `foreignKey` function under [Table Constraints](#table-constraints) for
-    non-integer foreign key support.)
+definitions and accepts a table or namespaced column expression. (See the
+`foreignKey` function under [Table Constraints](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#table-constraints) for
+non-integer foreign key support.)
 
-    ```swift
-    try db.run(posts.addColumn(userId, references: users, id)
-    // ALTER TABLE "posts" ADD COLUMN "user_id" INTEGER REFERENCES "users" ("id")
-    ```
+```
+try db.run(posts.addColumn(userId, references: users, id)
+// ALTER TABLE "posts" ADD COLUMN "user_id" INTEGER REFERENCES "users" ("id")
+```
 
 ### SchemaChanger
+
+[Permalink: SchemaChanger](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#schemachanger)
 
 Version 0.14.0 introduces `SchemaChanger`, an alternative API to perform more complex
 migrations such as renaming columns. These operations work with all versions of
@@ -1504,7 +1655,9 @@ SQLite but use SQL statements such as `ALTER TABLE RENAME COLUMN` when available
 
 #### Adding Columns
 
-```swift
+[Permalink: Adding Columns](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#adding-columns-1)
+
+```
 let newColumn = ColumnDefinition(
     name: "new_text_column",
     type: .TEXT,
@@ -1521,7 +1674,9 @@ try schemaChanger.alter(table: "users") { table in
 
 #### Renaming Columns
 
-```swift
+[Permalink: Renaming Columns](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#renaming-columns)
+
+```
 let schemaChanger = SchemaChanger(connection: db)
 try schemaChanger.alter(table: "users") { table in
     table.rename(column: "old_name", to: "new_name")
@@ -1530,7 +1685,9 @@ try schemaChanger.alter(table: "users") { table in
 
 #### Dropping Columns
 
-```swift
+[Permalink: Dropping Columns](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#dropping-columns)
+
+```
 let schemaChanger = SchemaChanger(connection: db)
 try schemaChanger.alter(table: "users") { table in
     table.drop(column: "email")
@@ -1539,7 +1696,9 @@ try schemaChanger.alter(table: "users") { table in
 
 #### Renaming/Dropping Tables
 
-```swift
+[Permalink: Renaming/Dropping Tables](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#renamingdropping-tables)
+
+```
 let schemaChanger = SchemaChanger(connection: db)
 
 try schemaChanger.rename(table: "users", to: "users_new")
@@ -1548,13 +1707,17 @@ try schemaChanger.drop(table: "emails", ifExists: false)
 
 ### Indexes
 
+[Permalink: Indexes](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#indexes)
+
 #### Creating Indexes
+
+[Permalink: Creating Indexes](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#creating-indexes)
 
 We can build
 [`CREATE INDEX` statements](https://www.sqlite.org/lang_createindex.html)
 by calling the `createIndex` function on a `SchemaType`.
 
-```swift
+```
 try db.run(users.createIndex(email))
 // CREATE INDEX "index_users_on_email" ON "users" ("email")
 ```
@@ -1566,27 +1729,29 @@ The `createIndex` function has a couple default parameters we can override.
 
 - `unique` adds a `UNIQUE` constraint to the index. Default: `false`.
 
-    ```swift
-    try db.run(users.createIndex(email, unique: true))
-    // CREATE UNIQUE INDEX "index_users_on_email" ON "users" ("email")
-    ```
+```
+try db.run(users.createIndex(email, unique: true))
+// CREATE UNIQUE INDEX "index_users_on_email" ON "users" ("email")
+```
 
 - `ifNotExists` adds an `IF NOT EXISTS` clause to the `CREATE TABLE`
-    statement (which will bail out gracefully if the table already exists).
-    Default: `false`.
+statement (which will bail out gracefully if the table already exists).
+Default: `false`.
 
-    ```swift
-    try db.run(users.createIndex(email, ifNotExists: true))
-    // CREATE INDEX IF NOT EXISTS "index_users_on_email" ON "users" ("email")
-    ```
+```
+try db.run(users.createIndex(email, ifNotExists: true))
+// CREATE INDEX IF NOT EXISTS "index_users_on_email" ON "users" ("email")
+```
 
 #### Dropping Indexes
+
+[Permalink: Dropping Indexes](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#dropping-indexes)
 
 We can build
 [`DROP INDEX` statements](https://www.sqlite.org/lang_dropindex.html) by
 calling the `dropIndex` function on a `SchemaType`.
 
-```swift
+```
 try db.run(users.dropIndex(email))
 // DROP INDEX "index_users_on_email"
 ```
@@ -1594,12 +1759,14 @@ try db.run(users.dropIndex(email))
 The `dropIndex` function has one additional parameter, `ifExists`, which
 (when `true`) adds an `IF EXISTS` clause to the statement.
 
-```swift
+```
 try db.run(users.dropIndex(email, ifExists: true))
 // DROP INDEX IF EXISTS "index_users_on_email"
 ```
 
 ### Migrations and Schema Versioning
+
+[Permalink: Migrations and Schema Versioning](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#migrations-and-schema-versioning)
 
 You can use the convenience property on `Connection` to query and set the
 [`PRAGMA user_version`](https://sqlite.org/pragma.html#pragma_user_version).
@@ -1607,7 +1774,7 @@ You can use the convenience property on `Connection` to query and set the
 This is a great way to manage your schema’s version over migrations.
 You can conditionally run your migrations along the lines of:
 
-```swift
+```
 if db.userVersion == 0 {
     // handle first migration
     db.userVersion = 1
@@ -1619,14 +1786,16 @@ if db.userVersion == 1 {
 ```
 
 For more complex migration requirements check out the schema management
-system [SQLiteMigrationManager.swift][].
+system [SQLiteMigrationManager.swift](https://github.com/garriguv/SQLiteMigrationManager.swift).
 
 ## Custom Types
+
+[Permalink: Custom Types](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#custom-types)
 
 SQLite.swift supports serializing and deserializing any custom type as long
 as it conforms to the `Value` protocol.
 
-```swift
+```
 protocol Value {
     typealias Datatype: Binding
     class var declaredDatatype: String { get }
@@ -1636,8 +1805,7 @@ protocol Value {
 ```
 
 The `Datatype` must be one of the basic Swift types that values are bridged
-through before serialization and deserialization (see [Building Type-Safe SQL
-](#building-type-safe-sql) for a list of types).
+through before serialization and deserialization (see [Building Type-Safe SQL](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#building-type-safe-sql) for a list of types).
 
 > ⚠ _Note:_ `Binding` is a protocol that SQLite.swift uses internally to
 > directly map SQLite types to Swift types. **Do _not_** conform custom types
@@ -1645,12 +1813,14 @@ through before serialization and deserialization (see [Building Type-Safe SQL
 
 ### Date-Time Values
 
+[Permalink: Date-Time Values](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#date-time-values)
+
 In SQLite, `DATETIME` columns can be treated as strings or numbers, so we can
 transparently bridge `Date` objects through Swift’s `String` types.
 
 We can use these types directly in SQLite statements.
 
-```swift
+```
 let published_at = Expression<Date>("published_at")
 
 let published = posts.filter(published_at <= Date())
@@ -1663,9 +1833,11 @@ let published = posts.filter(startDate...Date() ~= published_at)
 
 ### Binary Data
 
+[Permalink: Binary Data](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#binary-data)
+
 We can bridge any type that can be initialized from and encoded to `Data`.
 
-```swift
+```
 extension UIImage: Value {
     public class var declaredDatatype: String {
         return Blob.declaredDatatype
@@ -1680,48 +1852,46 @@ extension UIImage: Value {
 }
 ```
 
-> _Note:_ See the [Archives and Serializations Programming Guide][] for more
+> _Note:_ See the [Archives and Serializations Programming Guide](https://developer.apple.com/library/ios/documentation/Cocoa/Conceptual/Archiving/Archiving.html) for more
 > information on encoding and decoding custom types.
-
-[Archives and Serializations Programming Guide]: https://developer.apple.com/library/ios/documentation/Cocoa/Conceptual/Archiving/Archiving.html
 
 ## Codable Types
 
-[Codable types][Encoding and Decoding Custom Types] were introduced as a part
-of Swift 4 to  allow serializing and deserializing types. SQLite.swift supports
-the insertion, updating, and retrieval of basic Codable types.
+[Permalink: Codable Types](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#codable-types)
 
-[Encoding and Decoding Custom Types]: https://developer.apple.com/documentation/foundation/archives_and_serialization/encoding_and_decoding_custom_types
+[Codable types](https://developer.apple.com/documentation/foundation/archives_and_serialization/encoding_and_decoding_custom_types) were introduced as a part
+of Swift 4 to allow serializing and deserializing types. SQLite.swift supports
+the insertion, updating, and retrieval of basic Codable types.
 
 ### Inserting Codable Types
 
-Queries have a method to allow inserting an [Encodable][] type.
+[Permalink: Inserting Codable Types](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#inserting-codable-types)
 
-```swift
+Queries have a method to allow inserting an [Encodable](https://developer.apple.com/documentation/swift/encodable) type.
+
+```
 struct User: Encodable {
     let name: String
 }
 try db.run(users.insert(User(name: "test")))
-
 ```
 
 There are two other parameters also available to this method:
 
 - `userInfo` is a dictionary that is passed to the encoder and made available
-  to encodable types to allow customizing their behavior.
+to encodable types to allow customizing their behavior.
 
 - `otherSetters` allows you to specify additional setters on top of those
-  that are generated from the encodable types themselves.
-
-[Encodable]: https://developer.apple.com/documentation/swift/encodable
+that are generated from the encodable types themselves.
 
 ### Updating Codable Types
 
+[Permalink: Updating Codable Types](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#updating-codable-types)
+
 Queries have a method to allow updating an Encodable type.
 
-```swift
+```
 try db.run(users.filter(id == userId).update(user))
-
 ```
 
 > ⚠ Unless filtered, using the update method on an instance of a Codable
@@ -1730,16 +1900,18 @@ try db.run(users.filter(id == userId).update(user))
 There are two other parameters also available to this method:
 
 - `userInfo` is a dictionary that is passed to the encoder and made available
-  to encodable types to allow customizing their behavior.
+to encodable types to allow customizing their behavior.
 
 - `otherSetters` allows you to specify additional setters on top of those
-  that are generated from the encodable types themselves.
+that are generated from the encodable types themselves.
 
 ### Retrieving Codable Types
 
-Rows have a method to decode a [Decodable][] type.
+[Permalink: Retrieving Codable Types](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#retrieving-codable-types)
 
-```swift
+Rows have a method to decode a [Decodable](https://developer.apple.com/documentation/swift/decodable) type.
+
+```
 let loadedUsers: [User] = try db.prepare(users).map { row in
     return try row.decode()
 }
@@ -1753,7 +1925,7 @@ type that can be multiple different formats such as PNGImage, JPGImage, or
 HEIFImage. You will need to determine the correct subclass before you know
 which type to decode.
 
-```swift
+```
 enum ImageCodingKeys: String, CodingKey {
     case kind
 }
@@ -1779,11 +1951,11 @@ let loadedImages: [Image] = try db.prepare(images).map { row in
 Both of the above methods also have the following optional parameter:
 
 - `userInfo` is a dictionary that is passed to the decoder and made available
-  to decodable types to allow customizing their behavior.
-
-[Decodable]: https://developer.apple.com/documentation/swift/decodable
+to decodable types to allow customizing their behavior.
 
 ### Restrictions
+
+[Permalink: Restrictions](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#restrictions)
 
 There are a few restrictions on using Codable types:
 
@@ -1791,56 +1963,66 @@ There are a few restrictions on using Codable types:
   - Int, Bool, Float, Double, String, Date
   - Nested Codable types that will be encoded as JSON to a single column
 - These methods will not handle object relationships for you. You must write
-  your own Codable and Decodable implementations if you wish to support this.
+your own Codable and Decodable implementations if you wish to support this.
 - The Codable types may not try to access nested containers or nested unkeyed
-  containers
+containers
 - The Codable types may not access single value containers or unkeyed
-  containers
+containers
 - The Codable types may not access super decoders or encoders
 
 ## Other Operators
 
-In addition to [filter operators](#filtering-infix-operators), SQLite.swift
+[Permalink: Other Operators](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#other-operators)
+
+In addition to [filter operators](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#filtering-infix-operators), SQLite.swift
 defines a number of operators that can modify expression values with
 arithmetic, bitwise operations, and concatenation.
 
 ###### Other Infix Operators
 
-| Swift | Types                            | SQLite   |
-| ----- | -------------------------------- | -------- |
-| `+`   | `Number -> Number`               | `+`      |
-| `-`   | `Number -> Number`               | `-`      |
-| `*`   | `Number -> Number`               | `*`      |
-| `/`   | `Number -> Number`               | `/`      |
-| `%`   | `Int -> Int`                     | `%`      |
-| `<<`  | `Int -> Int`                     | `<<`     |
-| `>>`  | `Int -> Int`                     | `>>`     |
-| `&`   | `Int -> Int`                     | `&`      |
-| `\|`  | `Int -> Int`                     | `\|`     |
-| `+`   | `String -> String`               | `\|\|`   |
+[Permalink: Other Infix Operators](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#other-infix-operators)
+
+| Swift | Types | SQLite |
+| --- | --- | --- |
+| `+` | `Number -> Number` | `+` |
+| `-` | `Number -> Number` | `-` |
+| `*` | `Number -> Number` | `*` |
+| `/` | `Number -> Number` | `/` |
+| `%` | `Int -> Int` | `%` |
+| `<<` | `Int -> Int` | `<<` |
+| `>>` | `Int -> Int` | `>>` |
+| `&` | `Int -> Int` | `&` |
+| `|` | `Int -> Int` | `|` |
+| `+` | `String -> String` | `||` |
 
 > _Note:_ SQLite.swift also defines a bitwise XOR operator, `^`, which
 > expands the expression `lhs ^ rhs` to `~(lhs & rhs) & (lhs | rhs)`.
 
 ###### Other Prefix Operators
 
-| Swift | Types              | SQLite |
-| ----- | ------------------ | ------ |
-| `~`   | `Int -> Int`       | `~`    |
-| `-`   | `Number -> Number` | `-`    |
+[Permalink: Other Prefix Operators](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#other-prefix-operators)
+
+| Swift | Types | SQLite |
+| --- | --- | --- |
+| `~` | `Int -> Int` | `~` |
+| `-` | `Number -> Number` | `-` |
 
 ## Core SQLite Functions
+
+[Permalink: Core SQLite Functions](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#core-sqlite-functions)
 
 Many of SQLite’s [core functions](https://www.sqlite.org/lang_corefunc.html)
 have been surfaced in and type-audited for SQLite.swift.
 
 > _Note:_ SQLite.swift aliases the `??` operator to the `ifnull` function.
 >
-> ```swift
+> ```
 > name ?? email // ifnull("name", "email")
 > ```
 
 ## Aggregate SQLite Functions
+
+[Permalink: Aggregate SQLite Functions](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#aggregate-sqlite-functions)
 
 Most of SQLite’s
 [aggregate functions](https://www.sqlite.org/lang_aggfunc.html) have been
@@ -1848,15 +2030,19 @@ surfaced in and type-audited for SQLite.swift.
 
 ## Window SQLite Functions
 
+[Permalink: Window SQLite Functions](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#window-sqlite-functions)
+
 Most of SQLite's [window functions](https://www.sqlite.org/windowfunctions.html) have been
 surfaced in and type-audited for SQLite.swift. Currently only `OVER (ORDER BY ...)` windowing is possible.
 
 ## Date and Time functions
 
+[Permalink: Date and Time functions](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#date-and-time-functions)
+
 SQLite's [date and time](https://www.sqlite.org/lang_datefunc.html)
 functions are available:
 
-```swift
+```
 DateFunctions.date("now")
 // date('now')
 Date().date
@@ -1867,14 +2053,16 @@ Expression<Date>("date").date
 
 ## Custom SQL Functions
 
+[Permalink: Custom SQL Functions](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#custom-sql-functions)
+
 We can create custom SQL functions by calling `createFunction` on a database
 connection.
 
 For example, to give queries access to
-[`MobileCoreServices.UTTypeConformsTo`][UTTypeConformsTo], we can
+[`MobileCoreServices.UTTypeConformsTo`](https://developer.apple.com/documentation/coreservices/1444079-uttypeconformsto), we can
 write the following:
 
-```swift
+```
 import MobileCoreServices
 
 let typeConformsTo: (Expression<String>, Expression<String>) -> Expression<Bool> = (
@@ -1890,21 +2078,21 @@ let typeConformsTo: (Expression<String>, Expression<String>) -> Expression<Bool>
 
 Note `typeConformsTo`’s signature:
 
-```swift
+```
 (Expression<String>, Expression<String>) -> Expression<Bool>
 ```
 
 Because of this, `createFunction` expects a block with the following
 signature:
 
-```swift
+```
 (String, String) -> Bool
 ```
 
 Once assigned, the closure can be called wherever boolean expressions are
 accepted.
 
-```swift
+```
 let attachments = Table("attachments")
 let UTI = Expression<String>("UTI")
 
@@ -1913,12 +2101,12 @@ let images = attachments.filter(typeConformsTo(UTI, kUTTypeImage))
 ```
 
 > _Note:_ The return type of a function must be
-> [a core SQL type](#building-type-safe-sql) or [conform to `Value`](#custom-types).
+> [a core SQL type](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#building-type-safe-sql) or [conform to `Value`](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#custom-types).
 
 We can create loosely-typed functions by handling an array of raw arguments,
 instead.
 
-```swift
+```
 db.createFunction("typeConformsTo", deterministic: true) { args in
     guard let UTI = args[0] as? String, conformsToUTI = args[1] as? String else { return nil }
     return UTTypeConformsTo(UTI, conformsToUTI)
@@ -1926,28 +2114,28 @@ db.createFunction("typeConformsTo", deterministic: true) { args in
 ```
 
 Creating a loosely-typed function cannot return a closure and instead must be
-wrapped manually or executed [using raw SQL](#executing-arbitrary-sql).
+wrapped manually or executed [using raw SQL](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#executing-arbitrary-sql).
 
-```swift
+```
 let stmt = try db.prepare("SELECT * FROM attachments WHERE typeConformsTo(UTI, ?)")
 for row in stmt.bind(kUTTypeImage) { /* ... */ }
 ```
 
 > _Note:_ Prepared queries can be reused, and long lived prepared queries should be `reset()` after each use. Otherwise, the transaction (either [implicit or explicit](https://www.sqlite.org/lang_transaction.html#implicit_versus_explicit_transactions)) will be held open until the query is reset or finalized. This can affect performance. Statements are reset automatically during `deinit`.
 >
-> ```swift
+> ```
 > someObj.statement = try db.prepare("SELECT * FROM attachments WHERE typeConformsTo(UTI, ?)")
 > for row in someObj.statement.bind(kUTTypeImage) { /* ... */ }
 > someObj.statement.reset()
 > ```
 
-[UTTypeConformsTo]: https://developer.apple.com/documentation/coreservices/1444079-uttypeconformsto
-
 ## Custom Aggregations
+
+[Permalink: Custom Aggregations](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#custom-aggregations)
 
 We can create custom aggregation functions by calling `createAggregation`:
 
-```swift
+```
 let reduce: (String, [Binding?]) -> String = { (last, bindings) in
     last + " " + (bindings.first as? String ?? "")
 }
@@ -1958,10 +2146,12 @@ let result = db.prepare("SELECT customConcat(email) FROM users").scalar() as! St
 
 ## Custom Collations
 
+[Permalink: Custom Collations](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#custom-collations)
+
 We can create custom collating sequences by calling `createCollation` on a
 database connection.
 
-```swift
+```
 try db.createCollation("NODIACRITIC") { lhs, rhs in
     return lhs.compare(rhs, options: .diacriticInsensitiveSearch)
 }
@@ -1970,18 +2160,20 @@ try db.createCollation("NODIACRITIC") { lhs, rhs in
 We can reference a custom collation using the `Custom` member of the
 `Collation` enumeration.
 
-```swift
+```
 restaurants.order(collate(.custom("NODIACRITIC"), name))
 // SELECT * FROM "restaurants" ORDER BY "name" COLLATE "NODIACRITIC"
 ```
 
 ## Full-text Search
 
-We can create a virtual table using the [FTS4
+[Permalink: Full-text Search](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#full-text-search)
+
+We can create a virtual table using the [FTS4\\
 module](http://www.sqlite.org/fts3.html) by calling `create` on a
 `VirtualTable`.
 
-```swift
+```
 let emails = VirtualTable("emails")
 let subject = Expression<String>("subject")
 let body = Expression<String>("body")
@@ -1992,14 +2184,14 @@ try db.run(emails.create(.FTS4(subject, body)))
 
 We can specify a [tokenizer](http://www.sqlite.org/fts3.html#tokenizer) using the `tokenize` parameter.
 
-```swift
+```
 try db.run(emails.create(.FTS4([subject, body], tokenize: .Porter)))
 // CREATE VIRTUAL TABLE "emails" USING fts4("subject", "body", tokenize=porter)
 ```
 
 We can set the full range of parameters by creating a `FTS4Config` object.
 
-```swift
+```
 let emails = VirtualTable("emails")
 let subject = Expression<String>("subject")
 let body = Expression<String>("body")
@@ -2017,7 +2209,7 @@ Once we insert a few rows, we can search using the `match` function, which
 takes a table or column as its first argument and a query string as its
 second.
 
-```swift
+```
 try db.run(emails.insert(
     subject <- "Just Checking In",
     body <- "Hey, I was just wondering...did you get my last email?"
@@ -2032,11 +2224,13 @@ let replies = emails.filter(subject.match("Re:*"))
 
 ### FTS5
 
+[Permalink: FTS5](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#fts5)
+
 When linking against a version of SQLite with
 [FTS5](http://www.sqlite.org/fts5.html) enabled we can create the virtual
 table in a similar fashion.
 
-```swift
+```
 let emails = VirtualTable("emails")
 let subject = Expression<String>("subject")
 let body = Expression<String>("body")
@@ -2055,92 +2249,96 @@ let replies = emails.filter(emails.match("subject:\"Re:\"*"))
 
 ## Executing Arbitrary SQL
 
+[Permalink: Executing Arbitrary SQL](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#executing-arbitrary-sql)
+
 Though we recommend you stick with SQLite.swift’s
-[type-safe system](#building-type-safe-sql) whenever possible, it is possible
+[type-safe system](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#building-type-safe-sql) whenever possible, it is possible
 to simply and safely prepare and execute raw SQL statements via a `Database` connection
 using the following functions.
 
 - `execute` runs an arbitrary number of SQL statements as a convenience.
 
-    ```swift
-    try db.execute("""
-        BEGIN TRANSACTION;
-        CREATE TABLE users (
-            id INTEGER PRIMARY KEY NOT NULL,
-            email TEXT UNIQUE NOT NULL,
-            name TEXT
-        );
-        CREATE TABLE posts (
-            id INTEGER PRIMARY KEY NOT NULL,
-            title TEXT NOT NULL,
-            body TEXT NOT NULL,
-            published_at DATETIME
-        );
-        PRAGMA user_version = 1;
-        COMMIT TRANSACTION;
-        """
-    )
-    ```
+```
+try db.execute("""
+      BEGIN TRANSACTION;
+      CREATE TABLE users (
+          id INTEGER PRIMARY KEY NOT NULL,
+          email TEXT UNIQUE NOT NULL,
+          name TEXT
+      );
+      CREATE TABLE posts (
+          id INTEGER PRIMARY KEY NOT NULL,
+          title TEXT NOT NULL,
+          body TEXT NOT NULL,
+          published_at DATETIME
+      );
+      PRAGMA user_version = 1;
+      COMMIT TRANSACTION;
+      """
+)
+```
 
 - `prepare` prepares a single `Statement` object from a SQL string,
-      optionally binds values to it (using the statement’s `bind` function),
-      and returns the statement for deferred execution.
+optionally binds values to it (using the statement’s `bind` function),
+and returns the statement for deferred execution.
 
-    ```swift
-    let stmt = try db.prepare("INSERT INTO users (email) VALUES (?)")
-    ```
+```
+let stmt = try db.prepare("INSERT INTO users (email) VALUES (?)")
+```
 
-    Once prepared, statements may be executed using `run`, binding any
-    unbound parameters.
+Once prepared, statements may be executed using `run`, binding any
+unbound parameters.
 
-    ```swift
-    try stmt.run("alice@mac.com")
-    db.changes // -> {Some 1}
-    ```
+```
+try stmt.run("alice@mac.com")
+db.changes // -> {Some 1}
+```
 
-    Statements with results may be iterated over, using the columnNames if
-    useful.
+Statements with results may be iterated over, using the columnNames if
+useful.
 
-    ```swift
-    let stmt = try db.prepare("SELECT id, email FROM users")
-    for row in stmt {
-        for (index, name) in stmt.columnNames.enumerated() {
-            print ("\(name):\(row[index]!)")
-            // id: Optional(1), email: Optional("alice@mac.com")
-        }
-    }
-    ```
+```
+let stmt = try db.prepare("SELECT id, email FROM users")
+for row in stmt {
+      for (index, name) in stmt.columnNames.enumerated() {
+          print ("\(name):\(row[index]!)")
+          // id: Optional(1), email: Optional("alice@mac.com")
+      }
+}
+```
 
 - `run` prepares a single `Statement` object from a SQL string, optionally
-    binds values to it (using the statement’s `bind` function), executes,
-    and returns the statement.
+binds values to it (using the statement’s `bind` function), executes,
+and returns the statement.
 
-    ```swift
-    try db.run("INSERT INTO users (email) VALUES (?)", "alice@mac.com")
-    ```
+```
+try db.run("INSERT INTO users (email) VALUES (?)", "alice@mac.com")
+```
 
 - `scalar` prepares a single `Statement` object from a SQL string,
-      optionally binds values to it (using the statement’s `bind` function),
-      executes, and returns the first value of the first row.
+optionally binds values to it (using the statement’s `bind` function),
+executes, and returns the first value of the first row.
 
-    ```swift
-    let count = try db.scalar("SELECT count(*) FROM users") as! Int64
-    ```
+```
+let count = try db.scalar("SELECT count(*) FROM users") as! Int64
+```
 
-    Statements also have a `scalar` function, which can optionally re-bind
-    values at execution.
+Statements also have a `scalar` function, which can optionally re-bind
+values at execution.
 
-    ```swift
-    let stmt = try db.prepare("SELECT count (*) FROM users")
-    let count = try stmt.scalar() as! Int64
-    ```
+```
+let stmt = try db.prepare("SELECT count (*) FROM users")
+let count = try stmt.scalar() as! Int64
+```
 
 ## Online Database Backup
+
+[Permalink: Online Database Backup](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#online-database-backup)
 
 To copy a database to another using the
 [SQLite Online Backup API](https://sqlite.org/backup.html):
 
-```swift
+```
 // creates an in-memory copy of db.sqlite
 let db = try Connection("db.sqlite")
 let target = try Connection(.inMemory)
@@ -2151,10 +2349,12 @@ try backup.step()
 
 ## Attaching and detaching databases
 
+[Permalink: Attaching and detaching databases](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#attaching-and-detaching-databases)
+
 We can [ATTACH](https://www3.sqlite.org/lang_attach.html) and [DETACH](https://www3.sqlite.org/lang_detach.html)
 databases to an existing connection:
 
-```swift
+```
 let db = try Connection("db.sqlite")
 
 try db.attach(.uri("external.sqlite", parameters: [.mode(.readOnly)]), as: "external")
@@ -2170,16 +2370,18 @@ try db.detach("external")
 
 When compiled for SQLCipher, we can additionally pass a `key` parameter to `attach`:
 
-```swift
+```
 try db.attach(.uri("encrypted.sqlite"), as: "encrypted", key: "secret")
 // ATTACH DATABASE 'encrypted.sqlite' AS 'encrypted' KEY 'secret'
 ```
 
 ## Logging
 
+[Permalink: Logging](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#logging)
+
 We can log SQL using the database’s `trace` function.
 
-```swift
+```
 #if DEBUG
     db.trace { print($0) }
 #endif
@@ -2187,11 +2389,12 @@ We can log SQL using the database’s `trace` function.
 
 ## Vacuum
 
+[Permalink: Vacuum](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md#vacuum)
+
 To run the [vacuum](https://www.sqlite.org/lang_vacuum.html) command:
 
-```swift
+```
 try db.vacuum()
 ```
 
-[ROWID]: https://sqlite.org/lang_createtable.html#rowid
-[SQLiteMigrationManager.swift]: https://github.com/garriguv/SQLiteMigrationManager.swift
+You can’t perform that action at this time.

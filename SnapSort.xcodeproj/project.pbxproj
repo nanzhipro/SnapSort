@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		D562FB692DD891BB00D0FB9B /* OpenAI in Frameworks */ = {isa = PBXBuildFile; productRef = D562FB682DD891BB00D0FB9B /* OpenAI */; };
 		D562FB6C2DD891C800D0FB9B /* LaunchAtLogin in Frameworks */ = {isa = PBXBuildFile; productRef = D562FB6B2DD891C800D0FB9B /* LaunchAtLogin */; };
+		D5E42F622DD9E23E00934EA9 /* SQLite in Frameworks */ = {isa = PBXBuildFile; productRef = D5E42F612DD9E23E00934EA9 /* SQLite */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -57,6 +58,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D5E42F622DD9E23E00934EA9 /* SQLite in Frameworks */,
 				D562FB6C2DD891C800D0FB9B /* LaunchAtLogin in Frameworks */,
 				D562FB692DD891BB00D0FB9B /* OpenAI in Frameworks */,
 			);
@@ -121,6 +123,7 @@
 			packageProductDependencies = (
 				D562FB682DD891BB00D0FB9B /* OpenAI */,
 				D562FB6B2DD891C800D0FB9B /* LaunchAtLogin */,
+				D5E42F612DD9E23E00934EA9 /* SQLite */,
 			);
 			productName = SnapSort;
 			productReference = D517E8802DCADEBB006FE803 /* SnapSort.app */;
@@ -209,6 +212,7 @@
 			packageReferences = (
 				D562FB672DD891BB00D0FB9B /* XCRemoteSwiftPackageReference "OpenAI" */,
 				D562FB6A2DD891C800D0FB9B /* XCRemoteSwiftPackageReference "LaunchAtLogin-Modern" */,
+				D5E42F602DD9E23E00934EA9 /* XCRemoteSwiftPackageReference "SQLite.swift" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = D517E8812DCADEBB006FE803 /* Products */;
@@ -582,6 +586,14 @@
 				kind = branch;
 			};
 		};
+		D5E42F602DD9E23E00934EA9 /* XCRemoteSwiftPackageReference "SQLite.swift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/stephencelis/SQLite.swift.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.15.3;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -594,6 +606,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = D562FB6A2DD891C800D0FB9B /* XCRemoteSwiftPackageReference "LaunchAtLogin-Modern" */;
 			productName = LaunchAtLogin;
+		};
+		D5E42F612DD9E23E00934EA9 /* SQLite */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = D5E42F602DD9E23E00934EA9 /* XCRemoteSwiftPackageReference "SQLite.swift" */;
+			productName = SQLite;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
