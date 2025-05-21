@@ -26,6 +26,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
                 logger.info("Starting services...")
 
                 // 在这里调用服务管理器的startServices()方法
+                try DefaultScreenshotMonitor.shared.startMonitoring()
                 try await ServiceManager.shared.startServices()
 
                 logger.info("Services started successfully")

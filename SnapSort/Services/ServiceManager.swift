@@ -46,7 +46,7 @@ public final class ServiceManager {
     // MARK: - 属性
 
     /// 截图监控服务
-    public private(set) var screenshotMonitor: ScreenshotMonitorProtocol
+    // public private(set) var screenshotMonitor: ScreenshotMonitorProtocol
 
     /// OCR文本识别服务
     public private(set) var ocrService: OCRServiceProtocol
@@ -77,18 +77,18 @@ public final class ServiceManager {
         logger.info("Initializing service components...")
 
         // Initialize screenshot monitor
-        self.screenshotMonitor = DefaultScreenshotMonitor()
-        logger.info("Screenshot monitor successfully initialized")
+        // self.screenshotMonitor = DefaultScreenshotMonitor()
+        // logger.info("Screenshot monitor successfully initialized")
 
         // Initialize OCR service
         self.ocrService = OCRService(configuration: .default)
         logger.info("OCR service successfully initialized")
 
         // Initialize AI classifier
-        guard let apiKey = UserDefaults.standard.string(forKey: "ai_api_key") else {
-            logger.error("Failed to initialize AI classifier: API key not configured")
-            throw ServiceError.configurationMissing(service: "AIClassifier", key: "apiKey")
-        }
+        // guard let apiKey = UserDefaults.standard.string(forKey: "ai_api_key") else {
+        //     logger.error("Failed to initialize AI classifier: API key not configured")
+        //     throw ServiceError.configurationMissing(service: "AIClassifier", key: "apiKey")
+        // }
 
         let apiHost =
             UserDefaults.standard.string(forKey: "ai_api_host") ?? "https://api.deepseek.com"
@@ -97,7 +97,7 @@ public final class ServiceManager {
             throw ServiceError.invalidConfiguration(service: "AIClassifier", key: "apiURL")
         }
 
-        let openAIClient = SimpleOpenAIClient(apiToken: apiKey, baseURL: apiURL)
+        let openAIClient = SimpleOpenAIClient(apiToken: "apiKey", baseURL: apiURL)
         self.aiClassifier = AIClassifier(apiClient: openAIClient)
         logger.info("AI classifier successfully initialized with endpoint: \(apiHost)")
 
@@ -133,14 +133,14 @@ public final class ServiceManager {
             "Notification authorization status: \(notificationAuthorized ? "granted" : "denied")")
 
         // Start screenshot monitoring
-        do {
-            try screenshotMonitor.startMonitoring()
-            logger.info("Screenshot monitoring started successfully")
-        } catch {
-            logger.error("Failed to start screenshot monitoring: \(error.localizedDescription)")
-            throw ServiceError.startupFailed(
-                service: "ScreenshotMonitor", reason: error.localizedDescription)
-        }
+        // do {
+        //     try screenshotMonitor.startMonitoring()
+        //     logger.info("Screenshot monitoring started successfully")
+        // } catch {
+        //     logger.error("Failed to start screenshot monitoring: \(error.localizedDescription)")
+        //     throw ServiceError.startupFailed(
+        //         service: "ScreenshotMonitor", reason: error.localizedDescription)
+        // }
 
         // Set up screenshot handler
         setupScreenshotHandler()
@@ -154,7 +154,7 @@ public final class ServiceManager {
         logger.info("Stopping service components...")
 
         // Stop screenshot monitoring
-        screenshotMonitor.stopMonitoring()
+        // screenshotMonitor.stopMonitoring()
         logger.info("Screenshot monitoring stopped")
 
         // Clean up OCR service resources
@@ -168,12 +168,12 @@ public final class ServiceManager {
 
     /// 配置截图处理回调
     private func setupScreenshotHandler() {
-        screenshotMonitor.setScreenshotHandler { [weak self] screenshotURL in
-            guard let self = self else { return }
-            Task {
-                await self.processScreenshot(url: screenshotURL)
-            }
-        }
+        // screenshotMonitor.setScreenshotHandler { [weak self] screenshotURL in
+        //     guard let self = self else { return }
+        //     Task {
+        //         await self.processScreenshot(url: screenshotURL)
+        //     }
+        // }
     }
 
     /// 处理新截图，执行完整的应用工作流

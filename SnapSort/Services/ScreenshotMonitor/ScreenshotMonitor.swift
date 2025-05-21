@@ -69,6 +69,8 @@ public final class DefaultScreenshotMonitor: ScreenshotMonitorProtocol {
     /// 监控状态
     public private(set) var isMonitoring: Bool = false
 
+    public static let shared = DefaultScreenshotMonitor()
+
     /// 初始化
     public init() {}
 
