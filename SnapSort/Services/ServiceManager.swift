@@ -46,7 +46,7 @@ public final class ServiceManager {
     // MARK: - 属性
 
     /// 截图监控服务
-    // public private(set) var screenshotMonitor: ScreenshotMonitorProtocol
+    public private(set) var screenshotMonitor: ScreenshotMonitorProtocol
 
     /// OCR文本识别服务
     public private(set) var ocrService: OCRServiceProtocol
@@ -76,9 +76,9 @@ public final class ServiceManager {
     public init() throws {
         logger.info("Initializing service components...")
 
-        // Initialize screenshot monitor
-        // self.screenshotMonitor = DefaultScreenshotMonitor()
-        // logger.info("Screenshot monitor successfully initialized")
+        // Initialize screenshot monitor (ensure shared instance is used to avoid duplicates)
+        self.screenshotMonitor = ScreenshotMonitor.shared
+        logger.info("Screenshot monitor successfully initialized")
 
         // Initialize OCR service
         self.ocrService = OCRService(configuration: .default)
@@ -97,7 +97,7 @@ public final class ServiceManager {
             throw ServiceError.invalidConfiguration(service: "AIClassifier", key: "apiURL")
         }
 
-        let openAIClient = SimpleOpenAIClient(apiToken: "apiKey", baseURL: apiURL)
+        let openAIClient = SimpleOpenAIClient(apiToken: "sk-apikey", baseURL: apiURL)
         self.aiClassifier = AIClassifier(apiClient: openAIClient)
         logger.info("AI classifier successfully initialized with endpoint: \(apiHost)")
 
@@ -132,15 +132,17 @@ public final class ServiceManager {
         logger.info(
             "Notification authorization status: \(notificationAuthorized ? "granted" : "denied")")
 
-        // Start screenshot monitoring
-        // do {
-        //     try screenshotMonitor.startMonitoring()
-        //     logger.info("Screenshot monitoring started successfully")
-        // } catch {
-        //     logger.error("Failed to start screenshot monitoring: \(error.localizedDescription)")
-        //     throw ServiceError.startupFailed(
-        //         service: "ScreenshotMonitor", reason: error.localizedDescription)
-        // }
+        // Start screenshot monitoring on main actor (NSMetadataQuery requires main run loop)
+        do {
+            try await MainActor.run {
+                try screenshotMonitor.startMonitoring()
+            }
+            logger.info("Screenshot monitoring started successfully")
+        } catch {
+            logger.error("Failed to start screenshot monitoring: \(error.localizedDescription)")
+            throw ServiceError.startupFailed(
+                service: "ScreenshotMonitor", reason: error.localizedDescription)
+        }
 
         // Set up screenshot handler
         setupScreenshotHandler()
@@ -153,8 +155,10 @@ public final class ServiceManager {
     public func stopServices() async {
         logger.info("Stopping service components...")
 
-        // Stop screenshot monitoring
-        // screenshotMonitor.stopMonitoring()
+        // Stop screenshot monitoring (ensure main actor)
+        await MainActor.run {
+            screenshotMonitor.stopMonitoring()
+        }
         logger.info("Screenshot monitoring stopped")
 
         // Clean up OCR service resources
@@ -168,12 +172,12 @@ public final class ServiceManager {
 
     /// 配置截图处理回调
     private func setupScreenshotHandler() {
-        // screenshotMonitor.setScreenshotHandler { [weak self] screenshotURL in
-        //     guard let self = self else { return }
-        //     Task {
-        //         await self.processScreenshot(url: screenshotURL)
-        //     }
-        // }
+        screenshotMonitor.setScreenshotHandler { [weak self] screenshotURL in
+            guard let self = self else { return }
+            Task {
+                await self.processScreenshot(url: screenshotURL)
+            }
+        }
     }
 
     /// 处理新截图，执行完整的应用工作流

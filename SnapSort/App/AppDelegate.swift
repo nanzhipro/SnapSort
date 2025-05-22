@@ -25,8 +25,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             do {
                 logger.info("Starting services...")
 
-                // 在这里调用服务管理器的startServices()方法
-                try DefaultScreenshotMonitor.shared.startMonitoring()
+                // 调用服务管理器的 startServices() 方法（将内部自动启动 ScreenshotMonitor）
                 try await ServiceManager.shared.startServices()
 
                 logger.info("Services started successfully")
@@ -53,8 +52,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         Task {
             logger.info("Stopping services...")
 
-            // 在这里调用服务管理器的stopServices()方法
-            // await ServiceManager.shared.stopServices()
+            // 调用服务管理器的 stopServices() 方法
+            await ServiceManager.shared.stopServices()
 
             logger.info("Services stopped successfully")
         }

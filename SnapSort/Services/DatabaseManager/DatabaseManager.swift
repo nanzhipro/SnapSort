@@ -189,12 +189,12 @@ public final class DatabaseManager {
             // Create screenshots table
             try db.run(
                 screenshots.create(ifNotExists: true) { table in
-                    table.column(Expression<String>(value: "imageFilePath"), primaryKey: true)
-                    table.column(Expression<String>(value: "fullText"))
-                    table.column(Expression<String>(value: "classification"))
-                    table.column(
-                        Expression<String>(value: "createdAt"), defaultValue: dateToString(Date()))
-                })
+                    table.column(imageFilePath, primaryKey: true)
+                    table.column(fullText)
+                    table.column(classification)
+                    table.column(createdAt, defaultValue: dateToString(Date()))
+                }
+            )
 
             // Create full-text index to optimize search performance
             try db.run(screenshots.createIndex(fullText, ifNotExists: true))
@@ -236,29 +236,30 @@ public final class DatabaseManager {
     /// )
     /// ```
     public func saveScreenshot(path: String, text: String, classification: String) throws {
-        logger.debug("Saving screenshot metadata: \(path)")
+        logger.info("Saving screenshot metadata: \(path), \(text), \(classification)")
 
         do {
             let currentTimeString = dateToString(Date())
 
-            // Escape single quotes to prevent SQL injection
-            let escapedPath = path.replacingOccurrences(of: "'", with: "''")
-            let escapedText = text.replacingOccurrences(of: "'", with: "''")
-            let escapedClassification = classification.replacingOccurrences(of: "'", with: "''")
-            let escapedTime = currentTimeString.replacingOccurrences(of: "'", with: "''")
-
-            // Check if record already exists
             if try isScreenshotExists(path: path) {
-                // If exists, update
-                let updateQuery =
-                    "UPDATE Screenshots SET fullText = '\(escapedText)', classification = '\(escapedClassification)' WHERE imageFilePath = '\(escapedPath)'"
-                try db.execute(updateQuery)
+                // Record exists – perform update
+                let target = screenshots.filter(imageFilePath == path)
+                try db.run(
+                    target.update(
+                        fullText <- text,
+                        self.classification <- classification,
+                        createdAt <- currentTimeString
+                    ))
                 logger.info("Updated metadata for screenshot: \(path)")
             } else {
-                // If doesn't exist, insert new record
-                let insertQuery =
-                    "INSERT INTO Screenshots (imageFilePath, fullText, classification, createdAt) VALUES ('\(escapedPath)', '\(escapedText)', '\(escapedClassification)', '\(escapedTime)')"
-                try db.execute(insertQuery)
+                // New record – perform insert
+                let insert = screenshots.insert(
+                    imageFilePath <- path,
+                    fullText <- text,
+                    self.classification <- classification,
+                    createdAt <- currentTimeString
+                )
+                try db.run(insert)
                 logger.info("Saved new screenshot metadata: \(path)")
             }
         } catch {
@@ -292,14 +293,8 @@ public final class DatabaseManager {
                 return
             }
 
-            // Escape single quotes to prevent SQL injection
-            let escapedPath = path.replacingOccurrences(of: "'", with: "''")
-            let escapedClassification = newClassification.replacingOccurrences(of: "'", with: "''")
-
-            // Update record
-            let query =
-                "UPDATE Screenshots SET classification = '\(escapedClassification)' WHERE imageFilePath = '\(escapedPath)'"
-            try db.execute(query)
+            let target = screenshots.filter(imageFilePath == path)
+            try db.run(target.update(self.classification <- newClassification))
             logger.info("Successfully updated classification for screenshot: \(path)")
         } catch let error as DatabaseError {
             throw error
@@ -329,12 +324,8 @@ public final class DatabaseManager {
                 try saveScreenshot(path: path, text: "", classification: "")
             }
 
-            // Escape single quotes to prevent SQL injection
-            let escapedPath = path.replacingOccurrences(of: "'", with: "''")
-
-            // Execute deletion
-            let query = "DELETE FROM Screenshots WHERE imageFilePath = '\(escapedPath)'"
-            try db.execute(query)
+            let target = screenshots.filter(imageFilePath == path)
+            try db.run(target.delete())
             logger.info("Successfully deleted screenshot metadata: \(path)")
         } catch let error as DatabaseError {
             throw error
@@ -513,14 +504,14 @@ public final class DatabaseManager {
         logger.debug("Checking if screenshot exists: \(path)")
 
         do {
-            // Escape single quotes to prevent SQL injection
-            let escapedPath = path.replacingOccurrences(of: "'", with: "''")
-
-            // Use COUNT query directly
-            let query = "SELECT COUNT(*) FROM Screenshots WHERE imageFilePath = '\(escapedPath)'"
-            let count = try db.scalar(query) as? Int64 ?? 0
-
-            return count > 0
+            let target = screenshots.filter(imageFilePath == path)
+            let count = try db.scalar(target.count)
+            if let intCount = count as? Int64 {
+                return intCount > 0
+            } else if let intCount = count as? Int {
+                return intCount > 0
+            }
+            return false
         } catch {
             logger.error("Failed to check if screenshot exists: \(error.localizedDescription)")
             throw DatabaseError.operationFailed(message: error.localizedDescription)
