@@ -9,6 +9,7 @@
 //  AI分类、文件组织、数据库更新和通知发送，形成一个完整的处理链。
 
 import Foundation
+import SwiftUI
 import UserNotifications
 import os.log
 
@@ -24,7 +25,7 @@ import os.log
 /// ## 工作流程
 ///
 /// 1. 用户截图被截图监控服务(`ScreenshotMonitor`)捕获
-/// 2. 截图交给OCR服务(`OCRService`)进行文本识别
+/// 2. 截图交给OCR处理器(`OCRProcessor`)进行文本识别
 /// 3. 识别结果传递给AI分类器(`AIClassifier`)进行分类
 /// 4. 分类结果用于文件组织器(`FileOrganizer`)将截图移动到相应目录
 /// 5. 新的文件路径、识别文本和分类结果保存到数据库(`DatabaseManager`)
@@ -48,8 +49,8 @@ public final class ServiceManager {
     /// 截图监控服务
     public private(set) var screenshotMonitor: ScreenshotMonitorProtocol
 
-    /// OCR文本识别服务
-    public private(set) var ocrService: OCRServiceProtocol
+    /// OCR文本识别处理器
+    public private(set) var ocrProcessor: OCRProcessor
 
     /// AI分类器服务
     public private(set) var aiClassifier: AIClassifier
@@ -80,9 +81,9 @@ public final class ServiceManager {
         self.screenshotMonitor = ScreenshotMonitor.shared
         logger.info("Screenshot monitor successfully initialized")
 
-        // Initialize OCR service
-        self.ocrService = OCRService(configuration: .default)
-        logger.info("OCR service successfully initialized")
+        // Initialize OCR processor
+        self.ocrProcessor = OCRProcessor()
+        logger.info("OCR processor successfully initialized")
 
         // Initialize AI classifier
         // guard let apiKey = UserDefaults.standard.string(forKey: "ai_api_key") else {
@@ -162,9 +163,11 @@ public final class ServiceManager {
         }
         logger.info("Screenshot monitoring stopped")
 
-        // Clean up OCR service resources
-        await ocrService.cleanup()
-        logger.info("OCR service resources cleaned up")
+        // Clean up OCR processor resources
+        await MainActor.run {
+            ocrProcessor.cleanup()
+        }
+        logger.info("OCR processor resources cleaned up")
 
         logger.info("All services stopped successfully")
     }
@@ -189,12 +192,14 @@ public final class ServiceManager {
         do {
             // 1. OCR text recognition
             logger.info("Starting OCR text recognition for: \(url.lastPathComponent)")
-            let ocrResults = try await ocrService.recognizeText(
-                from: url.path,
-                preferredLanguages: []
+            let ocrResults = try await ocrProcessor.process(
+                imagePath: url.path,
+                languages: []
             )
 
-            guard let firstResult = ocrResults.first else {
+            // 获取格式化文本结果
+            let recognizedText = ocrProcessor.getFormattedText(from: ocrResults)
+            if recognizedText.isEmpty {
                 let errorMessage = "No text content detected in screenshot"
                 logger.error("\(errorMessage): \(url.lastPathComponent)")
                 throw ServiceError.processingFailed(
@@ -203,7 +208,6 @@ public final class ServiceManager {
                 )
             }
 
-            let recognizedText = firstResult.text
             logger.info(
                 "OCR completed successfully with \(recognizedText.count) characters of text")
 
