@@ -97,7 +97,8 @@ public final class ServiceManager {
             throw ServiceError.invalidConfiguration(service: "AIClassifier", key: "apiURL")
         }
 
-        let openAIClient = SimpleOpenAIClient(apiToken: "sk-apikey", baseURL: apiURL)
+        let openAIClient = SimpleOpenAIClient(
+            apiToken: "sk-3c0a5904963144d0b8a735b40b04e725", baseURL: apiURL)
         self.aiClassifier = AIClassifier(apiClient: openAIClient)
         logger.info("AI classifier successfully initialized with endpoint: \(apiHost)")
 
