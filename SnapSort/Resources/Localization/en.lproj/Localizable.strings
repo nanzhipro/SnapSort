@@ -1,24 +1,23 @@
-// Common
-"app.name" = "SnapSort";
-"ok" = "OK";
-"cancel" = "Cancel";
-"save" = "Save";
-"delete" = "Delete";
-"edit" = "Edit";
+/* 
+   SnapSort Localization File - English
+   SnapSort 本地化文件 - 英文
+*/
+
+// Menu Items
+"menu.settings" = "Settings";
+"menu.quit" = "Quit";
 
 // Settings
-"settings.title" = "Settings";
 "settings.general" = "General";
-"settings.categories" = "Categories";
-"settings.directories" = "Directories";
-"settings.ai" = "AI Classification";
+"settings.about" = "About";
+"settings.general.title" = "General Settings";
+"settings.general.preferences" = "Application Preferences";
+"settings.general.launchAtStartup" = "Launch at startup";
+"settings.general.showNotifications" = "Show notifications";
 
-// Categories
-"category.new" = "New Category";
-"category.delete.confirm" = "Are you sure you want to delete this category?";
-"category.keywords" = "Keywords";
-
-// Screenshots
-"screenshot.unclassified" = "Unclassified";
-"screenshot.processing" = "Processing...";
-"screenshot.classified" = "Classified to %@";
+// About
+"about.version" = "Version 1.0.0";
+"about.description" = "Smart Screenshot Organizer";
+"about.features" = "Automatically organize and categorize your screenshot files";
+"about.copyright" = "© 2025 SnapSort";
+"about.rights" = "All rights reserved"; 

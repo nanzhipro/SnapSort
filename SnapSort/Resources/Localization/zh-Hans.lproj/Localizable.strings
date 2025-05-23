@@ -1,24 +1,23 @@
-// Common
-"app.name" = "截图分类助手";
-"ok" = "确定";
-"cancel" = "取消";
-"save" = "保存";
-"delete" = "删除";
-"edit" = "编辑";
+/* 
+   SnapSort 本地化文件 - 简体中文
+   SnapSort Localization File - Simplified Chinese
+*/
 
-// Settings
-"settings.title" = "设置";
+// 菜单项 Menu Items
+"menu.settings" = "设置";
+"menu.quit" = "退出";
+
+// 设置页面 Settings
 "settings.general" = "通用";
-"settings.categories" = "分类";
-"settings.directories" = "目录";
-"settings.ai" = "AI分类";
+"settings.about" = "关于";
+"settings.general.title" = "通用设置";
+"settings.general.preferences" = "应用偏好设置";
+"settings.general.launchAtStartup" = "启动时自动运行";
+"settings.general.showNotifications" = "显示通知";
 
-// Categories
-"category.new" = "新建分类";
-"category.delete.confirm" = "您确定要删除这个分类吗？";
-"category.keywords" = "关键词";
-
-// Screenshots
-"screenshot.unclassified" = "未分类";
-"screenshot.processing" = "处理中...";
-"screenshot.classified" = "已分类至 %@";
+// 关于页面 About
+"about.version" = "版本 1.0.0";
+"about.description" = "智能截图整理助手";
+"about.features" = "自动整理和分类您的截图文件";
+"about.copyright" = "© 2025 SnapSort";
+"about.rights" = "保留所有权利"; 

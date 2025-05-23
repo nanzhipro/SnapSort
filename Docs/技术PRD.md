@@ -263,7 +263,6 @@ func moveScreenshot(from sourceURL: URL, to category: String, baseDirectory: Str
   - 通用：自动启动、通知偏好。
   - 类别：添加/编辑/删除类别及其关键词。
   - 目录：设置分类基础目录。
-  - 隐私：定义敏感信息模式。
   - AI Key：选择本地/云端，输入 API 密钥。
 - 使用 `@AppStorage` 绑定 UserDefaults 设置，动态更新 UI。
 

@@ -1,24 +1,23 @@
-// Common
-"app.name" = "スクリーンショット整理";
-"ok" = "OK";
-"cancel" = "キャンセル";
-"save" = "保存";
-"delete" = "削除";
-"edit" = "編集";
+/* 
+   SnapSort 本地化文件 - 日本語
+   SnapSort Localization File - Japanese
+*/
 
-// Settings
-"settings.title" = "設定";
+// メニュー項目 Menu Items
+"menu.settings" = "設定";
+"menu.quit" = "終了";
+
+// 設定画面 Settings
 "settings.general" = "一般";
-"settings.categories" = "カテゴリ";
-"settings.directories" = "ディレクトリ";
-"settings.ai" = "AI分類";
+"settings.about" = "このアプリについて";
+"settings.general.title" = "一般設定";
+"settings.general.preferences" = "アプリケーション設定";
+"settings.general.launchAtStartup" = "起動時に自動実行";
+"settings.general.showNotifications" = "通知を表示";
 
-// Categories
-"category.new" = "新規カテゴリ";
-"category.delete.confirm" = "このカテゴリを削除してもよろしいですか？";
-"category.keywords" = "キーワード";
-
-// Screenshots
-"screenshot.unclassified" = "未分類";
-"screenshot.processing" = "処理中...";
-"screenshot.classified" = "%@ に分類されました";
+// このアプリについて About
+"about.version" = "バージョン 1.0.0";
+"about.description" = "スマートスクリーンショット整理ツール";
+"about.features" = "スクリーンショットファイルを自動で整理・分類します";
+"about.copyright" = "© 2025 SnapSort";
+"about.rights" = "全ての権利を保有"; 
