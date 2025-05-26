@@ -10,165 +10,139 @@ import SwiftUI
 /// 分类管理视图
 ///
 /// 提供截图分类的完整管理功能，包括分类列表展示、新增、编辑和删除操作。
-/// 采用列表布局展示所有分类，支持快速编辑和状态管理。
-/// 集成分类编辑表单，提供流畅的用户交互体验。
+/// 采用标准macOS设置页面风格，使用Form布局展示所有分类。
+/// 提供简洁清晰的分类管理界面。
 struct CategoriesView: View {
 
-    /// 设置视图模型引用
-    @ObservedObject var viewModel: SettingsViewModel
-
-    // MARK: - State
-
-    /// 是否显示编辑表单
-    @State private var showingEditSheet = false
-    /// 当前编辑的分类（nil表示新增模式）
-    @State private var editingCategory: Category?
+    @State private var categories: [CategoryItem] = [
+        CategoryItem(name: "工作", keywords: ["meeting", "presentation", "document"]),
+        CategoryItem(name: "个人", keywords: ["personal", "family", "photo"]),
+        CategoryItem(name: "开发", keywords: ["code", "xcode", "terminal"]),
+    ]
+    @State private var showingAddSheet = false
+    @State private var editingCategory: CategoryItem?
 
     var body: some View {
         Form {
-            categoryListSection
-        }
-        .padding()
-        .sheet(isPresented: $showingEditSheet) {
-            CategoryEditView(
-                viewModel: viewModel,
-                category: editingCategory
-            )
-        }
-    }
-}
+            Section("分类管理") {
+                List {
+                    ForEach(categories) { category in
+                        HStack {
+                            VStack(alignment: .leading, spacing: 4) {
+                                Text(category.name)
+                                    .font(.headline)
 
-// MARK: - View Components
+                                if !category.keywords.isEmpty {
+                                    Text(category.keywords.joined(separator: ", "))
+                                        .font(.caption)
+                                        .foregroundColor(.secondary)
+                                }
+                            }
 
-extension CategoriesView {
+                            Spacer()
 
-    /// 分类列表区域
-    @ViewBuilder
-    fileprivate var categoryListSection: some View {
-        Section {
-            VStack(spacing: 12) {
-                categoryList
-                addButton
+                            Button("编辑") {
+                                editingCategory = category
+                            }
+                            .buttonStyle(.borderless)
+                        }
+                        .padding(.vertical, 4)
+                    }
+                    .onDelete(perform: deleteCategories)
+                }
+                .frame(minHeight: 200)
+
+                Button("添加分类") {
+                    showingAddSheet = true
+                }
+                .buttonStyle(.borderedProminent)
             }
-        } header: {
-            Text(LocalizedStringKey("settings.categories.management"))
         }
-    }
-
-    /// 分类列表
-    @ViewBuilder
-    fileprivate var categoryList: some View {
-        List {
-            ForEach(viewModel.categories) { category in
-                CategoryRowView(category: category) {
-                    editingCategory = category
-                    showingEditSheet = true
+        .formStyle(.grouped)
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .sheet(isPresented: $showingAddSheet) {
+            CategoryEditSheet(category: nil) { newCategory in
+                categories.append(newCategory)
+            }
+        }
+        .sheet(item: $editingCategory) { category in
+            CategoryEditSheet(category: category) { updatedCategory in
+                if let index = categories.firstIndex(where: { $0.id == category.id }) {
+                    categories[index] = updatedCategory
                 }
             }
-            .onDelete(perform: deleteCategories)
         }
-        .frame(minHeight: 200)
-        .background(Color(.controlBackgroundColor))
-        .cornerRadius(8)
     }
 
-    /// 添加按钮
-    @ViewBuilder
-    fileprivate var addButton: some View {
-        Button(LocalizedStringKey("settings.categories.add")) {
-            editingCategory = nil
-            showingEditSheet = true
-        }
-        .buttonStyle(.borderedProminent)
+    private func deleteCategories(at offsets: IndexSet) {
+        categories.remove(atOffsets: offsets)
     }
 }
 
-// MARK: - Actions
+// MARK: - 数据模型
+// CategoryItem 定义在 Models/CategoryModels.swift 中
 
-extension CategoriesView {
+// MARK: - 编辑表单
 
-    /// 删除分类
-    /// - Parameter offsets: 要删除的分类索引集合
-    fileprivate func deleteCategories(at offsets: IndexSet) {
-        viewModel.deleteCategory(at: offsets)
-    }
-}
+struct CategoryEditSheet: View {
+    let category: CategoryItem?
+    let onSave: (CategoryItem) -> Void
 
-/// 分类行视图
-///
-/// 展示单个分类的详细信息，包括名称、关键词和状态。
-/// 提供编辑入口和状态指示器，确保信息展示的清晰性。
-struct CategoryRowView: View {
+    @State private var name: String = ""
+    @State private var keywordsText: String = ""
+    @Environment(\.dismiss) private var dismiss
 
-    /// 分类数据
-    let category: Category
-    /// 编辑回调
-    let onEdit: () -> Void
+    private var isEditing: Bool { category != nil }
 
     var body: some View {
-        HStack(spacing: 12) {
-            categoryInfo
-            Spacer()
-            statusIndicator
-            editButton
-        }
-        .padding(.vertical, 8)
-        .contentShape(Rectangle())
-    }
-}
+        NavigationStack {
+            Form {
+                Section("基本信息") {
+                    TextField("分类名称", text: $name)
+                }
 
-// MARK: - CategoryRowView Components
+                Section("关键词") {
+                    TextField("关键词（用逗号分隔）", text: $keywordsText, axis: .vertical)
+                        .lineLimit(3...6)
+                }
+            }
+            .formStyle(.grouped)
+            .navigationTitle(isEditing ? "编辑分类" : "添加分类")
 
-extension CategoryRowView {
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("取消") {
+                        dismiss()
+                    }
+                }
 
-    /// 分类信息区域
-    @ViewBuilder
-    fileprivate var categoryInfo: some View {
-        VStack(alignment: .leading, spacing: 4) {
-            Text(category.name)
-                .font(.headline)
-                .foregroundColor(.primary)
+                ToolbarItem(placement: .confirmationAction) {
+                    Button("保存") {
+                        let keywords =
+                            keywordsText
+                            .split(separator: ",")
+                            .map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
+                            .filter { !$0.isEmpty }
 
-            if !category.keywords.isEmpty {
-                Text(category.keywords.joined(separator: ", "))
-                    .font(.caption)
-                    .foregroundColor(.secondary)
-                    .lineLimit(2)
-            } else {
-                Text(LocalizedStringKey("category.noKeywords"))
-                    .font(.caption)
-                    .foregroundColor(Color.secondary.opacity(0.7))
-                    .italic()
+                        let newCategory = CategoryItem(name: name, keywords: keywords)
+                        onSave(newCategory)
+                        dismiss()
+                    }
+                    .disabled(name.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
+                }
             }
         }
-    }
-
-    /// 状态指示器
-    @ViewBuilder
-    fileprivate var statusIndicator: some View {
-        if !category.isEnabled {
-            Text(LocalizedStringKey("common.disabled"))
-                .font(.caption)
-                .foregroundColor(.secondary)
-                .padding(.horizontal, 8)
-                .padding(.vertical, 2)
-                .background(Color.secondary.opacity(0.2))
-                .cornerRadius(4)
+        .frame(width: 400, height: 300)
+        .onAppear {
+            if let category = category {
+                name = category.name
+                keywordsText = category.keywords.joined(separator: ", ")
+            }
         }
-    }
-
-    /// 编辑按钮
-    @ViewBuilder
-    fileprivate var editButton: some View {
-        Button(LocalizedStringKey("common.edit")) {
-            onEdit()
-        }
-        .buttonStyle(.borderless)
-        .foregroundColor(.accentColor)
     }
 }
 
 #Preview {
-    CategoriesView(viewModel: SettingsViewModel())
+    CategoriesView()
         .frame(width: 500, height: 400)
 }

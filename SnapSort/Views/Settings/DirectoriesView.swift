@@ -11,147 +11,68 @@ import SwiftUI
 ///
 /// 管理截图文件的存储位置和组织方式设置。提供基础目录选择、
 /// 子文件夹创建选项、文件名保留规则等配置功能。
-/// 采用直观的表单布局，确保用户能够轻松管理文件存储策略。
+/// 采用标准macOS设置页面风格，使用Form布局确保用户能够轻松管理文件存储策略。
 struct DirectoriesView: View {
 
-    /// 设置视图模型引用
-    @ObservedObject var viewModel: SettingsViewModel
+    @AppStorage("baseDirectory") private var baseDirectory: String = ""
+    @AppStorage("createSubfolders") private var createSubfolders: Bool = true
+    @AppStorage("preserveFilenames") private var preserveFilenames: Bool = true
+    @AppStorage("maxFileSize") private var maxFileSize: Int = 50
 
     var body: some View {
         Form {
-            storageLocationSection
-            organizationOptionsSection
-        }
-        .padding()
-    }
-}
+            Section("存储位置") {
+                HStack {
+                    Text("当前目录:")
+                    Spacer()
+                    Text(baseDirectory.isEmpty ? "未选择" : baseDirectory)
+                        .foregroundColor(baseDirectory.isEmpty ? .secondary : .primary)
+                        .lineLimit(1)
+                        .truncationMode(.middle)
+                }
 
-// MARK: - View Components
-
-extension DirectoriesView {
-
-    /// 存储位置设置区域
-    @ViewBuilder
-    fileprivate var storageLocationSection: some View {
-        Section {
-            VStack(alignment: .leading, spacing: 12) {
-                currentDirectoryDisplay
-                directorySelectionButton
-            }
-        } header: {
-            Text(LocalizedStringKey("settings.directories.storage"))
-        }
-    }
-
-    /// 当前目录显示
-    @ViewBuilder
-    fileprivate var currentDirectoryDisplay: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            HStack {
-                Text(LocalizedStringKey("settings.directories.current"))
-                    .font(.headline)
-                Spacer()
+                Button("选择目录...") {
+                    selectDirectory()
+                }
             }
 
-            Text(currentDirectoryText)
-                .font(.body)
-                .foregroundColor(directoryTextColor)
-                .padding()
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .background(Color(.controlBackgroundColor))
-                .cornerRadius(8)
-                .overlay(
-                    RoundedRectangle(cornerRadius: 8)
-                        .stroke(Color.secondary.opacity(0.3), lineWidth: 1)
-                )
-        }
-    }
+            Section("组织选项") {
+                Toggle("创建子文件夹", isOn: $createSubfolders)
+                    .help("为每个分类创建单独的子文件夹")
 
-    /// 目录选择按钮
-    @ViewBuilder
-    fileprivate var directorySelectionButton: some View {
-        Button(LocalizedStringKey("settings.directories.select")) {
-            viewModel.selectBaseDirectory()
-        }
-        .buttonStyle(.borderedProminent)
-    }
+                Toggle("保留原始文件名", isOn: $preserveFilenames)
+                    .help("保持截图的原始文件名，否则使用时间戳命名")
 
-    /// 组织选项设置区域
-    @ViewBuilder
-    fileprivate var organizationOptionsSection: some View {
-        Section {
-            VStack(alignment: .leading, spacing: 12) {
-                subfolderToggle
-                filenameToggle
-                fileSizeLimit
-            }
-        } header: {
-            Text(LocalizedStringKey("settings.directories.options"))
-        }
-    }
-
-    /// 子文件夹创建选项
-    @ViewBuilder
-    fileprivate var subfolderToggle: some View {
-        Toggle(
-            LocalizedStringKey("settings.directories.createSubfolders"),
-            isOn: $viewModel.storageSettings.createSubfolders
-        )
-    }
-
-    /// 文件名保留选项
-    @ViewBuilder
-    fileprivate var filenameToggle: some View {
-        Toggle(
-            LocalizedStringKey("settings.directories.preserveFilenames"),
-            isOn: $viewModel.storageSettings.preserveOriginalFilenames
-        )
-    }
-
-    /// 文件大小限制设置
-    @ViewBuilder
-    fileprivate var fileSizeLimit: some View {
-        HStack {
-            Text(LocalizedStringKey("settings.directories.maxFileSize"))
-
-            Spacer()
-
-            HStack(spacing: 8) {
-                TextField(
-                    "50",
-                    value: $viewModel.storageSettings.maxFileSize,
-                    format: .number
-                )
-                .textFieldStyle(.roundedBorder)
-                .frame(width: 80)
-
-                Text("MB")
-                    .foregroundColor(.secondary)
+                HStack {
+                    Text("最大文件大小:")
+                    Spacer()
+                    TextField("50", value: $maxFileSize, format: .number)
+                        .textFieldStyle(.roundedBorder)
+                        .frame(width: 80)
+                    Text("MB")
+                }
             }
         }
+        .formStyle(.grouped)
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
-}
 
-// MARK: - Computed Properties
+    private func selectDirectory() {
+        let panel = NSOpenPanel()
+        panel.canChooseDirectories = true
+        panel.canChooseFiles = false
+        panel.allowsMultipleSelection = false
+        panel.message = "选择截图分类保存的基础目录"
 
-extension DirectoriesView {
-
-    /// 当前目录显示文本
-    fileprivate var currentDirectoryText: String {
-        if viewModel.storageSettings.baseDirectory.isEmpty {
-            return NSLocalizedString("settings.directories.notSelected", comment: "未选择")
-        } else {
-            return viewModel.storageSettings.baseDirectory
+        if panel.runModal() == .OK {
+            if let selectedURL = panel.url {
+                baseDirectory = selectedURL.path
+            }
         }
-    }
-
-    /// 目录文本颜色
-    fileprivate var directoryTextColor: Color {
-        viewModel.storageSettings.baseDirectory.isEmpty ? .secondary : .primary
     }
 }
 
 #Preview {
-    DirectoriesView(viewModel: SettingsViewModel())
+    DirectoriesView()
         .frame(width: 500, height: 400)
 }

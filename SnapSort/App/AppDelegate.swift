@@ -2,15 +2,17 @@
 //  AppDelegate.swift
 //  SnapSort
 //
-//  Created by CursorAI on 2024-05-16.
+//  Created by CursorAI on 2025/1/4.
 //
 
-import Cocoa
-import SwiftUI
+import AppKit
+import Foundation
 import os.log
 
 /// 应用程序委托
-/// 负责应用程序生命周期事件的处理，包括启动和终止时的服务管理。
+///
+/// 负责处理应用程序生命周期事件和系统级交互。
+/// 管理菜单栏图标、全局快捷键和应用程序状态。
 class AppDelegate: NSObject, NSApplicationDelegate {
     /// 系统日志记录器
     private let logger = Logger(subsystem: "com.snapsort.app", category: "AppDelegate")
@@ -57,5 +59,12 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
             logger.info("Services stopped successfully")
         }
+    }
+
+    func applicationShouldHandleReopen(_ sender: NSApplication, hasVisibleWindows flag: Bool)
+        -> Bool
+    {
+        // 处理应用重新打开事件
+        return true
     }
 }

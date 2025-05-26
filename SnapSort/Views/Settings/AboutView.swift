@@ -9,107 +9,82 @@ import SwiftUI
 
 /// 关于视图
 ///
-/// 展示应用程序的基本信息，包括应用名称、版本号、功能描述和版权信息。
-/// 采用居中布局设计，提供清晰的信息层次结构和专业的视觉呈现。
-/// 遵循Apple设计规范，确保与系统设置界面保持一致的用户体验。
+/// 显示应用程序的版本信息、开发者信息和相关链接。
+/// 采用标准macOS设置页面风格，提供清晰的应用信息展示。
 struct AboutView: View {
 
+    private let appVersion =
+        Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "1.0.0"
+    private let buildNumber = Bundle.main.infoDictionary?["CFBundleVersion"] as? String ?? "1"
+
     var body: some View {
-        ScrollView {
-            VStack(spacing: 24) {
-                appIconSection
-                appInfoSection
-                descriptionSection
-                copyrightSection
+        Form {
+            Section {
+                VStack(spacing: 16) {
+                    Image(systemName: "photo.on.rectangle.angled")
+                        .font(.system(size: 64))
+                        .foregroundColor(.blue)
 
-                Spacer(minLength: 20)
+                    Text("SnapSort")
+                        .font(.largeTitle)
+                        .fontWeight(.bold)
+
+                    Text("截图智能整理工具")
+                        .font(.headline)
+                        .foregroundColor(.secondary)
+                }
+                .frame(maxWidth: .infinity)
+                .padding(.vertical, 20)
             }
-            .padding()
-            .frame(maxWidth: .infinity)
+
+            Section("版本信息") {
+                HStack {
+                    Text("版本")
+                    Spacer()
+                    Text(appVersion)
+                        .foregroundColor(.secondary)
+                }
+
+                HStack {
+                    Text("构建版本")
+                    Spacer()
+                    Text(buildNumber)
+                        .foregroundColor(.secondary)
+                }
+            }
+
+            Section("开发者") {
+                HStack {
+                    Text("开发者")
+                    Spacer()
+                    Text("CursorAI")
+                        .foregroundColor(.secondary)
+                }
+
+                HStack {
+                    Text("版权")
+                    Spacer()
+                    Text("© 2025 SnapSort")
+                        .foregroundColor(.secondary)
+                }
+            }
+
+            Section("支持") {
+                Button("访问官网") {
+                    // 打开官网链接
+                }
+
+                Button("反馈问题") {
+                    // 打开反馈页面
+                }
+
+                Button("用户手册") {
+                    // 打开用户手册
+                }
+            }
         }
-    }
-}
-
-// MARK: - View Components
-
-extension AboutView {
-
-    /// 应用图标区域
-    @ViewBuilder
-    fileprivate var appIconSection: some View {
-        VStack(spacing: 16) {
-            Image(systemName: "photo.on.rectangle.angled")
-                .resizable()
-                .aspectRatio(contentMode: .fit)
-                .frame(width: 80, height: 80)
-                .foregroundColor(.accentColor)
-                .shadow(color: .black.opacity(0.1), radius: 4, x: 0, y: 2)
-        }
-    }
-
-    /// 应用信息区域
-    @ViewBuilder
-    fileprivate var appInfoSection: some View {
-        VStack(spacing: 8) {
-            Text("SnapSort")
-                .font(.largeTitle)
-                .fontWeight(.bold)
-                .foregroundColor(.primary)
-
-            Text(LocalizedStringKey("about.version"))
-                .font(.title2)
-                .foregroundColor(.secondary)
-
-            Text(versionNumber)
-                .font(.caption)
-                .foregroundColor(Color.secondary.opacity(0.8))
-                .padding(.top, 4)
-        }
-    }
-
-    /// 描述信息区域
-    @ViewBuilder
-    fileprivate var descriptionSection: some View {
-        VStack(spacing: 12) {
-            Text(LocalizedStringKey("about.description"))
-                .font(.headline)
-                .foregroundColor(.primary)
-
-            Text(LocalizedStringKey("about.features"))
-                .font(.body)
-                .foregroundColor(.secondary)
-                .multilineTextAlignment(.center)
-                .lineLimit(nil)
-                .fixedSize(horizontal: false, vertical: true)
-        }
-        .padding(.horizontal, 20)
-    }
-
-    /// 版权信息区域
-    @ViewBuilder
-    fileprivate var copyrightSection: some View {
-        VStack(spacing: 8) {
-            Text(LocalizedStringKey("about.copyright"))
-                .font(.caption)
-                .foregroundColor(.secondary)
-
-            Text(LocalizedStringKey("about.rights"))
-                .font(.caption)
-                .foregroundColor(.secondary)
-        }
-        .multilineTextAlignment(.center)
-    }
-}
-
-// MARK: - Computed Properties
-
-extension AboutView {
-
-    /// 版本号信息
-    fileprivate var versionNumber: String {
-        let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "1.0"
-        let build = Bundle.main.infoDictionary?["CFBundleVersion"] as? String ?? "1"
-        return "v\(version) (\(build))"
+        .formStyle(.grouped)
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
 }
 
