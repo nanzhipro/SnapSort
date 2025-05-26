@@ -5,6 +5,7 @@
 //  Created by CursorAI on 2025/1/4.
 //
 
+import Foundation
 import SwiftUI
 
 /// 分类管理视图
