@@ -22,6 +22,8 @@
 "settings.general.currentDirectory" = "Current directory";
 "settings.general.notSelected" = "Not selected";
 "settings.general.selectDirectory" = "Select Directory...";
+"settings.general.resetToDefault" = "Reset to Default";
+"settings.general.directorySet" = "Set";
 
 // Categories
 "settings.categories.management" = "Category Management";
@@ -41,23 +43,24 @@
 "settings.ai.section" = "AI Classification";
 "settings.ai.enabled" = "Enable AI Classification";
 "settings.ai.enabledHelp" = "Use artificial intelligence to automatically classify screenshots";
-"settings.ai.mode" = "Processing Method";
+"settings.ai.mode" = "Processing Mode";
 "settings.ai.modeLocal" = "Local Processing";
 "settings.ai.modeCloud" = "Cloud Processing";
 "settings.ai.modeLocalDesc" = "Process on local device, privacy-focused but limited functionality";
 "settings.ai.modeCloudDesc" = "Use cloud AI services, powerful but requires internet connection";
 "settings.ai.cloudSettings" = "Cloud Settings";
 "settings.ai.apiKey" = "API Key";
-"settings.ai.apiKeyHelp" = "Enter DeepSeek API key";
-"settings.ai.testConnection" = "Test Connection";
-"settings.ai.connectionSuccess" = "Connection successful";
-"settings.ai.connectionFailed" = "Connection failed, please check API key";
+"settings.ai.apiKeyPlaceholder" = "Enter DeepSeek API Key";
+"settings.ai.apiKeyHelp" = "Enter DeepSeek API key to enable cloud AI classification";
+"settings.ai.apiKeyInvalid" = "Invalid API key format, please check your input";
+"settings.ai.clearApiKey" = "Clear Key";
+"settings.ai.apiKeySecureStorage" = "Key stored securely";
 
 // About
-"about.appDescription" = "Smart Screenshot Organizer";
+"about.appDescription" = "Intelligent Screenshot Organization Tool";
 "about.versionInfo" = "Version Information";
 "about.version" = "Version";
-"about.buildNumber" = "Build Number";
+"about.buildNumber" = "Build";
 "about.developer" = "Developer";
 "about.developerName" = "CursorAI";
 "about.copyright" = "Copyright";
@@ -78,4 +81,4 @@
 "common.disabled" = "Disabled";
 
 // System Messages
-"directory.picker.message" = "Select the base directory for screenshot classification storage"; 
+"directory.picker.message" = "Select base directory for screenshot classification"; 

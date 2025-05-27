@@ -22,6 +22,8 @@
 "settings.general.currentDirectory" = "現在のディレクトリ";
 "settings.general.notSelected" = "未選択";
 "settings.general.selectDirectory" = "ディレクトリを選択...";
+"settings.general.resetToDefault" = "デフォルトに戻す";
+"settings.general.directorySet" = "設定済み";
 
 // カテゴリ Categories
 "settings.categories.management" = "カテゴリ管理";
@@ -41,33 +43,34 @@
 "settings.ai.section" = "AI分類";
 "settings.ai.enabled" = "AI分類を有効にする";
 "settings.ai.enabledHelp" = "人工知能を使用してスクリーンショットを自動分類";
-"settings.ai.mode" = "処理方法";
+"settings.ai.mode" = "処理方式";
 "settings.ai.modeLocal" = "ローカル処理";
 "settings.ai.modeCloud" = "クラウド処理";
 "settings.ai.modeLocalDesc" = "ローカルデバイスで処理、プライバシー重視だが機能制限あり";
 "settings.ai.modeCloudDesc" = "クラウドAIサービスを使用、高機能だがインターネット接続が必要";
 "settings.ai.cloudSettings" = "クラウド設定";
 "settings.ai.apiKey" = "APIキー";
-"settings.ai.apiKeyHelp" = "DeepSeek APIキーを入力";
-"settings.ai.testConnection" = "接続テスト";
-"settings.ai.connectionSuccess" = "接続成功";
-"settings.ai.connectionFailed" = "接続失敗、APIキーを確認してください";
+"settings.ai.apiKeyPlaceholder" = "DeepSeek APIキーを入力";
+"settings.ai.apiKeyHelp" = "クラウドAI分類を有効にするためDeepSeek APIキーを入力";
+"settings.ai.apiKeyInvalid" = "APIキーの形式が無効です。入力を確認してください";
+"settings.ai.clearApiKey" = "キーをクリア";
+"settings.ai.apiKeySecureStorage" = "キーは安全に保存されています";
 
 // このアプリについて About
-"about.appDescription" = "スマートスクリーンショット整理ツール";
+"about.appDescription" = "スクリーンショット自動整理ツール";
 "about.versionInfo" = "バージョン情報";
 "about.version" = "バージョン";
-"about.buildNumber" = "ビルド番号";
+"about.buildNumber" = "ビルド";
 "about.developer" = "開発者";
 "about.developerName" = "CursorAI";
 "about.copyright" = "著作権";
 "about.copyrightText" = "© 2025 SnapSort";
 "about.support" = "サポート";
-"about.website" = "公式サイト";
+"about.website" = "ウェブサイトを開く";
 "about.feedback" = "問題を報告";
 "about.userManual" = "ユーザーマニュアル";
 
-// ディレクトリ Directories
+// ディレクトリ設定 Directories
 "directories.advancedTitle" = "高度なディレクトリ設定";
 "directories.movedNotice" = "基本的な保存場所設定は一般設定に移動しました";
 
@@ -78,4 +81,4 @@
 "common.disabled" = "無効";
 
 // システムメッセージ System Messages
-"directory.picker.message" = "スクリーンショット分類保存のベースディレクトリを選択"; 
+"directory.picker.message" = "スクリーンショット分類の基本ディレクトリを選択"; 

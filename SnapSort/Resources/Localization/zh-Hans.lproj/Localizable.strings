@@ -50,10 +50,11 @@
 "settings.ai.modeCloudDesc" = "使用云端AI服务，功能强大但需要网络连接";
 "settings.ai.cloudSettings" = "云端设置";
 "settings.ai.apiKey" = "API密钥";
-"settings.ai.apiKeyHelp" = "输入DeepSeek API密钥";
-"settings.ai.testConnection" = "测试连接";
-"settings.ai.connectionSuccess" = "连接成功";
-"settings.ai.connectionFailed" = "连接失败，请检查API密钥";
+"settings.ai.apiKeyPlaceholder" = "请输入DeepSeek API密钥";
+"settings.ai.apiKeyHelp" = "输入DeepSeek API密钥以启用云端AI分类";
+"settings.ai.apiKeyInvalid" = "API密钥格式无效，请检查输入";
+"settings.ai.clearApiKey" = "清除密钥";
+"settings.ai.apiKeySecureStorage" = "密钥已安全存储";
 
 // 关于页面 About
 "about.appDescription" = "截图智能整理工具";

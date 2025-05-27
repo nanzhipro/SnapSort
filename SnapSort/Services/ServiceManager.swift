@@ -86,11 +86,6 @@ public final class ServiceManager {
         logger.info("OCR processor successfully initialized")
 
         // Initialize AI classifier
-        // guard let apiKey = UserDefaults.standard.string(forKey: "ai_api_key") else {
-        //     logger.error("Failed to initialize AI classifier: API key not configured")
-        //     throw ServiceError.configurationMissing(service: "AIClassifier", key: "apiKey")
-        // }
-
         let apiHost =
             UserDefaults.standard.string(forKey: "ai_api_host") ?? "https://api.deepseek.com"
         guard let apiURL = URL(string: "\(apiHost)/v1") else {
@@ -98,8 +93,16 @@ public final class ServiceManager {
             throw ServiceError.invalidConfiguration(service: "AIClassifier", key: "apiURL")
         }
 
-        let openAIClient = SimpleOpenAIClient(
-            apiToken: "sk-3c0a5904963144d0b8a735b40b04e725", baseURL: apiURL)
+        // 从UserDefaults读取二进制存储的API密钥
+        var apiKey: String = ""
+        if let keyData = UserDefaults.standard.data(forKey: "ai_api_key_data"),
+            let key = String(data: keyData, encoding: .utf8), !key.isEmpty
+        {
+            apiKey = key
+            logger.info("API key loaded from secure storage")
+        }
+
+        let openAIClient = SimpleOpenAIClient(apiToken: apiKey, baseURL: apiURL)
         self.aiClassifier = AIClassifier(apiClient: openAIClient)
         logger.info("AI classifier successfully initialized with endpoint: \(apiHost)")
 
