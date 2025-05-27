@@ -19,33 +19,29 @@ struct SettingView: View {
         TabView {
             GeneralSettingsView()
                 .tabItem {
-                    Label("通用", systemImage: "gearshape")
+                    Label(LocalizedStringKey("settings.general"), systemImage: "gearshape")
                 }
                 .tag(0)
 
             CategoriesView()
                 .tabItem {
-                    Label("分类", systemImage: "folder.badge.gearshape")
+                    Label(
+                        LocalizedStringKey("settings.categories"),
+                        systemImage: "folder.badge.gearshape")
                 }
                 .tag(1)
 
-            DirectoriesView()
+            AISettingsView()
                 .tabItem {
-                    Label("目录", systemImage: "folder")
+                    Label(LocalizedStringKey("settings.ai"), systemImage: "brain.head.profile")
                 }
                 .tag(2)
 
-            AISettingsView()
-                .tabItem {
-                    Label("AI设置", systemImage: "brain.head.profile")
-                }
-                .tag(3)
-
             AboutView()
                 .tabItem {
-                    Label("关于", systemImage: "info.circle")
+                    Label(LocalizedStringKey("settings.about"), systemImage: "info.circle")
                 }
-                .tag(4)
+                .tag(3)
         }
         .frame(width: 500, height: 400)
     }

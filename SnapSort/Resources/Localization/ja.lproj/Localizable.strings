@@ -10,67 +10,72 @@
 // 設定タブ Settings Tabs
 "settings.general" = "一般";
 "settings.categories" = "カテゴリ";
-"settings.directories" = "ディレクトリ";
-"settings.ai" = "AI分類";
+"settings.ai" = "AI設定";
 "settings.about" = "このアプリについて";
 
 // 一般設定 General Settings
-"settings.general.startup" = "起動オプション";
-"settings.general.launchAtStartup" = "起動時にSnapSortを自動実行";
-"settings.general.notifications" = "通知設定";
+"settings.general.startup" = "起動";
+"settings.general.launchAtStartup" = "起動時に自動実行";
+"settings.general.notifications" = "通知";
 "settings.general.showNotifications" = "通知を表示";
-"settings.general.showClassificationResult" = "分類結果の通知を表示";
-"settings.general.showErrors" = "エラーメッセージを表示";
-"settings.general.soundEnabled" = "音声通知を有効にする";
+"settings.general.storage" = "保存場所";
+"settings.general.currentDirectory" = "現在のディレクトリ";
+"settings.general.notSelected" = "未選択";
+"settings.general.selectDirectory" = "ディレクトリを選択...";
 
 // カテゴリ Categories
-"settings.categories.management" = "カテゴリルール管理";
-"settings.categories.add" = "新しいカテゴリを追加";
+"settings.categories.management" = "カテゴリ管理";
+"settings.categories.add" = "カテゴリを追加";
+"settings.categories.edit" = "カテゴリを編集";
+"settings.categories.basicInfo" = "基本情報";
+"settings.categories.keywords" = "キーワード";
+"settings.categories.keywordsPlaceholder" = "キーワード（カンマ区切り）";
+"settings.categories.name" = "カテゴリ名";
+
+// デフォルトカテゴリ Default Categories
 "category.default.work" = "仕事";
 "category.default.personal" = "個人";
 "category.default.development" = "開発";
 
-// カテゴリ編集 Category Edit
-"category.add.title" = "新しいカテゴリを追加";
-"category.edit.title" = "カテゴリを編集";
-"category.edit.name" = "カテゴリ名";
-"category.edit.keywords" = "関連キーワード";
-"category.edit.keywordsHelp" = "スクリーンショットの内容を自動マッチングするため、1行に1つのキーワードを入力してください";
-"category.edit.enabled" = "このカテゴリを有効にする";
-
-// ディレクトリ Directories
-"settings.directories.storage" = "保存場所";
-"settings.directories.current" = "現在のベースディレクトリ";
-"settings.directories.notSelected" = "ディレクトリが選択されていません";
-"settings.directories.select" = "ディレクトリを選択...";
-"settings.directories.options" = "保存オプション";
-"settings.directories.createSubfolders" = "各カテゴリのサブフォルダを作成";
-"settings.directories.preserveFilenames" = "元のファイル名を保持";
-"settings.directories.maxFileSize" = "最大ファイルサイズ";
-"directory.picker.message" = "スクリーンショット分類保存のベースディレクトリを選択してください";
-
 // AI設定 AI Settings
-"settings.ai.general" = "AI分類";
-"settings.ai.enabled" = "AI自動分類を有効にする";
-"settings.ai.classification" = "分類モード";
+"settings.ai.section" = "AI分類";
+"settings.ai.enabled" = "AI分類を有効にする";
+"settings.ai.enabledHelp" = "人工知能を使用してスクリーンショットを自動分類";
 "settings.ai.mode" = "処理方法";
-"ai.mode.local" = "ローカル処理";
-"ai.mode.cloud" = "クラウド (DeepSeek API)";
-"settings.ai.cloudSettings" = "クラウドAPI設定";
-"settings.ai.apiKey" = "DeepSeek APIキー";
+"settings.ai.modeLocal" = "ローカル処理";
+"settings.ai.modeCloud" = "クラウド処理";
+"settings.ai.modeLocalDesc" = "ローカルデバイスで処理、プライバシー重視だが機能制限あり";
+"settings.ai.modeCloudDesc" = "クラウドAIサービスを使用、高機能だがインターネット接続が必要";
+"settings.ai.cloudSettings" = "クラウド設定";
+"settings.ai.apiKey" = "APIキー";
+"settings.ai.apiKeyHelp" = "DeepSeek APIキーを入力";
 "settings.ai.testConnection" = "接続テスト";
 "settings.ai.connectionSuccess" = "接続成功";
-"settings.ai.connectionFailed" = "接続失敗";
+"settings.ai.connectionFailed" = "接続失敗、APIキーを確認してください";
 
 // このアプリについて About
-"about.version" = "バージョン 1.0.0";
-"about.description" = "スマートスクリーンショット整理ツール";
-"about.features" = "スクリーンショットファイルを自動で整理・分類します";
-"about.copyright" = "© 2025 SnapSort";
-"about.rights" = "全ての権利を保有";
+"about.appDescription" = "スマートスクリーンショット整理ツール";
+"about.versionInfo" = "バージョン情報";
+"about.version" = "バージョン";
+"about.buildNumber" = "ビルド番号";
+"about.developer" = "開発者";
+"about.developerName" = "CursorAI";
+"about.copyright" = "著作権";
+"about.copyrightText" = "© 2025 SnapSort";
+"about.support" = "サポート";
+"about.website" = "公式サイト";
+"about.feedback" = "問題を報告";
+"about.userManual" = "ユーザーマニュアル";
+
+// ディレクトリ Directories
+"directories.advancedTitle" = "高度なディレクトリ設定";
+"directories.movedNotice" = "基本的な保存場所設定は一般設定に移動しました";
 
 // 共通ボタン Common Buttons
 "common.cancel" = "キャンセル";
 "common.save" = "保存";
 "common.edit" = "編集";
-"common.disabled" = "無効"; 
+"common.disabled" = "無効";
+
+// システムメッセージ System Messages
+"directory.picker.message" = "スクリーンショット分類保存のベースディレクトリを選択"; 

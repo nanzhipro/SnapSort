@@ -29,7 +29,7 @@ struct AboutView: View {
                         .font(.largeTitle)
                         .fontWeight(.bold)
 
-                    Text("截图智能整理工具")
+                    Text(LocalizedStringKey("about.appDescription"))
                         .font(.headline)
                         .foregroundColor(.secondary)
                 }
@@ -37,48 +37,48 @@ struct AboutView: View {
                 .padding(.vertical, 20)
             }
 
-            Section("版本信息") {
+            Section(LocalizedStringKey("about.versionInfo")) {
                 HStack {
-                    Text("版本")
+                    Text(LocalizedStringKey("about.version"))
                     Spacer()
                     Text(appVersion)
                         .foregroundColor(.secondary)
                 }
 
                 HStack {
-                    Text("构建版本")
+                    Text(LocalizedStringKey("about.buildNumber"))
                     Spacer()
                     Text(buildNumber)
                         .foregroundColor(.secondary)
                 }
             }
 
-            Section("开发者") {
+            Section(LocalizedStringKey("about.developer")) {
                 HStack {
-                    Text("开发者")
+                    Text(LocalizedStringKey("about.developer"))
                     Spacer()
-                    Text("CursorAI")
+                    Text(LocalizedStringKey("about.developerName"))
                         .foregroundColor(.secondary)
                 }
 
                 HStack {
-                    Text("版权")
+                    Text(LocalizedStringKey("about.copyright"))
                     Spacer()
-                    Text("© 2025 SnapSort")
+                    Text(LocalizedStringKey("about.copyrightText"))
                         .foregroundColor(.secondary)
                 }
             }
 
-            Section("支持") {
-                Button("访问官网") {
+            Section(LocalizedStringKey("about.support")) {
+                Button(LocalizedStringKey("about.website")) {
                     // 打开官网链接
                 }
 
-                Button("反馈问题") {
+                Button(LocalizedStringKey("about.feedback")) {
                     // 打开反馈页面
                 }
 
-                Button("用户手册") {
+                Button(LocalizedStringKey("about.userManual")) {
                     // 打开用户手册
                 }
             }

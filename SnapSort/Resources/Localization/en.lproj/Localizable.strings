@@ -10,67 +10,72 @@
 // Settings Tabs
 "settings.general" = "General";
 "settings.categories" = "Categories";
-"settings.directories" = "Directories";
-"settings.ai" = "AI Classification";
+"settings.ai" = "AI Settings";
 "settings.about" = "About";
 
 // General Settings
-"settings.general.startup" = "Startup Options";
-"settings.general.launchAtStartup" = "Launch SnapSort at startup";
-"settings.general.notifications" = "Notification Settings";
+"settings.general.startup" = "Startup";
+"settings.general.launchAtStartup" = "Launch at startup";
+"settings.general.notifications" = "Notifications";
 "settings.general.showNotifications" = "Show notifications";
-"settings.general.showClassificationResult" = "Show classification result notifications";
-"settings.general.showErrors" = "Show error messages";
-"settings.general.soundEnabled" = "Enable sound notifications";
+"settings.general.storage" = "Storage Location";
+"settings.general.currentDirectory" = "Current directory";
+"settings.general.notSelected" = "Not selected";
+"settings.general.selectDirectory" = "Select Directory...";
 
 // Categories
-"settings.categories.management" = "Category Rule Management";
-"settings.categories.add" = "Add New Category";
+"settings.categories.management" = "Category Management";
+"settings.categories.add" = "Add Category";
+"settings.categories.edit" = "Edit Category";
+"settings.categories.basicInfo" = "Basic Information";
+"settings.categories.keywords" = "Keywords";
+"settings.categories.keywordsPlaceholder" = "Keywords (comma separated)";
+"settings.categories.name" = "Category Name";
+
+// Default Categories
 "category.default.work" = "Work";
 "category.default.personal" = "Personal";
 "category.default.development" = "Development";
 
-// Category Edit
-"category.add.title" = "Add New Category";
-"category.edit.title" = "Edit Category";
-"category.edit.name" = "Category Name";
-"category.edit.keywords" = "Associated Keywords";
-"category.edit.keywordsHelp" = "Enter one keyword per line for automatic screenshot content matching";
-"category.edit.enabled" = "Enable this category";
-
-// Directories
-"settings.directories.storage" = "Storage Location";
-"settings.directories.current" = "Current Base Directory";
-"settings.directories.notSelected" = "No directory selected";
-"settings.directories.select" = "Select Directory...";
-"settings.directories.options" = "Storage Options";
-"settings.directories.createSubfolders" = "Create subfolders for each category";
-"settings.directories.preserveFilenames" = "Preserve original filenames";
-"settings.directories.maxFileSize" = "Maximum file size";
-"directory.picker.message" = "Please select the base directory for screenshot classification storage";
-
 // AI Settings
-"settings.ai.general" = "AI Classification";
-"settings.ai.enabled" = "Enable AI automatic classification";
-"settings.ai.classification" = "Classification Mode";
+"settings.ai.section" = "AI Classification";
+"settings.ai.enabled" = "Enable AI Classification";
+"settings.ai.enabledHelp" = "Use artificial intelligence to automatically classify screenshots";
 "settings.ai.mode" = "Processing Method";
-"ai.mode.local" = "Local Processing";
-"ai.mode.cloud" = "Cloud (DeepSeek API)";
-"settings.ai.cloudSettings" = "Cloud API Settings";
-"settings.ai.apiKey" = "DeepSeek API Key";
+"settings.ai.modeLocal" = "Local Processing";
+"settings.ai.modeCloud" = "Cloud Processing";
+"settings.ai.modeLocalDesc" = "Process on local device, privacy-focused but limited functionality";
+"settings.ai.modeCloudDesc" = "Use cloud AI services, powerful but requires internet connection";
+"settings.ai.cloudSettings" = "Cloud Settings";
+"settings.ai.apiKey" = "API Key";
+"settings.ai.apiKeyHelp" = "Enter DeepSeek API key";
 "settings.ai.testConnection" = "Test Connection";
 "settings.ai.connectionSuccess" = "Connection successful";
-"settings.ai.connectionFailed" = "Connection failed";
+"settings.ai.connectionFailed" = "Connection failed, please check API key";
 
 // About
-"about.version" = "Version 1.0.0";
-"about.description" = "Smart Screenshot Organizer";
-"about.features" = "Automatically organize and categorize your screenshot files";
-"about.copyright" = "© 2025 SnapSort";
-"about.rights" = "All rights reserved";
+"about.appDescription" = "Smart Screenshot Organizer";
+"about.versionInfo" = "Version Information";
+"about.version" = "Version";
+"about.buildNumber" = "Build Number";
+"about.developer" = "Developer";
+"about.developerName" = "CursorAI";
+"about.copyright" = "Copyright";
+"about.copyrightText" = "© 2025 SnapSort";
+"about.support" = "Support";
+"about.website" = "Visit Website";
+"about.feedback" = "Report Issue";
+"about.userManual" = "User Manual";
+
+// Directories
+"directories.advancedTitle" = "Advanced Directory Settings";
+"directories.movedNotice" = "Basic storage location settings have been moved to General settings";
 
 // Common Buttons
 "common.cancel" = "Cancel";
 "common.save" = "Save";
 "common.edit" = "Edit";
-"common.disabled" = "Disabled"; 
+"common.disabled" = "Disabled";
+
+// System Messages
+"directory.picker.message" = "Select the base directory for screenshot classification storage"; 

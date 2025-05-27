@@ -16,16 +16,22 @@ import SwiftUI
 struct CategoriesView: View {
 
     @State private var categories: [CategoryItem] = [
-        CategoryItem(name: "工作", keywords: ["meeting", "presentation", "document"]),
-        CategoryItem(name: "个人", keywords: ["personal", "family", "photo"]),
-        CategoryItem(name: "开发", keywords: ["code", "xcode", "terminal"]),
+        CategoryItem(
+            name: String(localized: "category.default.work"),
+            keywords: ["meeting", "presentation", "document"]),
+        CategoryItem(
+            name: String(localized: "category.default.personal"),
+            keywords: ["personal", "family", "photo"]),
+        CategoryItem(
+            name: String(localized: "category.default.development"),
+            keywords: ["code", "xcode", "terminal"]),
     ]
     @State private var showingAddSheet = false
     @State private var editingCategory: CategoryItem?
 
     var body: some View {
         Form {
-            Section("分类管理") {
+            Section(LocalizedStringKey("settings.categories.management")) {
                 List {
                     ForEach(categories) { category in
                         HStack {
@@ -42,7 +48,7 @@ struct CategoriesView: View {
 
                             Spacer()
 
-                            Button("编辑") {
+                            Button(LocalizedStringKey("common.edit")) {
                                 editingCategory = category
                             }
                             .buttonStyle(.borderless)
@@ -53,7 +59,7 @@ struct CategoriesView: View {
                 }
                 .frame(minHeight: 200)
 
-                Button("添加分类") {
+                Button(LocalizedStringKey("settings.categories.add")) {
                     showingAddSheet = true
                 }
                 .buttonStyle(.borderedProminent)
@@ -98,27 +104,33 @@ struct CategoryEditSheet: View {
     var body: some View {
         NavigationStack {
             Form {
-                Section("基本信息") {
-                    TextField("分类名称", text: $name)
+                Section(LocalizedStringKey("settings.categories.basicInfo")) {
+                    TextField(LocalizedStringKey("settings.categories.name"), text: $name)
                 }
 
-                Section("关键词") {
-                    TextField("关键词（用逗号分隔）", text: $keywordsText, axis: .vertical)
-                        .lineLimit(3...6)
+                Section(LocalizedStringKey("settings.categories.keywords")) {
+                    TextField(
+                        LocalizedStringKey("settings.categories.keywordsPlaceholder"),
+                        text: $keywordsText, axis: .vertical
+                    )
+                    .lineLimit(3...6)
                 }
             }
             .formStyle(.grouped)
-            .navigationTitle(isEditing ? "编辑分类" : "添加分类")
-
+            .navigationTitle(
+                isEditing
+                    ? LocalizedStringKey("settings.categories.edit")
+                    : LocalizedStringKey("settings.categories.add")
+            )
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
-                    Button("取消") {
+                    Button(LocalizedStringKey("common.cancel")) {
                         dismiss()
                     }
                 }
 
                 ToolbarItem(placement: .confirmationAction) {
-                    Button("保存") {
+                    Button(LocalizedStringKey("common.save")) {
                         let keywords =
                             keywordsText
                             .split(separator: ",")

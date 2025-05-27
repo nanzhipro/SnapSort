@@ -10,67 +10,74 @@
 // 设置页面标签 Settings Tabs
 "settings.general" = "通用";
 "settings.categories" = "分类";
-"settings.directories" = "目录";
-"settings.ai" = "AI分类";
+"settings.ai" = "AI设置";
 "settings.about" = "关于";
 
 // 通用设置 General Settings
-"settings.general.startup" = "启动选项";
-"settings.general.launchAtStartup" = "开机时自动启动 SnapSort";
-"settings.general.notifications" = "通知设置";
+"settings.general.startup" = "启动";
+"settings.general.launchAtStartup" = "开机时自动启动";
+"settings.general.notifications" = "通知";
 "settings.general.showNotifications" = "显示通知";
-"settings.general.showClassificationResult" = "显示分类结果通知";
-"settings.general.showErrors" = "显示错误消息";
-"settings.general.soundEnabled" = "启用声音通知";
+"settings.general.storage" = "存储位置";
+"settings.general.currentDirectory" = "当前目录";
+"settings.general.notSelected" = "未选择";
+"settings.general.selectDirectory" = "选择目录...";
+"settings.general.resetToDefault" = "重置为默认位置";
+"settings.general.directorySet" = "已设置";
 
 // 分类管理 Categories
-"settings.categories.management" = "分类规则管理";
-"settings.categories.add" = "添加新分类";
+"settings.categories.management" = "分类管理";
+"settings.categories.add" = "添加分类";
+"settings.categories.edit" = "编辑分类";
+"settings.categories.basicInfo" = "基本信息";
+"settings.categories.keywords" = "关键词";
+"settings.categories.keywordsPlaceholder" = "关键词（用逗号分隔）";
+"settings.categories.name" = "分类名称";
+
+// 默认分类 Default Categories
 "category.default.work" = "工作";
 "category.default.personal" = "个人";
 "category.default.development" = "开发";
 
-// 类别编辑 Category Edit
-"category.add.title" = "添加新分类";
-"category.edit.title" = "编辑分类";
-"category.edit.name" = "分类名称";
-"category.edit.keywords" = "关联关键词";
-"category.edit.keywordsHelp" = "每行输入一个关键词，用于自动匹配截图内容";
-"category.edit.enabled" = "启用此分类";
-
-// 目录设置 Directories
-"settings.directories.storage" = "存储位置";
-"settings.directories.current" = "当前基础目录";
-"settings.directories.notSelected" = "未选择目录";
-"settings.directories.select" = "选择目录...";
-"settings.directories.options" = "存储选项";
-"settings.directories.createSubfolders" = "为每个分类创建子文件夹";
-"settings.directories.preserveFilenames" = "保留原始文件名";
-"settings.directories.maxFileSize" = "最大文件大小";
-"directory.picker.message" = "请选择截图分类保存的基础目录";
-
 // AI设置 AI Settings
-"settings.ai.general" = "AI分类";
-"settings.ai.enabled" = "启用AI自动分类";
-"settings.ai.classification" = "分类模式";
+"settings.ai.section" = "AI分类";
+"settings.ai.enabled" = "启用AI分类";
+"settings.ai.enabledHelp" = "使用人工智能自动分类截图";
 "settings.ai.mode" = "处理方式";
-"ai.mode.local" = "本地处理";
-"ai.mode.cloud" = "云端 (DeepSeek API)";
-"settings.ai.cloudSettings" = "云端API设置";
-"settings.ai.apiKey" = "DeepSeek API 密钥";
+"settings.ai.modeLocal" = "本地处理";
+"settings.ai.modeCloud" = "云端处理";
+"settings.ai.modeLocalDesc" = "在本地设备上处理，保护隐私但功能有限";
+"settings.ai.modeCloudDesc" = "使用云端AI服务，功能强大但需要网络连接";
+"settings.ai.cloudSettings" = "云端设置";
+"settings.ai.apiKey" = "API密钥";
+"settings.ai.apiKeyHelp" = "输入DeepSeek API密钥";
 "settings.ai.testConnection" = "测试连接";
 "settings.ai.connectionSuccess" = "连接成功";
-"settings.ai.connectionFailed" = "连接失败";
+"settings.ai.connectionFailed" = "连接失败，请检查API密钥";
 
 // 关于页面 About
-"about.version" = "版本 1.0.0";
-"about.description" = "智能截图整理助手";
-"about.features" = "自动整理和分类您的截图文件";
-"about.copyright" = "© 2025 SnapSort";
-"about.rights" = "保留所有权利";
+"about.appDescription" = "截图智能整理工具";
+"about.versionInfo" = "版本信息";
+"about.version" = "版本";
+"about.buildNumber" = "构建版本";
+"about.developer" = "开发者";
+"about.developerName" = "CursorAI";
+"about.copyright" = "版权";
+"about.copyrightText" = "© 2025 SnapSort";
+"about.support" = "支持";
+"about.website" = "访问官网";
+"about.feedback" = "反馈问题";
+"about.userManual" = "用户手册";
+
+// 目录设置 Directories
+"directories.advancedTitle" = "高级目录设置";
+"directories.movedNotice" = "基础存储位置设置已移至通用设置页面";
 
 // 通用按钮 Common Buttons
 "common.cancel" = "取消";
 "common.save" = "保存";
 "common.edit" = "编辑";
-"common.disabled" = "已禁用"; 
+"common.disabled" = "已禁用";
+
+// 系统消息 System Messages
+"directory.picker.message" = "选择截图分类保存的基础目录"; 

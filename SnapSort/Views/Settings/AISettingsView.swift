@@ -23,14 +23,15 @@ struct AISettingsView: View {
 
     var body: some View {
         Form {
-            Section("AI分类") {
-                Toggle("启用AI分类", isOn: $enableAIClassification)
-                    .help("使用人工智能自动分类截图")
+            Section(LocalizedStringKey("settings.ai.section")) {
+                Toggle(LocalizedStringKey("settings.ai.enabled"), isOn: $enableAIClassification)
+                    .help(LocalizedStringKey("settings.ai.enabledHelp"))
 
                 if enableAIClassification {
-                    Picker("处理模式", selection: $aiClassificationMode) {
-                        Text("本地处理").tag(AIMode.local)
-                        Text("云端处理").tag(AIMode.cloud)
+                    Picker(LocalizedStringKey("settings.ai.mode"), selection: $aiClassificationMode)
+                    {
+                        Text(LocalizedStringKey("settings.ai.modeLocal")).tag(AIMode.local)
+                        Text(LocalizedStringKey("settings.ai.modeCloud")).tag(AIMode.cloud)
                     }
                     .pickerStyle(.segmented)
 
@@ -41,12 +42,12 @@ struct AISettingsView: View {
             }
 
             if enableAIClassification && aiClassificationMode == .cloud {
-                Section("云端设置") {
-                    SecureField("API密钥", text: $deepSeekAPIKey)
-                        .help("输入DeepSeek API密钥")
+                Section(LocalizedStringKey("settings.ai.cloudSettings")) {
+                    SecureField(LocalizedStringKey("settings.ai.apiKey"), text: $deepSeekAPIKey)
+                        .help(LocalizedStringKey("settings.ai.apiKeyHelp"))
 
                     HStack {
-                        Button("测试连接") {
+                        Button(LocalizedStringKey("settings.ai.testConnection")) {
                             testConnection()
                         }
                         .disabled(
@@ -65,7 +66,9 @@ struct AISettingsView: View {
                     if let result = testResult {
                         Text(result)
                             .font(.caption)
-                            .foregroundColor(result.contains("成功") ? .green : .red)
+                            .foregroundColor(
+                                result.contains(String(localized: "settings.ai.connectionSuccess"))
+                                    ? .green : .red)
                     }
                 }
             }
@@ -77,9 +80,9 @@ struct AISettingsView: View {
     private var modeDescription: String {
         switch aiClassificationMode {
         case .local:
-            return "在本地设备上处理，保护隐私但功能有限"
+            return String(localized: "settings.ai.modeLocalDesc")
         case .cloud:
-            return "使用云端AI服务，功能强大但需要网络连接"
+            return String(localized: "settings.ai.modeCloudDesc")
         }
     }
 
@@ -93,7 +96,10 @@ struct AISettingsView: View {
 
             await MainActor.run {
                 isTestingConnection = false
-                testResult = Bool.random() ? "连接成功" : "连接失败，请检查API密钥"
+                testResult =
+                    Bool.random()
+                    ? String(localized: "settings.ai.connectionSuccess")
+                    : String(localized: "settings.ai.connectionFailed")
             }
         }
     }
