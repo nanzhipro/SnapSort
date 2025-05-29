@@ -33,7 +33,7 @@ struct SettingView: View {
 
             AISettingsView()
                 .tabItem {
-                    Label(LocalizedStringKey("settings.ai"), systemImage: "brain.head.profile")
+                    Label(LocalizedStringKey("settings.ai"), systemImage: "sparkles")
                 }
                 .tag(2)
 

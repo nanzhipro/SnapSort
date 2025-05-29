@@ -22,6 +22,7 @@ import os.log
 /// - Updating classifications for existing screenshots
 /// - Searching screenshots by text content
 /// - Retrieving screenshots by classification
+/// - Managing categories with keywords for classification
 /// - Database maintenance including backup and cleanup operations
 ///
 /// ## Usage Example
@@ -42,6 +43,10 @@ import os.log
 ///
 /// // Get screenshots by classification
 /// let workScreenshots = try dbManager.getScreenshotsByClassification("Work")
+///
+/// // Category management
+/// try dbManager.saveCategory(name: "Work", keywords: ["meeting", "presentation"])
+/// let categories = try dbManager.getAllCategories()
 ///
 /// // Maintenance operations
 /// try dbManager.cleanupInvalidRecords() // Remove records pointing to deleted files
@@ -74,6 +79,16 @@ public final class DatabaseManager {
         public let createdAt: Date
     }
 
+    /// A model representing category metadata for classification
+    public struct CategoryMetadata: Equatable {
+        /// The unique name of the category
+        public let name: String
+        /// The list of keywords associated with this category
+        public let keywords: [String]
+        /// The creation timestamp
+        public let createdAt: Date
+    }
+
     /// Error types that can be thrown by the database manager
     public enum DatabaseError: Error {
         /// Failed to initialize the database
@@ -84,6 +99,10 @@ public final class DatabaseManager {
         case operationFailed(message: String)
         /// Record not found in the database
         case recordNotFound(path: String)
+        /// Category not found in the database
+        case categoryNotFound(name: String)
+        /// Category already exists
+        case categoryAlreadyExists(name: String)
     }
 
     // MARK: - Properties
@@ -98,12 +117,24 @@ public final class DatabaseManager {
     private let classification = Expression<String>(value: "classification")
     private let createdAt = Expression<String>(value: "createdAt")
 
+    /// Categories table structure
+    private let categories = Table("Categories")
+    private let categoryName = Expression<String>(value: "categoryName")
+    private let keywordsJson = Expression<String>(value: "keywordsJson")
+    private let categoryCreatedAt = Expression<String>(value: "createdAt")
+
     /// Date formatter for converting between Date and String
     private let dateFormatter: DateFormatter = {
         let formatter = DateFormatter()
         formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSZ"
         return formatter
     }()
+
+    /// JSON encoder for serializing keywords array
+    private let jsonEncoder = JSONEncoder()
+
+    /// JSON decoder for deserializing keywords array
+    private let jsonDecoder = JSONDecoder()
 
     /// Logger for capturing important events and diagnostics
     private let logger = Logger(subsystem: "com.datamanager.database", category: "DatabaseManager")
@@ -181,6 +212,39 @@ public final class DatabaseManager {
         return dateFormatter.date(from: string) ?? Date()
     }
 
+    /// Serializes keywords array to JSON string
+    /// - Parameter keywords: Array of keyword strings
+    /// - Returns: JSON string representation
+    /// - Throws: `DatabaseError` if encoding fails
+    private func encodeKeywords(_ keywords: [String]) throws -> String {
+        do {
+            let data = try jsonEncoder.encode(keywords)
+            return String(data: data, encoding: .utf8) ?? "[]"
+        } catch {
+            logger.error("Failed to encode keywords: \(error.localizedDescription)")
+            throw DatabaseError.operationFailed(
+                message: "Failed to encode keywords: \(error.localizedDescription)")
+        }
+    }
+
+    /// Deserializes JSON string to keywords array
+    /// - Parameter jsonString: JSON string representation
+    /// - Returns: Array of keyword strings
+    /// - Throws: `DatabaseError` if decoding fails
+    private func decodeKeywords(_ jsonString: String) throws -> [String] {
+        guard let data = jsonString.data(using: .utf8) else {
+            return []
+        }
+
+        do {
+            return try jsonDecoder.decode([String].self, from: data)
+        } catch {
+            logger.warning(
+                "Failed to decode keywords, returning empty array: \(error.localizedDescription)")
+            return []
+        }
+    }
+
     // MARK: - Table Management
 
     /// Creates necessary database tables if they don't exist
@@ -196,9 +260,19 @@ public final class DatabaseManager {
                         Expression<String>(value: "createdAt"), defaultValue: dateToString(Date()))
                 })
 
+            // Create categories table
+            try db.run(
+                categories.create(ifNotExists: true) { table in
+                    table.column(Expression<String>(value: "categoryName"), primaryKey: true)
+                    table.column(Expression<String>(value: "keywordsJson"))
+                    table.column(
+                        Expression<String>(value: "createdAt"), defaultValue: dateToString(Date()))
+                })
+
             // Create full-text index to optimize search performance
             try db.run(screenshots.createIndex(fullText, ifNotExists: true))
             try db.run(screenshots.createIndex(classification, ifNotExists: true))
+            try db.run(categories.createIndex(categoryName, ifNotExists: true))
 
         } catch {
             logger.error("Failed to create tables: \(error.localizedDescription)")
@@ -526,6 +600,319 @@ public final class DatabaseManager {
             throw DatabaseError.operationFailed(message: error.localizedDescription)
         }
     }
+
+    // MARK: - Category Management API
+
+    /// Saves a category with its associated keywords to the database
+    ///
+    /// If a category with the same name already exists, it will be updated with new keywords.
+    ///
+    /// - Parameters:
+    ///   - name: The unique name of the category
+    ///   - keywords: Array of keywords associated with this category
+    /// - Throws: `DatabaseError` if the save operation fails
+    ///
+    /// - Example:
+    /// ```swift
+    /// try dbManager.saveCategory(name: "Work", keywords: ["meeting", "presentation", "document"])
+    /// ```
+    public func saveCategory(name: String, keywords: [String]) throws {
+        logger.debug("Saving category: \(name) with \(keywords.count) keywords")
+
+        do {
+            let currentTimeString = dateToString(Date())
+            let keywordsJsonString = try encodeKeywords(keywords)
+
+            // Escape single quotes to prevent SQL injection
+            let escapedName = name.replacingOccurrences(of: "'", with: "''")
+            let escapedKeywords = keywordsJsonString.replacingOccurrences(of: "'", with: "''")
+            let escapedTime = currentTimeString.replacingOccurrences(of: "'", with: "''")
+
+            // Check if category already exists
+            if try isCategoryExists(name: name) {
+                // If exists, update keywords
+                let updateQuery =
+                    "UPDATE Categories SET keywordsJson = '\(escapedKeywords)' WHERE categoryName = '\(escapedName)'"
+                try db.execute(updateQuery)
+                logger.info("Updated category: \(name)")
+            } else {
+                // If doesn't exist, insert new category
+                let insertQuery =
+                    "INSERT INTO Categories (categoryName, keywordsJson, createdAt) VALUES ('\(escapedName)', '\(escapedKeywords)', '\(escapedTime)')"
+                try db.execute(insertQuery)
+                logger.info("Created new category: \(name)")
+            }
+        } catch let error as DatabaseError {
+            throw error
+        } catch {
+            logger.error("Failed to save category: \(error.localizedDescription)")
+            throw DatabaseError.operationFailed(message: error.localizedDescription)
+        }
+    }
+
+    /// Updates keywords for an existing category
+    ///
+    /// - Parameters:
+    ///   - name: The name of the category to update
+    ///   - newKeywords: The new array of keywords
+    /// - Throws: `DatabaseError` if the update operation fails or category doesn't exist
+    ///
+    /// - Example:
+    /// ```swift
+    /// try dbManager.updateCategory(name: "Work", newKeywords: ["meeting", "presentation", "office"])
+    /// ```
+    public func updateCategory(name: String, newKeywords: [String]) throws {
+        logger.debug("Updating category: \(name) with \(newKeywords.count) keywords")
+
+        do {
+            // Check if category exists
+            guard try isCategoryExists(name: name) else {
+                logger.warning("Category not found for update: \(name)")
+                throw DatabaseError.categoryNotFound(name: name)
+            }
+
+            let keywordsJsonString = try encodeKeywords(newKeywords)
+
+            // Escape single quotes to prevent SQL injection
+            let escapedName = name.replacingOccurrences(of: "'", with: "''")
+            let escapedKeywords = keywordsJsonString.replacingOccurrences(of: "'", with: "''")
+
+            // Update category
+            let query =
+                "UPDATE Categories SET keywordsJson = '\(escapedKeywords)' WHERE categoryName = '\(escapedName)'"
+            try db.execute(query)
+            logger.info("Successfully updated category: \(name)")
+        } catch let error as DatabaseError {
+            throw error
+        } catch {
+            logger.error("Failed to update category: \(error.localizedDescription)")
+            throw DatabaseError.operationFailed(message: error.localizedDescription)
+        }
+    }
+
+    /// Deletes a category from the database
+    ///
+    /// - Parameter name: The name of the category to delete
+    /// - Throws: `DatabaseError` if the delete operation fails
+    ///
+    /// - Example:
+    /// ```swift
+    /// try dbManager.deleteCategory(name: "OldCategory")
+    /// ```
+    public func deleteCategory(name: String) throws {
+        logger.debug("Deleting category: \(name)")
+
+        do {
+            // Escape single quotes to prevent SQL injection
+            let escapedName = name.replacingOccurrences(of: "'", with: "''")
+
+            // Execute deletion using direct SQL
+            let query = "DELETE FROM Categories WHERE categoryName = '\(escapedName)'"
+            try db.execute(query)
+
+            // Check if the category existed by trying to find it
+            if try !isCategoryExists(name: name) {
+                logger.info("Successfully deleted category: \(name)")
+            } else {
+                logger.warning("Category not found for deletion: \(name)")
+                throw DatabaseError.categoryNotFound(name: name)
+            }
+        } catch let error as DatabaseError {
+            throw error
+        } catch {
+            logger.error("Failed to delete category: \(error.localizedDescription)")
+            throw DatabaseError.operationFailed(message: error.localizedDescription)
+        }
+    }
+
+    /// Retrieves a specific category by name
+    ///
+    /// - Parameter name: The name of the category to retrieve
+    /// - Returns: The category metadata if found, nil otherwise
+    /// - Throws: `DatabaseError` if the query operation fails
+    ///
+    /// - Example:
+    /// ```swift
+    /// if let category = try dbManager.getCategory(name: "Work") {
+    ///     print("Keywords: \(category.keywords.joined(separator: ", "))")
+    /// }
+    /// ```
+    public func getCategory(name: String) throws -> CategoryMetadata? {
+        logger.debug("Getting category: \(name)")
+
+        do {
+            // Escape single quotes to prevent SQL injection
+            let escapedName = name.replacingOccurrences(of: "'", with: "''")
+
+            // Use direct SQL query
+            let query =
+                "SELECT categoryName, keywordsJson, createdAt FROM Categories WHERE categoryName = '\(escapedName)'"
+
+            let stmt = try db.prepare(query)
+            for row in stmt {
+                guard let categoryName = row[0] as? String,
+                    let keywordsJson = row[1] as? String,
+                    let createdAtStr = row[2] as? String
+                else {
+                    continue
+                }
+
+                let keywords = try decodeKeywords(keywordsJson)
+                let metadata = CategoryMetadata(
+                    name: categoryName,
+                    keywords: keywords,
+                    createdAt: stringToDate(createdAtStr)
+                )
+
+                logger.debug("Retrieved category: \(name)")
+                return metadata
+            }
+
+            logger.info("Category not found: \(name)")
+            return nil
+        } catch let error as DatabaseError {
+            throw error
+        } catch {
+            logger.error("Failed to get category: \(error.localizedDescription)")
+            throw DatabaseError.operationFailed(message: error.localizedDescription)
+        }
+    }
+
+    /// Retrieves all categories from the database
+    ///
+    /// - Returns: An array of all category metadata, ordered by creation date
+    /// - Throws: `DatabaseError` if the query operation fails
+    ///
+    /// - Example:
+    /// ```swift
+    /// let allCategories = try dbManager.getAllCategories()
+    /// for category in allCategories {
+    ///     print("\(category.name): \(category.keywords.count) keywords")
+    /// }
+    /// ```
+    public func getAllCategories() throws -> [CategoryMetadata] {
+        logger.debug("Getting all categories")
+
+        do {
+            // Use direct SQL query with ordering
+            let query =
+                "SELECT categoryName, keywordsJson, createdAt FROM Categories ORDER BY createdAt ASC"
+
+            var results = [CategoryMetadata]()
+
+            let stmt = try db.prepare(query)
+            for row in stmt {
+                guard let categoryName = row[0] as? String,
+                    let keywordsJson = row[1] as? String,
+                    let createdAtStr = row[2] as? String
+                else {
+                    continue
+                }
+
+                let keywords = try decodeKeywords(keywordsJson)
+                let metadata = CategoryMetadata(
+                    name: categoryName,
+                    keywords: keywords,
+                    createdAt: stringToDate(createdAtStr)
+                )
+                results.append(metadata)
+            }
+
+            logger.info("Retrieved \(results.count) categories")
+            return results
+        } catch let error as DatabaseError {
+            throw error
+        } catch {
+            logger.error("Failed to get all categories: \(error.localizedDescription)")
+            throw DatabaseError.operationFailed(message: error.localizedDescription)
+        }
+    }
+
+    /// Checks if a category exists in the database
+    ///
+    /// - Parameter name: The name of the category to check
+    /// - Returns: Boolean indicating if the category exists
+    /// - Throws: `DatabaseError` if the query operation fails
+    public func isCategoryExists(name: String) throws -> Bool {
+        logger.debug("Checking if category exists: \(name)")
+
+        do {
+            // Escape single quotes to prevent SQL injection
+            let escapedName = name.replacingOccurrences(of: "'", with: "''")
+
+            // Use COUNT query directly
+            let query = "SELECT COUNT(*) FROM Categories WHERE categoryName = '\(escapedName)'"
+            let count = try db.scalar(query) as? Int64 ?? 0
+
+            return count > 0
+        } catch {
+            logger.error("Failed to check if category exists: \(error.localizedDescription)")
+            throw DatabaseError.operationFailed(message: error.localizedDescription)
+        }
+    }
+
+    /// Searches categories by keyword match
+    ///
+    /// Returns categories that contain the specified keyword in their keywords array.
+    ///
+    /// - Parameter keyword: The keyword to search for
+    /// - Returns: An array of matching category metadata
+    /// - Throws: `DatabaseError` if the search operation fails
+    ///
+    /// - Example:
+    /// ```swift
+    /// let matchingCategories = try dbManager.searchCategories(byKeyword: "meeting")
+    /// for category in matchingCategories {
+    ///     print("Category \(category.name) contains 'meeting'")
+    /// }
+    /// ```
+    public func searchCategories(byKeyword keyword: String) throws -> [CategoryMetadata] {
+        logger.debug("Searching categories by keyword: \(keyword)")
+
+        do {
+            // Escape single quotes to prevent SQL injection
+            let escapedKeyword = keyword.replacingOccurrences(of: "'", with: "''")
+
+            // Use LIKE for fuzzy matching in JSON
+            let query =
+                "SELECT categoryName, keywordsJson, createdAt FROM Categories WHERE keywordsJson LIKE '%\(escapedKeyword)%'"
+
+            var results = [CategoryMetadata]()
+
+            let stmt = try db.prepare(query)
+            for row in stmt {
+                guard let categoryName = row[0] as? String,
+                    let keywordsJson = row[1] as? String,
+                    let createdAtStr = row[2] as? String
+                else {
+                    continue
+                }
+
+                let keywords = try decodeKeywords(keywordsJson)
+
+                // Double-check that the keyword actually exists in the decoded array
+                if keywords.contains(where: { $0.localizedCaseInsensitiveContains(keyword) }) {
+                    let metadata = CategoryMetadata(
+                        name: categoryName,
+                        keywords: keywords,
+                        createdAt: stringToDate(createdAtStr)
+                    )
+                    results.append(metadata)
+                }
+            }
+
+            logger.info(
+                "Search completed, found \(results.count) categories matching keyword: \(keyword)")
+            return results
+        } catch let error as DatabaseError {
+            throw error
+        } catch {
+            logger.error("Failed to search categories by keyword: \(error.localizedDescription)")
+            throw DatabaseError.operationFailed(message: error.localizedDescription)
+        }
+    }
+
+    // MARK: - Database Maintenance
 
     /// Creates a backup of the database
     ///

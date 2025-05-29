@@ -29,10 +29,33 @@
 "settings.categories.management" = "Category Management";
 "settings.categories.add" = "Add Category";
 "settings.categories.edit" = "Edit Category";
-"settings.categories.basicInfo" = "Basic Information";
-"settings.categories.keywords" = "Keywords";
-"settings.categories.keywordsPlaceholder" = "Keywords (comma separated)";
 "settings.categories.name" = "Category Name";
+"settings.categories.keywords" = "Keywords";
+"settings.categories.keywordsPlaceholder" = "Enter keywords, separated by commas";
+"settings.categories.keywordsHint" = "Separate multiple keywords with commas, e.g.: meeting, presentation, document";
+"settings.categories.basicInfo" = "Basic Information";
+"settings.categories.empty" = "No Categories";
+"settings.categories.emptyDescription" = "Click the button below to add your first category";
+"settings.categories.deleteConfirmTitle" = "Confirm Deletion";
+"settings.categories.deleteMessage %@" = "Are you sure you want to delete category \"%@\"?";
+"settings.categories.batchDeleteMessage %d" = "Are you sure you want to delete the selected %d categories?";
+
+// Common Buttons
+"common.ok" = "OK";
+"common.cancel" = "Cancel";
+"common.save" = "Save";
+"common.delete" = "Delete";
+"common.edit" = "Edit";
+"common.done" = "Done";
+"common.loading" = "Loading...";
+
+// Error Messages
+"error.title" = "Error";
+"error.category.notFound %@" = "Category not found: %@";
+"error.category.alreadyExists %@" = "Category already exists: %@";
+"error.category.operationFailed %@" = "Operation failed: %@";
+"error.category.unknown" = "Unknown error";
+"error.database.initializationFailed %@" = "Database initialization failed: %@";
 
 // Default Categories
 "category.default.work" = "Work";
@@ -40,45 +63,20 @@
 "category.default.development" = "Development";
 
 // AI Settings
-"settings.ai.section" = "AI Classification";
-"settings.ai.enabled" = "Enable AI Classification";
-"settings.ai.enabledHelp" = "Use artificial intelligence to automatically classify screenshots";
-"settings.ai.mode" = "Processing Mode";
-"settings.ai.modeLocal" = "Local Processing";
-"settings.ai.modeCloud" = "Cloud Processing";
-"settings.ai.modeLocalDesc" = "Process on local device, privacy-focused but limited functionality";
-"settings.ai.modeCloudDesc" = "Use cloud AI services, powerful but requires internet connection";
-"settings.ai.cloudSettings" = "Cloud Settings";
+"settings.ai.title" = "AI Classification Settings";
+"settings.ai.provider" = "AI Service Provider";
 "settings.ai.apiKey" = "API Key";
-"settings.ai.apiKeyPlaceholder" = "Enter DeepSeek API Key";
-"settings.ai.apiKeyHelp" = "Enter DeepSeek API key to enable cloud AI classification";
-"settings.ai.apiKeyInvalid" = "Invalid API key format, please check your input";
-"settings.ai.clearApiKey" = "Clear Key";
-"settings.ai.apiKeySecureStorage" = "Key stored securely";
+"settings.ai.model" = "Model";
+"settings.ai.testConnection" = "Test Connection";
 
 // About
-"about.appDescription" = "Intelligent Screenshot Organization Tool";
-"about.versionInfo" = "Version Information";
-"about.version" = "Version";
-"about.buildNumber" = "Build";
-"about.developer" = "Developer";
-"about.developerName" = "CursorAI";
-"about.copyright" = "Copyright";
-"about.copyrightText" = "© 2025 SnapSort";
-"about.support" = "Support";
-"about.website" = "Visit Website";
-"about.feedback" = "Report Issue";
-"about.userManual" = "User Manual";
+"settings.about.title" = "About SnapSort";
+"settings.about.version" = "Version";
+"settings.about.description" = "Intelligent Screenshot Classification Tool";
 
 // Directories
 "directories.advancedTitle" = "Advanced Directory Settings";
 "directories.movedNotice" = "Basic storage location settings have been moved to General settings";
-
-// Common Buttons
-"common.cancel" = "Cancel";
-"common.save" = "Save";
-"common.edit" = "Edit";
-"common.disabled" = "Disabled";
 
 // System Messages
 "directory.picker.message" = "Select base directory for screenshot classification"; 

@@ -29,10 +29,33 @@
 "settings.categories.management" = "カテゴリ管理";
 "settings.categories.add" = "カテゴリを追加";
 "settings.categories.edit" = "カテゴリを編集";
-"settings.categories.basicInfo" = "基本情報";
-"settings.categories.keywords" = "キーワード";
-"settings.categories.keywordsPlaceholder" = "キーワード（カンマ区切り）";
 "settings.categories.name" = "カテゴリ名";
+"settings.categories.keywords" = "キーワード";
+"settings.categories.keywordsPlaceholder" = "キーワードをカンマで区切って入力";
+"settings.categories.keywordsHint" = "複数のキーワードはカンマで区切ってください。例：会議, プレゼン, 文書";
+"settings.categories.basicInfo" = "基本情報";
+"settings.categories.empty" = "カテゴリがありません";
+"settings.categories.emptyDescription" = "下のボタンをクリックして最初のカテゴリを追加してください";
+"settings.categories.deleteConfirmTitle" = "削除の確認";
+"settings.categories.deleteMessage %@" = "カテゴリ「%@」を削除してもよろしいですか？";
+"settings.categories.batchDeleteMessage %d" = "選択した %d 個のカテゴリを削除してもよろしいですか？";
+
+// 共通ボタン Common Buttons
+"common.ok" = "OK";
+"common.cancel" = "キャンセル";
+"common.save" = "保存";
+"common.delete" = "削除";
+"common.edit" = "編集";
+"common.done" = "完了";
+"common.loading" = "読み込み中...";
+
+// エラーメッセージ Error Messages
+"error.title" = "エラー";
+"error.category.notFound %@" = "カテゴリが見つかりません：%@";
+"error.category.alreadyExists %@" = "カテゴリが既に存在します：%@";
+"error.category.operationFailed %@" = "操作に失敗しました：%@";
+"error.category.unknown" = "不明なエラー";
+"error.database.initializationFailed %@" = "データベースの初期化に失敗しました：%@";
 
 // デフォルトカテゴリ Default Categories
 "category.default.work" = "仕事";
@@ -40,45 +63,20 @@
 "category.default.development" = "開発";
 
 // AI設定 AI Settings
-"settings.ai.section" = "AI分類";
-"settings.ai.enabled" = "AI分類を有効にする";
-"settings.ai.enabledHelp" = "人工知能を使用してスクリーンショットを自動分類";
-"settings.ai.mode" = "処理方式";
-"settings.ai.modeLocal" = "ローカル処理";
-"settings.ai.modeCloud" = "クラウド処理";
-"settings.ai.modeLocalDesc" = "ローカルデバイスで処理、プライバシー重視だが機能制限あり";
-"settings.ai.modeCloudDesc" = "クラウドAIサービスを使用、高機能だがインターネット接続が必要";
-"settings.ai.cloudSettings" = "クラウド設定";
+"settings.ai.title" = "AI分類設定";
+"settings.ai.provider" = "AIサービスプロバイダー";
 "settings.ai.apiKey" = "APIキー";
-"settings.ai.apiKeyPlaceholder" = "DeepSeek APIキーを入力";
-"settings.ai.apiKeyHelp" = "クラウドAI分類を有効にするためDeepSeek APIキーを入力";
-"settings.ai.apiKeyInvalid" = "APIキーの形式が無効です。入力を確認してください";
-"settings.ai.clearApiKey" = "キーをクリア";
-"settings.ai.apiKeySecureStorage" = "キーは安全に保存されています";
+"settings.ai.model" = "モデル";
+"settings.ai.testConnection" = "接続テスト";
 
 // このアプリについて About
-"about.appDescription" = "スクリーンショット自動整理ツール";
-"about.versionInfo" = "バージョン情報";
-"about.version" = "バージョン";
-"about.buildNumber" = "ビルド";
-"about.developer" = "開発者";
-"about.developerName" = "CursorAI";
-"about.copyright" = "著作権";
-"about.copyrightText" = "© 2025 SnapSort";
-"about.support" = "サポート";
-"about.website" = "ウェブサイトを開く";
-"about.feedback" = "問題を報告";
-"about.userManual" = "ユーザーマニュアル";
+"settings.about.title" = "SnapSortについて";
+"settings.about.version" = "バージョン";
+"settings.about.description" = "インテリジェントスクリーンショット分類ツール";
 
 // ディレクトリ設定 Directories
 "directories.advancedTitle" = "高度なディレクトリ設定";
 "directories.movedNotice" = "基本的な保存場所設定は一般設定に移動しました";
-
-// 共通ボタン Common Buttons
-"common.cancel" = "キャンセル";
-"common.save" = "保存";
-"common.edit" = "編集";
-"common.disabled" = "無効";
 
 // システムメッセージ System Messages
 "directory.picker.message" = "スクリーンショット分類の基本ディレクトリを選択"; 
