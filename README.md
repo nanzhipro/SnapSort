@@ -1,129 +1,125 @@
 # SnapSort - 智能截图分类管理应用
 
-SnapSort 是一款专为 macOS 用户打造的智能截图管理应用。它巧妙利用 macOS 系统底层的 `NSMetadataQuery` 机制，通过监测 `kMDItemScreenCaptureType` 元数据变更，实现对新增系统截图的即时自动捕捉。一旦捕获截图，SnapSort 会立即进行精准的 OCR 文本识别。随后，强大的 AI 引擎会以识别出的文本内容为核心依据，并深度结合您预设的分类目录及动态维护的关键词列表（作为上下文传递给 AI），智能地将每一张截图自动归档至最匹配的用户自定义文件夹中。
+[English](#english) | [中文](#中文)
 
-SnapSort 致力于为每日面对海量截图的专业人士——包括但不限于开发者、设计师、研究员及产品经理——解决截图管理混乱、关键信息难以检索的痛点。它能帮助您从繁杂的默认截图中解放出来，迅速定位并重新利用那些曾经认为有价值的视觉片段，从而真正释放每一张截图的潜在效能，显著提升您的工作效率和信息组织能力。我们高度重视用户数据隐私，SnapSort 支持纯本地化的 AI 模型处理（例如通过 Ollama 运行本地模型），同时也提供连接到如 DeepSeek 等云端 AI 服务的灵活性，旨在为您提供一个无缝集成、高效智能且充分个性化的截图管理新体验。
+---
 
-## 设计哲学
+## 中文
 
-### 1. 智能无感，效率至上 (Effortless Intelligence, Peak Efficiency)
+### 📸 SnapSort - 让截图管理变得智能
 
-- **核心**：通过高度智能化的自动处理，最大限度减少用户的手动干预，让截图的整理和分类过程近乎"自动驾驶"。
-- **体现**：如利用 `NSMetadataQuery` 实现无打扰的后台监测；AI 自动精准分类。目标是让用户在享受整洁有序的截图管理的同时，几乎感觉不到应用的存在，只在需要时提供即时价值。
+SnapSort 是一款专为 macOS 用户打造的智能截图管理应用。它能自动监测系统截图，通过 OCR 识别文本内容，并利用 AI 智能分类到您预设的文件夹中。
 
-### 2. 原生集成，体验无缝 (Native Integration, Seamless Experience)
+#### ✨ 核心特性
 
-- **核心**：深度融入 macOS 生态，提供与系统一致的流畅体验。
-- **体现**：使用 `NSMetadataQuery` 而非侵入式方法；遵循苹果的设计规范；确保低资源占用，不干扰用户主要工作流程。
+- **🔍 自动监测**：实时检测系统截图（⌘+Shift+3/4）
+- **📝 OCR 识别**：支持中英日三语文本识别
+- **🤖 AI 分类**：智能归档到自定义文件夹
+- **🔒 隐私优先**：支持本地 AI 模型处理
+- **⚡ 高效轻量**：低资源占用，后台运行
 
-### 3. 用户赋能，掌控由心 (User Empowerment, Personalized Control)
-
-- **核心**：虽然强调自动化，但最终的控制权和个性化定义始终在用户手中。AI 是助手，用户是决策者。
-- **体现**：用户可以完全自定义分类目录、管理关键词列表；用户可以选择 AI 模型（本地/云端）以平衡隐私、成本和效果。应用应能学习和适应用户的偏好。
-
-### 4. 隐私为本，安全优先 (Privacy by Design, Security First)
-
-- **核心**：在数据处理的每一个环节都将用户隐私和数据安全放在首位。
-- **体现**：优先推荐和支持本地化处理方案；明确告知用户数据的使用方式；不收集非必要信息；如果使用云端服务，确保数据传输和处理的安全性。
-
-## 核心功能
-
-### 截图监测
-
-- 监测系统默认截图行为（Command + Shift + 3（屏幕截图）或 Command + Shift + 4（区域截图））
-- 实时检测新生成的截图文件（基于 `kMDItemScreenCaptureType` 元数据）
-- 后台运行，无需用户主动打开应用
-- 系统启动时自动运行
-
-### OCR 文本识别
-
-- 支持中文、日文、英文三国语言的识别
-- 架构设计支持快速扩展其他语言
-- 高精确度的文本识别
-- 低资源消耗的识别实现
-
-### AI 智能分类
-
-- 基于 OCR 识别结果，对截图内容进行智能分类
-- 利用历史分类和用户自定义分类目录及关键词作为上下文辅助 AI 决策
-- 当发现无法匹配现有分类时，提示用户是否创建新分类
-- 支持连接 DeepSeek API 或运行本地 AI 模型进行智能分类处理，兼顾性能与隐私
-
-### 文件管理
-
-- 将原始截图文件移动（非复制）到对应的分类目录
-- 支持自定义分类目录结构
-- 自动创建不存在的分类目录
-
-### 隐私保护
-
-- 对包含敏感信息的截图进行标记与隔离建议
-- 支持用户自定义敏感信息类型
-- 内置常见敏感信息识别规则（如密码、信用卡号、个人身份信息等）
-
-### 搜索功能
-
-- 基于 OCR 识别结果提供文本搜索能力
-- 支持关键词和自然语言查询
-
-## 技术规格
-
-### 性能
-
-- 低 CPU 占用率（<5% 平均）
-- 低内存占用（<200MB）
-- 快速响应截图事件（<3 秒）
-- OCR 识别速度快（<5 秒/张图）
-
-### 兼容性
-
-- 支持 macOS 15 及以上版本
-- 适配 Apple Silicon 和 Intel 处理器
-
-### 安全和隐私
-
-- 所有处理在本地完成，不上传用户数据
-- 申请最小必要的系统权限
-- 符合 Apple 隐私设计准则
-
-## 快速开始
-
-### 安装
+#### 🚀 快速开始
 
 ```bash
-# 下载并安装应用 📢，暂未发布，未来会发布到brew上和AppStore上。
+# 即将发布到 Homebrew 和 App Store
 brew install --cask snapsort
 ```
 
-### 配置
+1. 启动应用，点击菜单栏图标
+2. 设置截图存储目录
+3. 创建分类文件夹
+4. 开始截图，自动分类！
 
-1. 首次启动应用后，点击菜单栏图标访问设置
-2. 设置默认的截图存储目录
-3. 创建初始分类目录
-4. 配置 OCR 识别的优先语言
+#### 🎯 适用场景
 
-## 使用场景
+- **开发者**：代码截图、错误信息
+- **设计师**：设计灵感、参考素材  
+- **研究员**：学术资料、实验数据
+- **学生**：学习笔记、课程资料
 
-SnapSort 适合以下用户：
+#### 📋 系统要求
 
-- 研究人员：整理学术资料、实验数据和论文摘要
-- 设计师：收集设计灵感和参考素材
-- 自由职业者：管理多个客户项目的相关资料
-- 金融/商业人士：安全管理包含敏感信息的文件
-- 学生：整理学习笔记和课程资料
+- macOS 15+
+- Apple Silicon / Intel 处理器
+- 最小权限申请
 
-## 未来路线图
+#### 🛣️ 发展路线
 
-SnapSort 正持续进化中，未来计划包括：
+- [ ] 云同步支持
+- [ ] 批量处理历史截图
+- [ ] 更多语言支持
+- [ ] 移动端配套应用
 
-- **功能扩展**：支持更多截图来源、提供简易截图编辑、云同步选项、批量处理历史截图及数据统计分析。
-- **技术优化**：进一步提升 OCR 效率与准确性、优化 AI 分类算法、降低系统资源消耗、支持更多语言。
-- **体验提升**：提供更丰富的通知选项、键盘快捷键自定义、集成更多第三方服务及开发移动端配套应用。
+#### 📚 更多文档
 
-## 贡献指南
+- [技术文档](Docs/TECHNICAL.md) - 详细的技术实现和架构设计
+- [贡献指南](CONTRIBUTING.md) - 如何参与项目开发
 
-欢迎对 SnapSort 项目做出贡献。请参阅 [CONTRIBUTING.md](CONTRIBUTING.md) 了解如何参与。
+#### 📄 许可证
 
-## 许可证
+MIT License - 查看 [LICENSE](LICENSE) 文件
 
-本项目采用 MIT 许可证 - 详情请查看 [LICENSE](LICENSE) 文件。
+---
+
+## English
+
+### 📸 SnapSort - Intelligent Screenshot Management
+
+SnapSort is an intelligent screenshot management app designed for macOS users. It automatically monitors system screenshots, recognizes text content through OCR, and uses AI to intelligently categorize them into your preset folders.
+
+#### ✨ Key Features
+
+- **🔍 Auto Detection**: Real-time monitoring of system screenshots (⌘+Shift+3/4)
+- **📝 OCR Recognition**: Supports Chinese, English, and Japanese text recognition
+- **🤖 AI Classification**: Smart archiving to custom folders
+- **🔒 Privacy First**: Supports local AI model processing
+- **⚡ Efficient & Lightweight**: Low resource usage, runs in background
+
+#### 🚀 Quick Start
+
+```bash
+# Coming soon to Homebrew and App Store
+brew install --cask snapsort
+```
+
+1. Launch the app, click the menu bar icon
+2. Set screenshot storage directory
+3. Create classification folders
+4. Start taking screenshots, auto-categorization begins!
+
+#### 🎯 Use Cases
+
+- **Developers**: Code screenshots, error messages
+- **Designers**: Design inspiration, reference materials
+- **Researchers**: Academic materials, experimental data
+- **Students**: Study notes, course materials
+
+#### 📋 System Requirements
+
+- macOS 15+
+- Apple Silicon / Intel processors
+- Minimal permission requests
+
+#### 🛣️ Roadmap
+
+- [ ] Cloud sync support
+- [ ] Batch processing of historical screenshots
+- [ ] More language support
+- [ ] Mobile companion app
+
+#### 📚 Documentation
+
+- [Technical Documentation](Docs/TECHNICAL.md) - Detailed technical implementation and architecture
+- [Contributing Guide](CONTRIBUTING.md) - How to contribute to the project
+
+#### 📄 License
+
+MIT License - See [LICENSE](LICENSE) file
+
+---
+
+## 贡献 | Contributing
+
+欢迎贡献代码！请查看 [CONTRIBUTING.md](CONTRIBUTING.md) 了解详情。
+
+Welcome contributions! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for details.
