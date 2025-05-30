@@ -26,6 +26,7 @@
 "settings.general.directorySet" = "Set";
 
 // Categories
+"settings.categories.section" = "Category Management";
 "settings.categories.management" = "Category Management";
 "settings.categories.add" = "Add Category";
 "settings.categories.edit" = "Edit Category";
@@ -63,6 +64,20 @@
 "category.default.development" = "Development";
 
 // AI Settings
+"settings.ai.section" = "AI Classification";
+"settings.ai.enabled" = "Enable AI Classification";
+"settings.ai.enabledHelp" = "Use artificial intelligence to automatically classify screenshots into appropriate folders";
+"settings.ai.mode" = "AI Processing Mode";
+"settings.ai.modeLocal" = "Local Processing";
+"settings.ai.modeCloud" = "Cloud Processing";
+"settings.ai.modeLocalDesc" = "Use local AI model for classification, privacy-focused but with limited capabilities";
+"settings.ai.modeCloudDesc" = "Use cloud AI service for classification, powerful features but requires internet connection";
+"settings.ai.cloudSettings" = "Cloud Service Configuration";
+"settings.ai.apiKeyPlaceholder" = "Enter your API key";
+"settings.ai.apiKeyHelp" = "API key is used to access cloud AI services and will be securely stored locally";
+"settings.ai.apiKeyInvalid" = "Invalid API key format, please check and re-enter";
+"settings.ai.clearApiKey" = "Clear Key";
+"settings.ai.apiKeySecureStorage" = "Key stored securely";
 "settings.ai.title" = "AI Classification Settings";
 "settings.ai.provider" = "AI Service Provider";
 "settings.ai.apiKey" = "API Key";
@@ -79,4 +94,18 @@
 "directories.movedNotice" = "Basic storage location settings have been moved to General settings";
 
 // System Messages
-"directory.picker.message" = "Select base directory for screenshot classification"; 
+"directory.picker.message" = "Select base directory for screenshot classification";
+
+// About
+"about.appDescription" = "Intelligent Screenshot Classification Tool";
+"about.versionInfo" = "Version Information";
+"about.version" = "Version";
+"about.buildNumber" = "Build Number";
+"about.developer" = "Developer";
+"about.developerName" = "TiwenLab";
+"about.copyright" = "Copyright";
+"about.copyrightText" = "© 2025 TiwenLab. All rights reserved.";
+"about.support" = "Support & Help";
+"about.website" = "Visit Website";
+"about.feedback" = "Send Feedback";
+"about.userManual" = "User Manual"; 

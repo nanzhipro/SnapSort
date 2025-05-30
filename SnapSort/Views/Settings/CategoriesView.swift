@@ -8,11 +8,17 @@
 import Foundation
 import SwiftUI
 
+// MARK: - 导入依赖模块
+
+// 导入模型和视图模型
+// CategoryItem 定义在 Models/CategoryModels.swift
+// CategoriesViewModel 定义在 ViewModels/CategoriesViewModel.swift
+
 /// 分类管理视图
 ///
 /// 提供截图分类的完整管理功能，包括分类列表展示、新增、编辑和删除操作。
 /// 采用标准macOS设置页面风格，使用Form布局展示所有分类。
-/// 提供简洁清晰的分类管理界面，支持滑动删除、批量删除和删除确认操作。
+/// 提供简洁清晰的分类管理界面，支持直观的编辑和删除操作。
 /// 遵循 MVVM 架构，通过 CategoriesViewModel 进行数据管理。
 struct CategoriesView: View {
 
@@ -30,22 +36,14 @@ struct CategoriesView: View {
     /// 是否显示删除确认对话框
     @State private var showingDeleteAlert = false
 
-    /// 待删除的单个分类
+    /// 待删除的分类
     @State private var categoryToDelete: CategoryItem?
-
-    /// 是否处于编辑模式
-    @State private var isEditMode = false
-
-    /// 选中的分类 ID 集合
-    @State private var selectedCategories: Set<CategoryItem.ID> = []
 
     // MARK: - Body
 
     var body: some View {
         Form {
-            Section {
-                headerView
-
+            Section(LocalizedStringKey("settings.categories.section")) {
                 if viewModel.isLoading {
                     loadingView
                 } else if viewModel.categories.isEmpty {
@@ -54,7 +52,7 @@ struct CategoriesView: View {
                     categoriesListView
                 }
 
-                actionButtonsView
+                addCategoryButton
             }
         }
         .formStyle(.grouped)
@@ -81,7 +79,9 @@ struct CategoriesView: View {
                 performDeletion()
             }
         } message: {
-            deleteAlertMessage
+            if let category = categoryToDelete {
+                Text(LocalizedStringKey("settings.categories.deleteMessage \(category.name)"))
+            }
         }
         .alert(
             LocalizedStringKey("error.title"),
@@ -99,57 +99,28 @@ struct CategoriesView: View {
 
     // MARK: - View Components
 
-    /// 头部视图
-    private var headerView: some View {
-        HStack {
-            Text(LocalizedStringKey("settings.categories.management"))
-                .font(.title2)
-                .fontWeight(.semibold)
-
-            Spacer()
-
-            if !viewModel.categories.isEmpty && !viewModel.isLoading {
-                Button(
-                    isEditMode
-                        ? LocalizedStringKey("common.done")
-                        : LocalizedStringKey("common.edit")
-                ) {
-                    withAnimation(.easeInOut(duration: 0.2)) {
-                        isEditMode.toggle()
-                        if !isEditMode {
-                            selectedCategories.removeAll()
-                        }
-                    }
-                }
-                .buttonStyle(.borderless)
-            }
-        }
-        .padding(.bottom, 8)
-    }
-
     /// 加载状态视图
     private var loadingView: some View {
-        VStack(spacing: 16) {
+        HStack {
             ProgressView()
-                .scaleEffect(1.2)
-
+                .scaleEffect(0.8)
             Text(LocalizedStringKey("common.loading"))
-                .font(.headline)
+                .font(.caption)
                 .foregroundColor(.secondary)
         }
         .frame(maxWidth: .infinity)
-        .padding(.vertical, 32)
+        .padding(.vertical, 16)
     }
 
     /// 空状态视图
     private var emptyStateView: some View {
-        VStack(spacing: 16) {
+        VStack(spacing: 12) {
             Image(systemName: "folder.badge.plus")
-                .font(.system(size: 48))
+                .font(.system(size: 32))
                 .foregroundColor(.secondary)
 
             Text(LocalizedStringKey("settings.categories.empty"))
-                .font(.headline)
+                .font(.subheadline)
                 .foregroundColor(.secondary)
 
             Text(LocalizedStringKey("settings.categories.emptyDescription"))
@@ -158,114 +129,52 @@ struct CategoriesView: View {
                 .multilineTextAlignment(.center)
         }
         .frame(maxWidth: .infinity)
-        .padding(.vertical, 32)
+        .padding(.vertical, 24)
     }
 
     /// 分类列表视图
     private var categoriesListView: some View {
-        List {
+        VStack(spacing: 0) {
             ForEach(viewModel.categories) { category in
                 CategoryRowView(
                     category: category,
-                    isEditMode: isEditMode,
-                    isSelected: selectedCategories.contains(category.id),
                     onEdit: { editingCategory = category },
-                    onDelete: { showDeleteConfirmation(for: category) },
-                    onToggleSelection: {
-                        if selectedCategories.contains(category.id) {
-                            selectedCategories.remove(category.id)
-                        } else {
-                            selectedCategories.insert(category.id)
-                        }
-                    }
+                    onDelete: { showDeleteConfirmation(for: category) }
                 )
-            }
-            .onDelete(perform: isEditMode ? nil : deleteCategories)
-        }
-        .frame(minHeight: 200)
-    }
 
-    /// 操作按钮视图
-    private var actionButtonsView: some View {
-        HStack {
-            Button(LocalizedStringKey("settings.categories.add")) {
-                showingAddSheet = true
-            }
-            .buttonStyle(.borderedProminent)
-            .disabled(viewModel.isLoading)
-
-            if isEditMode && !selectedCategories.isEmpty {
-                Spacer()
-
-                Button(LocalizedStringKey("common.delete")) {
-                    showBatchDeleteConfirmation()
+                if category.id != viewModel.categories.last?.id {
+                    Divider()
+                        .padding(.leading, 16)
                 }
-                .buttonStyle(.bordered)
-                .foregroundColor(.red)
-                .disabled(viewModel.isLoading)
             }
         }
-        .padding(.top, 8)
+        .background(Color(.controlBackgroundColor))
+        .cornerRadius(8)
     }
 
-    /// 删除确认对话框消息
-    private var deleteAlertMessage: some View {
-        Group {
-            if selectedCategories.count > 1 {
-                Text(
-                    LocalizedStringKey(
-                        "settings.categories.batchDeleteMessage \(selectedCategories.count)"))
-            } else if let category = categoryToDelete {
-                Text(LocalizedStringKey("settings.categories.deleteMessage \(category.name)"))
-            }
+    /// 添加分类按钮
+    private var addCategoryButton: some View {
+        Button(LocalizedStringKey("settings.categories.add")) {
+            showingAddSheet = true
         }
+        .disabled(viewModel.isLoading)
     }
 
     // MARK: - Actions
 
-    /// 显示单个分类的删除确认对话框
+    /// 显示删除确认对话框
     /// - Parameter category: 要删除的分类项目
     private func showDeleteConfirmation(for category: CategoryItem) {
         categoryToDelete = category
-        selectedCategories.removeAll()
-        showingDeleteAlert = true
-    }
-
-    /// 显示批量删除确认对话框
-    private func showBatchDeleteConfirmation() {
-        categoryToDelete = nil
         showingDeleteAlert = true
     }
 
     /// 执行删除操作
     private func performDeletion() {
         if let category = categoryToDelete {
-            // 单个删除
             viewModel.deleteCategory(category)
-        } else if !selectedCategories.isEmpty {
-            // 批量删除
-            viewModel.deleteCategories(selectedCategories)
-            selectedCategories.removeAll()
         }
-
         categoryToDelete = nil
-
-        // 退出编辑模式
-        if isEditMode && selectedCategories.isEmpty {
-            withAnimation(.easeInOut(duration: 0.2)) {
-                isEditMode = false
-            }
-        }
-    }
-
-    /// 删除指定位置的分类项目（滑动删除）
-    /// - Parameter offsets: 要删除的项目索引集合
-    private func deleteCategories(at offsets: IndexSet) {
-        let categoriesToDelete = offsets.map { viewModel.categories[$0] }
-
-        for category in categoriesToDelete {
-            viewModel.deleteCategory(category)
-        }
     }
 }
 
@@ -274,25 +183,14 @@ struct CategoriesView: View {
 /// 分类行视图组件
 ///
 /// 显示单个分类的信息，包括名称、关键词和操作按钮。
-/// 支持编辑模式下的选择状态和操作按钮显示。
+/// 采用简洁的设计风格，提供直观的编辑和删除操作。
 struct CategoryRowView: View {
     let category: CategoryItem
-    let isEditMode: Bool
-    let isSelected: Bool
     let onEdit: () -> Void
     let onDelete: () -> Void
-    let onToggleSelection: () -> Void
 
     var body: some View {
-        HStack {
-            if isEditMode {
-                Button(action: onToggleSelection) {
-                    Image(systemName: isSelected ? "checkmark.circle.fill" : "circle")
-                        .foregroundColor(isSelected ? .blue : .secondary)
-                }
-                .buttonStyle(.plain)
-            }
-
+        HStack(spacing: 12) {
             VStack(alignment: .leading, spacing: 4) {
                 Text(category.name)
                     .font(.headline)
@@ -307,28 +205,23 @@ struct CategoryRowView: View {
 
             Spacer()
 
-            if !isEditMode {
-                HStack(spacing: 8) {
-                    Button(LocalizedStringKey("common.edit")) {
-                        onEdit()
-                    }
-                    .buttonStyle(.borderless)
-
-                    Button(LocalizedStringKey("common.delete")) {
-                        onDelete()
-                    }
-                    .buttonStyle(.borderless)
-                    .foregroundColor(.red)
+            HStack(spacing: 8) {
+                Button(LocalizedStringKey("common.edit")) {
+                    onEdit()
                 }
+                .buttonStyle(.borderless)
+                .foregroundColor(.blue)
+
+                Button(LocalizedStringKey("common.delete")) {
+                    onDelete()
+                }
+                .buttonStyle(.borderless)
+                .foregroundColor(.red)
             }
         }
-        .padding(.vertical, 4)
+        .padding(.horizontal, 16)
+        .padding(.vertical, 12)
         .contentShape(Rectangle())
-        .onTapGesture {
-            if isEditMode {
-                onToggleSelection()
-            }
-        }
     }
 }
 
@@ -357,7 +250,6 @@ struct CategoryEditSheet: View {
             Form {
                 Section(LocalizedStringKey("settings.categories.basicInfo")) {
                     TextField(LocalizedStringKey("settings.categories.name"), text: $name)
-                        .textFieldStyle(.roundedBorder)
                 }
 
                 Section(LocalizedStringKey("settings.categories.keywords")) {
@@ -365,8 +257,7 @@ struct CategoryEditSheet: View {
                         LocalizedStringKey("settings.categories.keywordsPlaceholder"),
                         text: $keywordsText, axis: .vertical
                     )
-                    .textFieldStyle(.roundedBorder)
-                    .lineLimit(3...6)
+                    .lineLimit(3...)
 
                     Text(LocalizedStringKey("settings.categories.keywordsHint"))
                         .font(.caption)

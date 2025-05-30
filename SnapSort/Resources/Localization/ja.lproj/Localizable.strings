@@ -26,6 +26,7 @@
 "settings.general.directorySet" = "設定済み";
 
 // カテゴリ Categories
+"settings.categories.section" = "カテゴリ管理";
 "settings.categories.management" = "カテゴリ管理";
 "settings.categories.add" = "カテゴリを追加";
 "settings.categories.edit" = "カテゴリを編集";
@@ -63,6 +64,19 @@
 "category.default.development" = "開発";
 
 // AI設定 AI Settings
+"settings.ai.section" = "AI分類";
+"settings.ai.enabled" = "AI分類を有効にする";
+"settings.ai.enabledHelp" = "人工知能を使用してスクリーンショットを適切なフォルダに自動分類します";
+"settings.ai.mode" = "AI処理モード";
+"settings.ai.modeLocal" = "ローカル処理";
+"settings.ai.modeCloud" = "クラウド処理";
+"settings.ai.modeLocalDesc" = "ローカルAIモデルを使用した分類、プライバシー重視ですが機能は限定的";
+"settings.ai.modeCloudDesc" = "クラウドAIサービスを使用した分類、高機能ですがインターネット接続が必要";
+"settings.ai.cloudSettings" = "クラウドサービス設定";
+"settings.ai.apiKeyPlaceholder" = "APIキーを入力してください";
+"settings.ai.apiKeyHelp" = "APIキーはクラウドAIサービスへのアクセスに使用され、ローカルに安全に保存されます";
+"settings.ai.apiKeyInvalid" = "APIキーの形式が無効です。確認して再入力してください";
+"settings.ai.clearApiKey" = "キーをクリア";
 "settings.ai.title" = "AI分類設定";
 "settings.ai.provider" = "AIサービスプロバイダー";
 "settings.ai.apiKey" = "APIキー";
@@ -73,6 +87,18 @@
 "settings.about.title" = "SnapSortについて";
 "settings.about.version" = "バージョン";
 "settings.about.description" = "インテリジェントスクリーンショット分類ツール";
+"about.appDescription" = "インテリジェントスクリーンショット分類ツール";
+"about.versionInfo" = "バージョン情報";
+"about.version" = "バージョン";
+"about.buildNumber" = "ビルド番号";
+"about.developer" = "開発者";
+"about.developerName" = "TiwenLab";
+"about.copyright" = "著作権";
+"about.copyrightText" = "© 2025 TiwenLab. 全著作権所有。";
+"about.support" = "サポート・ヘルプ";
+"about.website" = "ウェブサイトを開く";
+"about.feedback" = "フィードバック送信";
+"about.userManual" = "ユーザーマニュアル";
 
 // ディレクトリ設定 Directories
 "directories.advancedTitle" = "高度なディレクトリ設定";

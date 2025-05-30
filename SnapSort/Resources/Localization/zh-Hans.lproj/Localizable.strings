@@ -26,6 +26,7 @@
 "settings.general.directorySet" = "已设置";
 
 // 分类管理 Categories
+"settings.categories.section" = "分类管理";
 "settings.categories.management" = "分类管理";
 "settings.categories.add" = "添加分类";
 "settings.categories.edit" = "编辑分类";
@@ -63,6 +64,20 @@
 "category.default.development" = "开发";
 
 // AI设置 AI Settings
+"settings.ai.section" = "AI 智能分类";
+"settings.ai.enabled" = "启用 AI 分类";
+"settings.ai.enabledHelp" = "使用人工智能自动分类截图到相应文件夹";
+"settings.ai.mode" = "AI 处理模式";
+"settings.ai.modeLocal" = "本地处理";
+"settings.ai.modeCloud" = "云端处理";
+"settings.ai.modeLocalDesc" = "使用设备本地AI模型进行分类，保护隐私但功能有限";
+"settings.ai.modeCloudDesc" = "使用云端AI服务进行分类，功能强大但需要网络连接";
+"settings.ai.cloudSettings" = "云端服务配置";
+"settings.ai.apiKeyPlaceholder" = "请输入您的 API 密钥";
+"settings.ai.apiKeyHelp" = "API 密钥用于访问云端 AI 服务，将安全存储在本地";
+"settings.ai.apiKeyInvalid" = "API 密钥格式无效，请检查后重新输入";
+"settings.ai.clearApiKey" = "清除密钥";
+"settings.ai.apiKeySecureStorage" = "密钥已加密存储";
 "settings.ai.title" = "AI 分类设置";
 "settings.ai.provider" = "AI 服务提供商";
 "settings.ai.apiKey" = "API 密钥";
@@ -73,6 +88,18 @@
 "settings.about.title" = "关于 SnapSort";
 "settings.about.version" = "版本";
 "settings.about.description" = "智能截图分类工具";
+"about.appDescription" = "智能截图分类工具";
+"about.versionInfo" = "版本信息";
+"about.version" = "版本";
+"about.buildNumber" = "构建号";
+"about.developer" = "开发者";
+"about.developerName" = "TiwenLab";
+"about.copyright" = "版权";
+"about.copyrightText" = "© 2025 TiwenLab. 保留所有权利。";
+"about.support" = "支持与帮助";
+"about.website" = "访问官网";
+"about.feedback" = "意见反馈";
+"about.userManual" = "用户手册";
 
 // 目录设置 Directories
 "directories.advancedTitle" = "高级目录设置";
