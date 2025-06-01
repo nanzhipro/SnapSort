@@ -15,6 +15,12 @@ public protocol FileOrganizerProtocol {
     /// 组织器的基础目录，所有分类目录将在此目录下创建
     var baseDirectory: URL { get }
 
+    /// 更新组织器的基础目录
+    ///
+    /// - Parameter path: 新的基础目录路径
+    /// - Throws: 如果目录更新过程中发生错误，将抛出相应异常
+    func updateBaseDirectory(path: String) throws
+
     /// 将截图文件移动到指定分类目录
     ///
     /// - Parameters:

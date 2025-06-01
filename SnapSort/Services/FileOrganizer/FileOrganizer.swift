@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import os
 import os.log
 
 /// 文件组织器
@@ -15,10 +16,12 @@ import os.log
 /// 原子性和安全性，并提供详细的错误处理和日志记录。
 public final class FileOrganizer: FileOrganizerProtocol {
     /// 文件操作的基础目录URL
-    public let baseDirectory: URL
+    public private(set) var baseDirectory: URL
 
     /// 文件系统操作日志记录器
-    private let logger = FileSystemLogger(category: "FileOrganizer")
+    private let logger = Logger(
+        subsystem: Bundle.main.bundleIdentifier ?? "com.snapsort.filesystem",
+        category: "FileOrganizer")
 
     /// 文件管理器实例
     private let fileManager = FileManager.default
@@ -30,7 +33,7 @@ public final class FileOrganizer: FileOrganizerProtocol {
     public init(baseDirectory: URL) throws {
         self.baseDirectory = baseDirectory
         try createDirectoryIfNeeded(at: baseDirectory)
-        logger.info("初始化文件组织器，基础目录: \(baseDirectory.path)")
+        logger.info("Initialized file organizer with base directory: \(baseDirectory.path)")
     }
 
     /// 初始化文件组织器
@@ -41,6 +44,17 @@ public final class FileOrganizer: FileOrganizerProtocol {
         try self.init(baseDirectory: URL(fileURLWithPath: baseDirectoryPath, isDirectory: true))
     }
 
+    /// 更新组织器的基础目录
+    ///
+    /// - Parameter path: 新的基础目录路径
+    /// - Throws: 如果目录更新过程中发生错误，将抛出相应异常
+    public func updateBaseDirectory(path: String) throws {
+        let newBaseDirectory = URL(fileURLWithPath: path, isDirectory: true)
+        try createDirectoryIfNeeded(at: newBaseDirectory)
+        self.baseDirectory = newBaseDirectory
+        logger.info("Updated base directory to: \(newBaseDirectory.path)")
+    }
+
     /// 将截图文件移动到指定分类目录
     ///
     /// - Parameters:
@@ -49,12 +63,12 @@ public final class FileOrganizer: FileOrganizerProtocol {
     /// - Returns: 移动后文件的新URL
     /// - Throws: 如果文件移动过程中发生错误，将抛出相应异常
     public func moveScreenshot(from sourceURL: URL, to category: String) throws -> URL {
-        logger.info("开始移动文件: \(sourceURL.path) -> 分类: \(category)")
+        logger.debug("Moving file from \(sourceURL.lastPathComponent) to category '\(category)'")
 
         // 验证源文件是否存在
         guard fileManager.fileExists(atPath: sourceURL.path) else {
             let error = FileOrganizerError.sourceFileNotFound(path: sourceURL.path)
-            logger.error("源文件不存在", error: error)
+            logger.error("Source file not found at path: \(sourceURL.path)")
             throw error
         }
 
@@ -69,7 +83,7 @@ public final class FileOrganizer: FileOrganizerProtocol {
         // 移动文件
         do {
             try fileManager.moveItem(at: sourceURL, to: finalURL)
-            logger.info("成功移动文件到: \(finalURL.path)")
+            logger.info("Successfully moved file to: \(finalURL.path, privacy: .public)")
             return finalURL
         } catch {
             let organizerError = FileOrganizerError.fileMoveFailed(
@@ -77,7 +91,7 @@ public final class FileOrganizer: FileOrganizerProtocol {
                 destination: finalURL.path,
                 underlyingError: error
             )
-            logger.error("移动文件失败", error: organizerError)
+            logger.error("Failed to move file: \(error.localizedDescription, privacy: .public)")
             throw organizerError
         }
     }
@@ -90,7 +104,7 @@ public final class FileOrganizer: FileOrganizerProtocol {
     /// - Returns: 移动后文件的新路径（字符串形式）
     /// - Throws: 如果文件移动过程中发生错误，将抛出相应异常
     public func moveScreenshot(from sourcePath: String, to category: String) throws -> String {
-        logger.info("使用路径字符串调用移动文件: \(sourcePath) -> 分类: \(category)")
+        logger.debug("Moving file using path string to category '\(category)'")
         let sourceURL = URL(fileURLWithPath: sourcePath)
         let destinationURL = try moveScreenshot(from: sourceURL, to: category)
         return destinationURL.path
@@ -104,7 +118,7 @@ public final class FileOrganizer: FileOrganizerProtocol {
     /// - Throws: 如果目录创建失败，将抛出异常
     private func createDirectoryIfNeeded(at url: URL) throws {
         if !fileManager.fileExists(atPath: url.path) {
-            logger.debug("创建目录: \(url.path)")
+            logger.debug("Creating directory at \(url.path, privacy: .public)")
             do {
                 try fileManager.createDirectory(
                     at: url,
@@ -116,7 +130,8 @@ public final class FileOrganizer: FileOrganizerProtocol {
                     path: url.path,
                     underlyingError: error
                 )
-                logger.error("创建目录失败", error: organizerError)
+                logger.error(
+                    "Failed to create directory: \(error.localizedDescription, privacy: .public)")
                 throw organizerError
             }
         }
@@ -142,14 +157,15 @@ public final class FileOrganizer: FileOrganizerProtocol {
 
             // 防止无限循环
             if counter > 1000 {
-                logger.error("无法创建唯一文件名，超过最大尝试次数")
+                logger.error("Failed to create unique filename after 1000 attempts")
                 throw FileOrganizerError.fileAlreadyExists(path: originalURL.path)
             }
         }
 
         if finalURL != originalURL {
             logger.debug(
-                "文件名冲突解决: \(originalURL.lastPathComponent) -> \(finalURL.lastPathComponent)")
+                "Resolved filename conflict: '\(originalURL.lastPathComponent)' → '\(finalURL.lastPathComponent)'"
+            )
         }
 
         return finalURL

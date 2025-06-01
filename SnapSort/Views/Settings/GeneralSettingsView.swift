@@ -16,7 +16,7 @@ import SwiftUI
 struct GeneralSettingsView: View {
 
     @AppStorage("showNotifications") private var showNotifications: Bool = true
-    @AppStorage("screenshotDirectory") private var screenshotDirectory: String = ""
+    @State private var screenshotDirectory: String = ""
 
     @State private var isDirectorySelected: Bool = false
     @State private var notificationManager = NotificationManager()

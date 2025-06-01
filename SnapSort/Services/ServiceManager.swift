@@ -106,13 +106,10 @@ public final class ServiceManager {
         self.aiClassifier = AIClassifier(apiClient: openAIClient)
         logger.info("AI classifier successfully initialized with endpoint: \(apiHost)")
 
-        // Initialize file organizer
-        let baseDirectoryPath =
-            UserDefaults.standard.string(forKey: "file_base_directory")
-            ?? (NSHomeDirectory() as NSString).appendingPathComponent("Pictures/SnapSort")
-        self.fileOrganizer = try FileOrganizer(baseDirectoryPath: baseDirectoryPath)
-        logger.info(
-            "File organizer successfully initialized with base directory: \(baseDirectoryPath)")
+        // 使用临时目录作为 fileOrganizer 的初始位置，后续在 setupServices 中更新
+        let tempDirectoryPath = (NSHomeDirectory() as NSString).appendingPathComponent(
+            "Pictures/SnapSort")
+        self.fileOrganizer = try FileOrganizer(baseDirectoryPath: tempDirectoryPath)
 
         // Initialize database manager
         self.databaseManager = try DatabaseManager()
@@ -122,7 +119,19 @@ public final class ServiceManager {
         self.notificationManager = NotificationManager()
         logger.info("Notification manager successfully initialized")
 
-        logger.info("Service initialization completed successfully")
+        logger.info("Service initialization completed")
+    }
+
+    /// 设置服务组件
+    /// 在初始化后调用此方法完成需要异步处理的设置
+    /// - Throws: 设置过程中可能发生的错误
+    public func setupServices() async throws {
+        // 获取系统截图位置并重新配置 fileOrganizer
+        let baseDirectoryPath = try await getSystemScreenshotLocation()
+        try fileOrganizer.updateBaseDirectory(path: baseDirectoryPath)
+        logger.info("File organizer successfully updated with base directory: \(baseDirectoryPath)")
+
+        logger.info("Service setup completed successfully")
     }
 
     // MARK: - 公共方法
@@ -131,6 +140,9 @@ public final class ServiceManager {
     /// - Throws: 服务启动过程中可能发生的错误
     public func startServices() async throws {
         logger.info("Starting service components...")
+
+        // 设置服务组件（处理异步初始化）
+        try await setupServices()
 
         // Request notification authorization
         let notificationAuthorized = await notificationManager.requestAuthorization()
@@ -176,6 +188,39 @@ public final class ServiceManager {
     }
 
     // MARK: - 私有方法
+
+    /// 获取系统截图存储位置
+    /// - Returns: 系统当前的截图存储路径
+    private func getSystemScreenshotLocation() async throws -> String {
+        do {
+            let process = Process()
+            let pipe = Pipe()
+
+            process.standardOutput = pipe
+            process.standardError = pipe
+            process.arguments = ["-c", "defaults read com.apple.screencapture location"]
+            process.executableURL = URL(fileURLWithPath: "/bin/sh")
+
+            try process.run()
+            process.waitUntilExit()
+
+            let data = pipe.fileHandleForReading.readDataToEndOfFile()
+            let output = String(data: data, encoding: .utf8) ?? ""
+
+            if process.terminationStatus == 0 {
+                let location = output.trimmingCharacters(in: .whitespacesAndNewlines)
+                if !location.isEmpty {
+                    return location
+                }
+            }
+
+            // 默认返回 "Pictures/SnapSort" 目录
+            return (NSHomeDirectory() as NSString).appendingPathComponent("Pictures/SnapSort")
+        } catch {
+            logger.error("Failed to get system screenshot location: \(error.localizedDescription)")
+            return (NSHomeDirectory() as NSString).appendingPathComponent("Pictures/SnapSort")
+        }
+    }
 
     /// 配置截图处理回调
     private func setupScreenshotHandler() {
