@@ -262,13 +262,22 @@ public final class ServiceManager {
             // 2. AI classification
             logger.info("Starting AI classification for screenshot content")
             let userCategories = getUserCategories()
-            let classificationResult = try await aiClassifier.classify(
-                text: recognizedText,
-                categories: userCategories
-            )
 
-            let category = classificationResult.category
-            logger.info("Classification completed successfully with category: '\(category)'")
+            // 确定分类结果
+            let category: String
+            if userCategories.isEmpty {
+                // 如果用户没有设置分类，跳过AI分类处理，使用默认分类名
+                logger.info("No user categories defined, skipping AI classification")
+                category = "Unclassified"
+            } else {
+                // 有用户定义的分类，执行AI分类
+                let classificationResult = try await aiClassifier.classify(
+                    text: recognizedText,
+                    categories: userCategories
+                )
+                category = classificationResult.category
+                logger.info("Classification completed successfully with category: '\(category)'")
+            }
 
             // 3. File organization
             logger.info("Moving screenshot to classification directory: '\(category)'")
@@ -317,19 +326,48 @@ public final class ServiceManager {
     }
 
     /// 获取用户自定义分类类别
-    /// - Returns: 分类类别名称数组
-    private func getUserCategories() -> [String] {
-        if let categoriesData = UserDefaults.standard.data(forKey: "user_categories"),
-            let categories = try? JSONDecoder().decode([String].self, from: categoriesData)
-        {
-            logger.debug("Retrieved \(categories.count) user-defined categories")
-            return categories
+    /// - Returns: 分类类别对象数组，包含类别名和关键词
+    private func getUserCategories() -> [CategoryItem] {
+        do {
+            // 尝试从数据库获取用户定义的分类
+            let categories = try databaseManager.getAllCategories().map { metadata in
+                CategoryItem(name: metadata.name, keywords: metadata.keywords)
+            }
+
+            if !categories.isEmpty {
+                logger.debug("Retrieved \(categories.count) user-defined categories from database")
+                return categories
+            }
+
+            // 如果数据库没有分类，尝试从UserDefaults读取
+            if let categoriesData = UserDefaults.standard.data(forKey: "user_categories") {
+                // 先尝试解析新格式（包含关键词的分类）
+                if let categoryItems = try? JSONDecoder().decode(
+                    [CategoryItem].self, from: categoriesData)
+                {
+                    logger.debug(
+                        "Retrieved \(categoryItems.count) category items from UserDefaults")
+                    return categoryItems
+                }
+
+                // 向后兼容：尝试解析旧格式（仅类别名称）
+                if let categoryNames = try? JSONDecoder().decode(
+                    [String].self, from: categoriesData)
+                {
+                    logger.debug(
+                        "Retrieved \(categoryNames.count) category names from UserDefaults (legacy format)"
+                    )
+                    // 将旧格式转换为新格式
+                    return categoryNames.map { CategoryItem(name: $0, keywords: []) }
+                }
+            }
+        } catch {
+            logger.error("Error retrieving categories: \(error.localizedDescription)")
         }
 
-        // Default categories
-        let defaultCategories = ["Work", "Study", "Personal", "Entertainment"]
-        logger.debug("Using default categories: \(defaultCategories.joined(separator: ", "))")
-        return defaultCategories
+        // 没有用户定义的分类，返回空数组
+        logger.debug("No user-defined categories found, returning empty array")
+        return []
     }
 }
 

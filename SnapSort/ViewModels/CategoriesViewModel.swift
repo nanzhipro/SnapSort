@@ -210,6 +210,12 @@ final class CategoriesViewModel: ObservableObject {
         }
     }
 
+    /// 获取所有分类名称，以顿号分隔
+    /// - Returns: 包含所有分类名称的字符串，使用顿号分隔
+    public func getAllCategoryNamesString() -> String {
+        return categories.map { $0.name }.joined(separator: "、")
+    }
+
     /// 清除错误状态
     func clearError() {
         errorMessage = nil
