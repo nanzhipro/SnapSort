@@ -9,7 +9,7 @@ import SwiftUI
 
 /// 关于视图
 ///
-/// 显示应用程序的版本信息、开发者信息和相关链接。
+/// 显示应用程序的版本信息和开发者信息。
 /// 采用标准macOS设置页面风格，提供清晰的应用信息展示。
 struct AboutView: View {
 
@@ -66,20 +66,6 @@ struct AboutView: View {
                     Spacer()
                     Text(LocalizedStringKey("about.copyrightText"))
                         .foregroundColor(.secondary)
-                }
-            }
-
-            Section(LocalizedStringKey("about.support")) {
-                Button(LocalizedStringKey("about.website")) {
-                    // 打开官网链接
-                }
-
-                Button(LocalizedStringKey("about.feedback")) {
-                    // 打开反馈页面
-                }
-
-                Button(LocalizedStringKey("about.userManual")) {
-                    // 打开用户手册
                 }
             }
         }

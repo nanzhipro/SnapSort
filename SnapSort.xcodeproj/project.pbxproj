@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		D562FB692DD891BB00D0FB9B /* OpenAI in Frameworks */ = {isa = PBXBuildFile; productRef = D562FB682DD891BB00D0FB9B /* OpenAI */; };
 		D562FB6C2DD891C800D0FB9B /* LaunchAtLogin in Frameworks */ = {isa = PBXBuildFile; productRef = D562FB6B2DD891C800D0FB9B /* LaunchAtLogin */; };
+		D5980D292DEFCA4E0085AF8F /* Settings in Frameworks */ = {isa = PBXBuildFile; productRef = D5980D282DEFCA4E0085AF8F /* Settings */; };
 		D5E42F622DD9E23E00934EA9 /* SQLite in Frameworks */ = {isa = PBXBuildFile; productRef = D5E42F612DD9E23E00934EA9 /* SQLite */; };
 /* End PBXBuildFile section */
 
@@ -59,6 +60,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				D5E42F622DD9E23E00934EA9 /* SQLite in Frameworks */,
+				D5980D292DEFCA4E0085AF8F /* Settings in Frameworks */,
 				D562FB6C2DD891C800D0FB9B /* LaunchAtLogin in Frameworks */,
 				D562FB692DD891BB00D0FB9B /* OpenAI in Frameworks */,
 			);
@@ -124,6 +126,7 @@
 				D562FB682DD891BB00D0FB9B /* OpenAI */,
 				D562FB6B2DD891C800D0FB9B /* LaunchAtLogin */,
 				D5E42F612DD9E23E00934EA9 /* SQLite */,
+				D5980D282DEFCA4E0085AF8F /* Settings */,
 			);
 			productName = SnapSort;
 			productReference = D517E8802DCADEBB006FE803 /* SnapSort.app */;
@@ -213,6 +216,7 @@
 				D562FB672DD891BB00D0FB9B /* XCRemoteSwiftPackageReference "OpenAI" */,
 				D562FB6A2DD891C800D0FB9B /* XCRemoteSwiftPackageReference "LaunchAtLogin-Modern" */,
 				D5E42F602DD9E23E00934EA9 /* XCRemoteSwiftPackageReference "SQLite.swift" */,
+				D5980D272DEFCA4E0085AF8F /* XCRemoteSwiftPackageReference "Settings" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = D517E8812DCADEBB006FE803 /* Products */;
@@ -414,7 +418,7 @@
 				CODE_SIGN_ENTITLEMENTS = SnapSort/SnapSort.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_ASSET_PATHS = "\"SnapSort/Preview Content\"";
 				DEVELOPMENT_TEAM = YSM8K853CQ;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -428,7 +432,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.2;
 				PRODUCT_BUNDLE_IDENTIFIER = com.tiwenlab.snapsort;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -444,7 +448,7 @@
 				CODE_SIGN_ENTITLEMENTS = SnapSort/SnapSort.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_ASSET_PATHS = "\"SnapSort/Preview Content\"";
 				DEVELOPMENT_TEAM = YSM8K853CQ;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -458,7 +462,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.2;
 				PRODUCT_BUNDLE_IDENTIFIER = com.tiwenlab.snapsort;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -592,6 +596,14 @@
 				kind = branch;
 			};
 		};
+		D5980D272DEFCA4E0085AF8F /* XCRemoteSwiftPackageReference "Settings" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/sindresorhus/Settings";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 3.1.1;
+			};
+		};
 		D5E42F602DD9E23E00934EA9 /* XCRemoteSwiftPackageReference "SQLite.swift" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/stephencelis/SQLite.swift.git";
@@ -612,6 +624,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = D562FB6A2DD891C800D0FB9B /* XCRemoteSwiftPackageReference "LaunchAtLogin-Modern" */;
 			productName = LaunchAtLogin;
+		};
+		D5980D282DEFCA4E0085AF8F /* Settings */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = D5980D272DEFCA4E0085AF8F /* XCRemoteSwiftPackageReference "Settings" */;
+			productName = Settings;
 		};
 		D5E42F612DD9E23E00934EA9 /* SQLite */ = {
 			isa = XCSwiftPackageProductDependency;

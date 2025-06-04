@@ -9,13 +9,12 @@ import SwiftUI
 
 /// AI设置视图
 ///
-/// 管理人工智能分类功能的配置选项，包括AI模式选择、API密钥管理。
-/// 支持本地和云端两种AI处理模式，提供安全的API密钥输入和二进制存储功能。
-/// 采用标准macOS设置页面风格，使用Form布局根据选择的模式动态展示相关配置选项。
+/// 管理人工智能分类功能的配置选项，包括API密钥管理。
+/// 提供云端AI处理模式，支持安全的API密钥输入和二进制存储功能。
+/// 采用标准macOS设置页面风格，使用Form布局展示相关配置选项。
 struct AISettingsView: View {
 
     @AppStorage("enableAIClassification") private var enableAIClassification: Bool = true
-    @AppStorage("aiClassificationMode") private var aiClassificationMode: AIMode = .local
 
     @State private var apiKey: String = ""
     @State private var isApiKeyValid: Bool = false
@@ -27,20 +26,13 @@ struct AISettingsView: View {
                     .help(LocalizedStringKey("settings.ai.enabledHelp"))
 
                 if enableAIClassification {
-                    Picker(LocalizedStringKey("settings.ai.mode"), selection: $aiClassificationMode)
-                    {
-                        Text(LocalizedStringKey("settings.ai.modeLocal")).tag(AIMode.local)
-                        Text(LocalizedStringKey("settings.ai.modeCloud")).tag(AIMode.cloud)
-                    }
-                    .pickerStyle(.segmented)
-
-                    Text(modeDescription)
+                    Text(String(localized: "settings.ai.modeCloudDesc"))
                         .font(.caption)
                         .foregroundColor(.secondary)
                 }
             }
 
-            if enableAIClassification && aiClassificationMode == .cloud {
+            if enableAIClassification {
                 Section(LocalizedStringKey("settings.ai.cloudSettings")) {
                     VStack(alignment: .leading, spacing: 8) {
                         HStack {
@@ -90,15 +82,6 @@ struct AISettingsView: View {
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .onAppear {
             loadApiKey()
-        }
-    }
-
-    private var modeDescription: String {
-        switch aiClassificationMode {
-        case .local:
-            return String(localized: "settings.ai.modeLocalDesc")
-        case .cloud:
-            return String(localized: "settings.ai.modeCloudDesc")
         }
     }
 
@@ -155,13 +138,6 @@ struct AISettingsView: View {
     private func clearApiKeyFromUserDefaults() {
         UserDefaults.standard.removeObject(forKey: "ai_api_key_data")
     }
-}
-
-// MARK: - 数据模型
-
-enum AIMode: String, CaseIterable, Codable {
-    case local = "local"
-    case cloud = "cloud"
 }
 
 #Preview {
