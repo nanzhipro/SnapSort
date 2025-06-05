@@ -9,31 +9,31 @@ import AppKit
 import Foundation
 import os.log
 
-/// 应用程序委托
+/// Application Delegate
 ///
-/// 负责处理应用程序生命周期事件和系统级交互。
-/// 管理菜单栏图标、全局快捷键和应用程序状态。
+/// Handles application lifecycle events and system-level interactions.
+/// Manages menu bar icon, global shortcuts, and application state.
 class AppDelegate: NSObject, NSApplicationDelegate {
-    /// 系统日志记录器
+    /// System logger
     private let logger = Logger(subsystem: "com.snapsort.app", category: "AppDelegate")
 
     func applicationDidFinishLaunching(_ notification: Notification) {
         logger.info("Application did finish launching")
 
-        // 在实际实现中，您需要调用您的ServiceManager
-        // 例如：ServiceManager.shared.startServices()
-        // 下面是使用Task异步执行的示例结构
+        // In actual implementation, you need to call your ServiceManager
+        // Example: ServiceManager.shared.startServices()
+        // Below is an example structure using Task for async execution
         Task {
             do {
                 logger.info("Starting services...")
 
-                // 调用服务管理器的 startServices() 方法（将内部自动启动 ScreenshotMonitor）
+                // Call the startServices() method of ServiceManager (which will automatically start ScreenshotMonitor)
                 try await ServiceManager.shared.startServices()
 
                 logger.info("Services started successfully")
             } catch {
                 logger.error("Failed to start services: \(error.localizedDescription)")
-                // 显示错误提示
+                // Display error message
                 DispatchQueue.main.async {
                     let alert = NSAlert()
                     alert.messageText = "服务启动失败"
@@ -49,12 +49,12 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     func applicationWillTerminate(_ notification: Notification) {
         logger.info("Application will terminate")
 
-        // 在实际实现中，您需要停止ServiceManager
-        // 例如：ServiceManager.shared.stopServices()
+        // In actual implementation, you need to stop ServiceManager
+        // Example: ServiceManager.shared.stopServices()
         Task {
             logger.info("Stopping services...")
 
-            // 调用服务管理器的 stopServices() 方法
+            // Call the stopServices() method of ServiceManager
             await ServiceManager.shared.stopServices()
 
             logger.info("Services stopped successfully")
@@ -64,7 +64,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     func applicationShouldHandleReopen(_ sender: NSApplication, hasVisibleWindows flag: Bool)
         -> Bool
     {
-        // 处理应用重新打开事件
+        // Handle application reopen event
         return true
     }
 }

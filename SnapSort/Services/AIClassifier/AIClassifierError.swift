@@ -7,16 +7,16 @@
 
 import Foundation
 
-/// AI分类器可能出现的错误类型
+/// Error types that may occur in AI classifier
 public enum AIClassifierError: Error, LocalizedError {
-    /// API调用失败
+    /// API call failure
     case apiError(String)
-    /// 解析响应失败
+    /// Response parsing failure
     case parseError(String)
-    /// 参数错误
+    /// Parameter error
     case invalidInput(String)
 
-    /// 错误描述
+    /// Error description
     public var errorDescription: String? {
         switch self {
         case .apiError(let message):

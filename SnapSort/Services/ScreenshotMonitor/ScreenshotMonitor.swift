@@ -8,74 +8,74 @@
 import Foundation
 import os
 
-// MARK: - 截图监控协议
+// MARK: - Screenshot Monitoring Protocol
 
-/// 截图监控协议
-/// 定义了截图监控组件需要实现的基本功能接口
+/// Screenshot Monitor Protocol
+/// Defines the basic functional interface that screenshot monitoring components need to implement
 public protocol ScreenshotMonitorProtocol {
-    /// 截图处理回调类型
+    /// Screenshot handler callback type
     typealias ScreenshotHandler = (URL) -> Void
 
-    /// 监控状态
+    /// Monitoring status
     var isMonitoring: Bool { get }
 
-    /// 获取截图保存位置
+    /// Get screenshot save location
     func getScreenshotLocation() -> String
 
-    /// 开始监控截图
+    /// Start monitoring screenshots
     func startMonitoring() throws
 
-    /// 停止监控截图
+    /// Stop monitoring screenshots
     func stopMonitoring()
 
-    /// 设置截图处理回调
-    /// - Parameter handler: 处理新截图的回调函数
+    /// Set screenshot handler callback
+    /// - Parameter handler: Callback function to process new screenshots
     func setScreenshotHandler(_ handler: @escaping ScreenshotHandler)
 }
 
-// MARK: - 截图监控错误类型
+// MARK: - Screenshot Monitor Error Types
 
-/// 截图监控错误类型
-/// 定义了截图监控过程中可能出现的错误
+/// Screenshot Monitor Error Types
+/// Defines errors that may occur during screenshot monitoring
 public enum ScreenshotMonitorError: Error {
-    /// 无法获取截图保存目录
+    /// Unable to get screenshot save directory
     case unableToGetScreenshotLocation
-    /// 监控已经启动
+    /// Monitoring already started
     case monitoringAlreadyStarted
-    /// 监控设置失败
+    /// Monitoring setup failed
     case monitoringSetupFailed(String)
 
-    /// 错误描述
+    /// Error description
     public var localizedDescription: String {
         switch self {
         case .unableToGetScreenshotLocation:
-            return "无法获取截图保存目录"
+            return "Unable to get screenshot save directory"
         case .monitoringAlreadyStarted:
-            return "截图监控已经启动"
+            return "Screenshot monitoring already started"
         case .monitoringSetupFailed(let reason):
-            return "监控设置失败: \(reason)"
+            return "Monitoring setup failed: \(reason)"
         }
     }
 }
 
-// MARK: - 默认截图监控实现
+// MARK: - Default Screenshot Monitor Implementation
 
-/// 默认截图监控实现
-/// 使用 NSMetadataQuery 监控系统截图文件夹
+/// Default Screenshot Monitor Implementation
+/// Uses NSMetadataQuery to monitor system screenshot folder
 public final class ScreenshotMonitor: ScreenshotMonitorProtocol {
     private var metadataQuery: NSMetadataQuery?
     private var screenshotHandler: ScreenshotMonitorProtocol.ScreenshotHandler?
     private var screenshotLocationCache: String?
 
-    /// 日志记录器
+    /// Logger
     private let logger = Logger(subsystem: "com.snapsort.screenshot", category: "ScreenshotMonitor")
 
-    /// 监控状态
+    /// Monitoring status
     public private(set) var isMonitoring: Bool = false
 
     public static let shared = ScreenshotMonitor()
 
-    /// 初始化
+    /// Initialization
     public init() {
         logger.debug("Screenshot monitor initialized")
     }
@@ -85,15 +85,15 @@ public final class ScreenshotMonitor: ScreenshotMonitorProtocol {
         logger.debug("Screenshot monitor deinitialized")
     }
 
-    /// 获取截图保存位置
-    /// - Returns: 截图保存的目录路径
+    /// Get screenshot save location
+    /// - Returns: Directory path where screenshots are saved
     public func getScreenshotLocation() -> String {
         if let cachedLocation = screenshotLocationCache {
             logger.debug("Using cached screenshot location: \(cachedLocation)")
             return cachedLocation
         }
 
-        // TODO: Sandbox下，无法读取defaults： 方案见： Docs/SandboxApp读取defaults.md
+        // TODO: In Sandbox, can't read defaults: See solution in Docs/SandboxApp读取defaults.md
         let process = Process()
         process.executableURL = URL(fileURLWithPath: "/usr/bin/defaults")
         process.arguments = ["read", "com.apple.screencapture", "location"]
@@ -108,7 +108,7 @@ public final class ScreenshotMonitor: ScreenshotMonitorProtocol {
             try process.run()
             process.waitUntilExit()
 
-            // 检查进程退出状态
+            // Check process exit status
             if process.terminationStatus == 0 {
                 let data = pipe.fileHandleForReading.readDataToEndOfFile()
                 if let output = String(data: data, encoding: .utf8)?.trimmingCharacters(
@@ -121,22 +121,22 @@ public final class ScreenshotMonitor: ScreenshotMonitorProtocol {
                     return expandedPath
                 }
             }
-            // 默认设置不存在或读取失败，无需处理错误，直接使用默认路径
+            // Default settings don't exist or read failed, no need to handle error, use default path directly
             logger.notice("Could not retrieve custom screenshot location, using default path")
         } catch {
-            // 捕获异常但不输出错误信息，直接使用默认路径
+            // Catch exceptions but don't output error messages, use default path directly
             logger.error("Failed to execute defaults command: \(error.localizedDescription)")
         }
 
-        // 如果无法获取自定义位置，默认返回桌面路径
+        // If custom location can't be retrieved, return desktop path as default
         let desktopPath = (NSHomeDirectory() as NSString).appendingPathComponent("Desktop")
         screenshotLocationCache = desktopPath
         logger.info("Using desktop as fallback screenshot location: \(desktopPath)")
         return desktopPath
     }
 
-    /// 开始监控截图
-    /// - Throws: ScreenshotMonitorError 如果监控无法启动
+    /// Start monitoring screenshots
+    /// - Throws: ScreenshotMonitorError if monitoring cannot be started
     public func startMonitoring() throws {
         guard !isMonitoring else {
             logger.notice("Monitoring already started, ignoring request")
@@ -146,12 +146,12 @@ public final class ScreenshotMonitor: ScreenshotMonitorProtocol {
         let screenshotLocation = getScreenshotLocation()
         logger.info("Starting screenshot monitoring at location: \(screenshotLocation)")
 
-        // 创建并配置元数据查询
+        // Create and configure metadata query
         let query = NSMetadataQuery()
         query.predicate = NSPredicate(format: "kMDItemIsScreenCapture == 1")
         query.searchScopes = [screenshotLocation]
 
-        // 注册通知观察者
+        // Register notification observers
         logger.debug("Registering notification observers for metadata query updates")
         NotificationCenter.default.addObserver(
             self,
@@ -167,7 +167,7 @@ public final class ScreenshotMonitor: ScreenshotMonitorProtocol {
             object: query
         )
 
-        // 启动查询
+        // Start query
         logger.debug("Attempting to start metadata query")
         if query.start() {
             metadataQuery = query
@@ -179,7 +179,7 @@ public final class ScreenshotMonitor: ScreenshotMonitorProtocol {
         }
     }
 
-    /// 停止监控截图
+    /// Stop monitoring screenshots
     public func stopMonitoring() {
         guard isMonitoring, let query = metadataQuery else {
             logger.debug("Stop monitoring called but no active monitoring found")
@@ -198,8 +198,8 @@ public final class ScreenshotMonitor: ScreenshotMonitorProtocol {
         logger.info("Screenshot monitoring stopped")
     }
 
-    /// 设置截图处理回调
-    /// - Parameter handler: 处理新截图的回调函数
+    /// Set screenshot handler callback
+    /// - Parameter handler: Callback function to process new screenshots
     public func setScreenshotHandler(
         _ handler: @escaping ScreenshotMonitorProtocol.ScreenshotHandler
     ) {
@@ -217,7 +217,7 @@ public final class ScreenshotMonitor: ScreenshotMonitorProtocol {
 
         query.disableUpdates()
 
-        // 获取新添加的项目
+        // Get newly added items
         if let addedItems = notification.userInfo?[NSMetadataQueryUpdateAddedItemsKey]
             as? [NSMetadataItem]
         {
@@ -234,7 +234,7 @@ public final class ScreenshotMonitor: ScreenshotMonitorProtocol {
             return
         }
 
-        // 开始监控变化
+        // Start monitoring for changes
         logger.debug("Initial query finished, enabling updates for continuous monitoring")
         query.enableUpdates()
     }
@@ -248,7 +248,7 @@ public final class ScreenshotMonitor: ScreenshotMonitorProtocol {
             let url = URL(fileURLWithPath: path)
             logger.info("Processing new screenshot: \(url.lastPathComponent)")
 
-            // 调用处理回调
+            // Call handler callback
             DispatchQueue.main.async { [weak self] in
                 guard let self = self else { return }
 

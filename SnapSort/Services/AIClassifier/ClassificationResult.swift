@@ -7,28 +7,28 @@
 
 import Foundation
 
-/// 表示AI分类的结果
+/// Represents AI classification result
 public struct ClassificationResult: Equatable {
-    /// 分类结果的类别名称
+    /// Category name of classification result
     public let category: String
 
-    /// 分类的置信度，值范围0-1，1表示最高置信度（可选）
+    /// Classification confidence, range 0-1, 1 being highest confidence (optional)
     public let confidence: Double?
 
-    /// 创建一个新的分类结果
+    /// Create a new classification result
     /// - Parameters:
-    ///   - category: 分类结果的类别名称
-    ///   - confidence: 分类的置信度，可选值
+    ///   - category: Category name of classification result
+    ///   - confidence: Classification confidence, optional value
     public init(category: String, confidence: Double? = nil) {
         self.category = category
         self.confidence = confidence
     }
 }
 
-/// 表示LLM响应的JSON结构
+/// Represents JSON structure of LLM response
 struct ClassificationResponse: Codable {
-    /// 分类的类别
+    /// Classification category
     let category: String
-    /// 分类的置信度，可选值
+    /// Classification confidence, optional value
     let confidence: Double?
 }

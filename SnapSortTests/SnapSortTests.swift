@@ -2,10 +2,11 @@
 //  SnapSortTests.swift
 //  SnapSortTests
 //
-//  Created by 南朋友 on 2025/5/7.
+//  Created by CursorAI on 2025/5/7.
 //
 
 import XCTest
+
 @testable import SnapSort
 
 final class SnapSortTests: XCTestCase {

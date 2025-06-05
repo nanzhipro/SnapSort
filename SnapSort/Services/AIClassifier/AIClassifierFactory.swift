@@ -7,14 +7,14 @@
 
 import Foundation
 
-/// 提供创建AIClassifier实例的简便工厂方法
+/// Provides convenient factory methods for creating AIClassifier instances
 public enum AIClassifierFactory {
 
-    /// 创建一个使用DeepSeek API的分类器实例
+    /// Create a classifier instance using DeepSeek API
     /// - Parameters:
-    ///   - apiKey: DeepSeek API密钥
-    ///   - baseURL: API基础URL，默认为DeepSeek API地址
-    /// - Returns: 配置好的AI分类器实例
+    ///   - apiKey: DeepSeek API key
+    ///   - baseURL: API base URL, defaults to DeepSeek API endpoint
+    /// - Returns: Configured AI classifier instance
     public static func makeDeepSeekClassifier(
         apiKey: String,
         baseURL: URL = URL(string: "https://api.deepseek.com/v1")!
@@ -23,10 +23,10 @@ public enum AIClassifierFactory {
         return AIClassifier(apiClient: client)
     }
 
-    /// 创建一个使用OpenAI API的分类器实例
+    /// Create a classifier instance using OpenAI API
     /// - Parameters:
-    ///   - apiKey: OpenAI API密钥
-    /// - Returns: 配置好的AI分类器实例
+    ///   - apiKey: OpenAI API key
+    /// - Returns: Configured AI classifier instance
     public static func makeOpenAIClassifier(apiKey: String) -> AIClassifier {
         let client = SimpleOpenAIClient(apiToken: apiKey)
         let classifier = AIClassifier(apiClient: client)
@@ -34,12 +34,12 @@ public enum AIClassifierFactory {
         return classifier
     }
 
-    /// 创建一个使用自定义API端点的分类器实例
+    /// Create a classifier instance using custom API endpoint
     /// - Parameters:
-    ///   - apiKey: API密钥
-    ///   - baseURL: API基础URL
-    ///   - modelName: 要使用的模型名称
-    /// - Returns: 配置好的AI分类器实例
+    ///   - apiKey: API key
+    ///   - baseURL: API base URL
+    ///   - modelName: Model name to use
+    /// - Returns: Configured AI classifier instance
     public static func makeCustomClassifier(
         apiKey: String,
         baseURL: URL,

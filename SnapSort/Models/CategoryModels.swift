@@ -7,10 +7,10 @@
 
 import Foundation
 
-/// 分类项目模型
+/// Category Item Model
 ///
-/// 表示用户定义的截图分类，包含分类名称和关键词列表。
-/// 用于AI分类和文件组织功能，支持基于关键词的自动分类。
+/// Represents user-defined screenshot categories with name and keyword list.
+/// Used for AI classification and file organization, supporting keyword-based auto-categorization.
 public struct CategoryItem: Identifiable, Codable {
     public let id = UUID()
     public var name: String

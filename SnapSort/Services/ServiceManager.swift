@@ -4,76 +4,76 @@
 //
 //  Created by CursorAI on 2024-06-21.
 //
-//  服务管理器负责初始化和协调各个服务组件的运行。
-//  该文件实现了应用程序的核心工作流，包括截图处理、OCR文本识别、
-//  AI分类、文件组织、数据库更新和通知发送，形成一个完整的处理链。
+//  The service manager is responsible for initializing and coordinating the operation of various service components.
+//  This file implements the core workflow of the application, including screenshot processing, OCR text recognition,
+//  AI classification, file organization, database updates, and notification sending, forming a complete processing chain.
 
 import Foundation
 import SwiftUI
 import UserNotifications
 import os.log
 
-/// 服务管理器
-/// 管理截图处理的完整工作流程，包括各组件的生命周期和配置。
+/// Service Manager
+/// Manages the complete workflow for screenshot processing, including component lifecycle and configuration.
 ///
-/// `ServiceManager` 作为应用的核心协调器，负责以下任务：
-/// - 初始化和配置各个服务组件（截图监控、OCR服务、AI分类器等）
-/// - 协调组件间的交互和数据流转
-/// - 管理错误处理和恢复策略
-/// - 提供统一的服务启动和停止接口
+/// `ServiceManager` serves as the core coordinator of the application, responsible for:
+/// - Initializing and configuring service components (screenshot monitor, OCR service, AI classifier, etc.)
+/// - Coordinating interactions and data flow between components
+/// - Managing error handling and recovery strategies
+/// - Providing unified service start and stop interfaces
 ///
-/// ## 工作流程
+/// ## Workflow
 ///
-/// 1. 用户截图被截图监控服务(`ScreenshotMonitor`)捕获
-/// 2. 截图交给OCR处理器(`OCRProcessor`)进行文本识别
-/// 3. 识别结果传递给AI分类器(`AIClassifier`)进行分类
-/// 4. 分类结果用于文件组织器(`FileOrganizer`)将截图移动到相应目录
-/// 5. 新的文件路径、识别文本和分类结果保存到数据库(`DatabaseManager`)
-/// 6. 处理结果通过通知管理器(`NotificationManager`)通知用户
+/// 1. User screenshots are captured by the screenshot monitoring service (`ScreenshotMonitor`)
+/// 2. Screenshots are passed to the OCR processor (`OCRProcessor`) for text recognition
+/// 3. Recognition results are passed to the AI classifier (`AIClassifier`) for classification
+/// 4. Classification results are used by the file organizer (`FileOrganizer`) to move screenshots to appropriate directories
+/// 5. New file paths, recognized text, and classification results are saved to the database (`DatabaseManager`)
+/// 6. Processing results are communicated to the user via the notification manager (`NotificationManager`)
 ///
-/// ## 使用方式
+/// ## Usage
 ///
 /// ```swift
-/// // 获取服务管理器实例
+/// // Get service manager instance
 /// let serviceManager = ServiceManager.shared
 ///
-/// // 启动所有服务
+/// // Start all services
 /// try await serviceManager.startServices()
 ///
-/// // 在应用关闭时停止服务
+/// // Stop services when application closes
 /// await serviceManager.stopServices()
 /// ```
 public final class ServiceManager {
-    // MARK: - 属性
+    // MARK: - Properties
 
-    /// 截图监控服务
+    /// Screenshot monitoring service
     public private(set) var screenshotMonitor: ScreenshotMonitorProtocol
 
-    /// OCR文本识别处理器
+    /// OCR text recognition processor
     public private(set) var ocrProcessor: OCRProcessor
 
-    /// AI分类器服务
+    /// AI classifier service
     public private(set) var aiClassifier: AIClassifier
 
-    /// 文件组织器服务
+    /// File organizer service
     public private(set) var fileOrganizer: FileOrganizerProtocol
 
-    /// 数据库管理服务
+    /// Database management service
     public private(set) var databaseManager: DatabaseManager
 
-    /// 通知管理服务
+    /// Notification management service
     public private(set) var notificationManager: NotificationManagerProtocol
 
-    /// 系统日志记录器
+    /// System logger
     private let logger = Logger(subsystem: "com.snapsort.services", category: "ServiceManager")
 
-    /// 单例实例
+    /// Singleton instance
     public static let shared = try! ServiceManager()
 
-    // MARK: - 初始化
+    // MARK: - Initialization
 
-    /// 初始化服务管理器
-    /// - Throws: 初始化过程中可能发生的组件错误
+    /// Initialize service manager
+    /// - Throws: Component errors that may occur during initialization
     public init() throws {
         logger.info("Initializing service components...")
 
@@ -93,7 +93,7 @@ public final class ServiceManager {
             throw ServiceError.invalidConfiguration(service: "AIClassifier", key: "apiURL")
         }
 
-        // 从UserDefaults读取二进制存储的API密钥
+        // Read API key stored in binary from UserDefaults
         var apiKey: String = ""
         if let keyData = UserDefaults.standard.data(forKey: "ai_api_key_data"),
             let key = String(data: keyData, encoding: .utf8), !key.isEmpty
@@ -106,7 +106,7 @@ public final class ServiceManager {
         self.aiClassifier = AIClassifier(apiClient: openAIClient)
         logger.info("AI classifier successfully initialized with endpoint: \(apiHost)")
 
-        // 使用临时目录作为 fileOrganizer 的初始位置，后续在 setupServices 中更新
+        // Use temporary directory as initial location for fileOrganizer, will update in setupServices later
         let tempDirectoryPath = (NSHomeDirectory() as NSString).appendingPathComponent(
             "Pictures/SnapSort")
         self.fileOrganizer = try FileOrganizer(baseDirectoryPath: tempDirectoryPath)
@@ -214,7 +214,7 @@ public final class ServiceManager {
                 }
             }
 
-            // 默认返回 "Pictures/SnapSort" 目录
+            // Default return to "Pictures/SnapSort" directory
             return (NSHomeDirectory() as NSString).appendingPathComponent("Pictures/SnapSort")
         } catch {
             logger.error("Failed to get system screenshot location: \(error.localizedDescription)")
@@ -222,7 +222,7 @@ public final class ServiceManager {
         }
     }
 
-    /// 配置截图处理回调
+    /// Configure screenshot handler callback
     private func setupScreenshotHandler() {
         screenshotMonitor.setScreenshotHandler { [weak self] screenshotURL in
             guard let self = self else { return }
@@ -232,8 +232,8 @@ public final class ServiceManager {
         }
     }
 
-    /// 处理新截图，执行完整的应用工作流
-    /// - Parameter url: 捕获到的截图文件URL
+    /// Process new screenshot, executing the complete application workflow
+    /// - Parameter url: URL of the captured screenshot file
     private func processScreenshot(url: URL) async {
         logger.info("Processing new screenshot captured at: \(url.path)")
 
@@ -245,7 +245,7 @@ public final class ServiceManager {
                 languages: []
             )
 
-            // 获取格式化文本结果
+            // Get formatted text results
             let recognizedText = ocrProcessor.getFormattedText(from: ocrResults)
             if recognizedText.isEmpty {
                 let errorMessage = "No text content detected in screenshot"
@@ -263,14 +263,14 @@ public final class ServiceManager {
             logger.info("Starting AI classification for screenshot content")
             let userCategories = getUserCategories()
 
-            // 确定分类结果
+            // Determine classification result
             let category: String
             if userCategories.isEmpty {
-                // 如果用户没有设置分类，跳过AI分类处理，使用默认分类名
+                // If user has not set up categories, skip AI classification and use default category name
                 logger.info("No user categories defined, skipping AI classification")
                 category = "Unclassified"
             } else {
-                // 有用户定义的分类，执行AI分类
+                // User-defined categories exist, perform AI classification
                 let classificationResult = try await aiClassifier.classify(
                     text: recognizedText,
                     categories: userCategories
@@ -325,11 +325,11 @@ public final class ServiceManager {
         }
     }
 
-    /// 获取用户自定义分类类别
-    /// - Returns: 分类类别对象数组，包含类别名和关键词
+    /// Get user-defined categories
+    /// - Returns: Array of category objects containing category names and keywords
     private func getUserCategories() -> [CategoryItem] {
         do {
-            // 尝试从数据库获取用户定义的分类
+            // Try to get user-defined categories from the database
             let categories = try databaseManager.getAllCategories().map { metadata in
                 CategoryItem(name: metadata.name, keywords: metadata.keywords)
             }
@@ -339,9 +339,9 @@ public final class ServiceManager {
                 return categories
             }
 
-            // 如果数据库没有分类，尝试从UserDefaults读取
+            // If no categories in database, try reading from UserDefaults
             if let categoriesData = UserDefaults.standard.data(forKey: "user_categories") {
-                // 先尝试解析新格式（包含关键词的分类）
+                // First try parsing new format (categories with keywords)
                 if let categoryItems = try? JSONDecoder().decode(
                     [CategoryItem].self, from: categoriesData)
                 {
@@ -350,14 +350,14 @@ public final class ServiceManager {
                     return categoryItems
                 }
 
-                // 向后兼容：尝试解析旧格式（仅类别名称）
+                // Backward compatibility: try parsing old format (category names only)
                 if let categoryNames = try? JSONDecoder().decode(
                     [String].self, from: categoriesData)
                 {
                     logger.debug(
                         "Retrieved \(categoryNames.count) category names from UserDefaults (legacy format)"
                     )
-                    // 将旧格式转换为新格式
+                    // Convert old format to new format
                     return categoryNames.map { CategoryItem(name: $0, keywords: []) }
                 }
             }
@@ -365,33 +365,33 @@ public final class ServiceManager {
             logger.error("Error retrieving categories: \(error.localizedDescription)")
         }
 
-        // 没有用户定义的分类，返回空数组
+        // No user-defined categories, return empty array
         logger.debug("No user-defined categories found, returning empty array")
         return []
     }
 }
 
-/// 服务操作错误类型
+/// Service operation error types
 public enum ServiceError: Error, LocalizedError {
-    /// 缺少必要配置
+    /// Missing required configuration
     case configurationMissing(service: String, key: String)
-    /// 配置值无效
+    /// Invalid configuration value
     case invalidConfiguration(service: String, key: String)
-    /// 服务启动失败
+    /// Service startup failed
     case startupFailed(service: String, reason: String)
-    /// 处理阶段失败
+    /// Processing stage failed
     case processingFailed(stage: String, reason: String)
 
     public var errorDescription: String? {
         switch self {
         case .configurationMissing(let service, let key):
-            return "配置缺失：\(service) 需要 \(key) 配置"
+            return "Configuration missing: \(service) requires \(key) configuration"
         case .invalidConfiguration(let service, let key):
-            return "配置无效：\(service) 的 \(key) 设置无效"
+            return "Invalid configuration: \(service)'s \(key) setting is invalid"
         case .startupFailed(let service, let reason):
-            return "服务启动失败：\(service) - \(reason)"
+            return "Service startup failed: \(service) - \(reason)"
         case .processingFailed(let stage, let reason):
-            return "处理失败：在 \(stage) 阶段 - \(reason)"
+            return "Processing failed: in \(stage) stage - \(reason)"
         }
     }
 }

@@ -2,7 +2,7 @@
 //  SnapSortApp.swift
 //  SnapSort
 //
-//  Created by 南朋友 on 2025/5/7.
+//  Created by CursorAI on 2025/5/7.
 //
 
 import AppKit
@@ -13,7 +13,7 @@ struct SnapSortApp: App {
     @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
 
     var body: some Scene {
-        // 设置窗口组 - 用于LSUIElement模式下的设置显示
+        // Window group - used for settings display in LSUIElement mode
         WindowGroup("Settings", id: "settings") {
             SettingView()
         }
@@ -23,7 +23,7 @@ struct SnapSortApp: App {
         .windowToolbarStyle(.unifiedCompact(showsTitle: true))
         .defaultLaunchBehavior(.suppressed)
 
-        // 菜单栏额外项
+        // Menu bar extra item
         MenuBarExtra {
             MenuBarContentView()
         } label: {
@@ -33,9 +33,9 @@ struct SnapSortApp: App {
     }
 }
 
-/// 菜单栏内容视图
+/// Menu Bar Content View
 ///
-/// 提供菜单栏下拉菜单的内容，包括设置和退出选项
+/// Provides content for the menu bar dropdown, including settings and quit options
 struct MenuBarContentView: View {
     @Environment(\.openWindow) private var openWindow
 
@@ -56,12 +56,12 @@ struct MenuBarContentView: View {
         .padding(.vertical, 4)
     }
 
-    /// 打开设置窗口
+    /// Opens the settings window
     private func openSettingsWindow() {
-        // 激活应用程序以确保窗口能够显示
+        // Activate the application to ensure window visibility
         NSApplication.shared.activate(ignoringOtherApps: true)
 
-        // 使用SwiftUI的openWindow环境值打开设置窗口
+        // Use SwiftUI's openWindow environment value to open settings window
         openWindow(id: "settings")
     }
 }
