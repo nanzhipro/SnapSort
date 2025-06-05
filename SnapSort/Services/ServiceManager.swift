@@ -122,11 +122,11 @@ public final class ServiceManager {
         logger.info("Service initialization completed")
     }
 
-    /// 设置服务组件
-    /// 在初始化后调用此方法完成需要异步处理的设置
-    /// - Throws: 设置过程中可能发生的错误
+    /// Set up service components
+    /// Call this method after initialization to complete setup that requires asynchronous processing
+    /// - Throws: Errors that may occur during the setup process
     public func setupServices() async throws {
-        // 获取系统截图位置并重新配置 fileOrganizer
+        // Get system screenshot location and reconfigure fileOrganizer
         let baseDirectoryPath = try await getSystemScreenshotLocation()
         try fileOrganizer.updateBaseDirectory(path: baseDirectoryPath)
         logger.info("File organizer successfully updated with base directory: \(baseDirectoryPath)")
@@ -134,14 +134,14 @@ public final class ServiceManager {
         logger.info("Service setup completed successfully")
     }
 
-    // MARK: - 公共方法
+    // MARK: - Public Methods
 
-    /// 启动所有服务
-    /// - Throws: 服务启动过程中可能发生的错误
+    /// Start all services
+    /// - Throws: Errors that may occur during service startup
     public func startServices() async throws {
         logger.info("Starting service components...")
 
-        // 设置服务组件（处理异步初始化）
+        // Set up service components (handle asynchronous initialization)
         try await setupServices()
 
         // Request notification authorization
@@ -168,7 +168,7 @@ public final class ServiceManager {
         logger.info("All services started successfully")
     }
 
-    /// 停止所有服务
+    /// Stop all services
     public func stopServices() async {
         logger.info("Stopping service components...")
 
@@ -187,10 +187,10 @@ public final class ServiceManager {
         logger.info("All services stopped successfully")
     }
 
-    // MARK: - 私有方法
+    // MARK: - Private Methods
 
-    /// 获取系统截图存储位置
-    /// - Returns: 系统当前的截图存储路径
+    /// Get system screenshot storage location
+    /// - Returns: Current system screenshot storage path
     private func getSystemScreenshotLocation() async throws -> String {
         do {
             let process = Process()

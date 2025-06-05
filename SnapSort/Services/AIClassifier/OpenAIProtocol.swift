@@ -8,37 +8,37 @@
 import Foundation
 import OpenAI
 
-/// 定义简化的聊天消息结构
+/// Define simplified chat message structure
 public struct SimpleMessage {
-    /// 消息角色
+    /// Message role
     public enum Role: String {
         case system
         case user
         case assistant
     }
 
-    /// 消息角色
+    /// Message role
     public let role: Role
-    /// 消息内容
+    /// Message content
     public let content: String
 
-    /// 创建一个新的聊天消息
+    /// Create a new chat message
     /// - Parameters:
-    ///   - role: 消息角色
-    ///   - content: 消息内容
+    ///   - role: Message role
+    ///   - content: Message content
     public init(role: Role, content: String) {
         self.role = role
         self.content = content
     }
 }
 
-/// 定义与OpenAI API交互的协议
+/// Protocol defining interaction with OpenAI API
 public protocol OpenAIProtocol {
-    /// 发送聊天请求并获取响应
+    /// Send chat request and get response
     /// - Parameters:
-    ///   - model: 模型名称
-    ///   - messages: 聊天消息列表
-    /// - Returns: 聊天响应内容
+    ///   - model: Model name
+    ///   - messages: Chat message list
+    /// - Returns: Chat response content
     func chat(model: String, messages: [SimpleMessage]) async throws -> String
 }
 

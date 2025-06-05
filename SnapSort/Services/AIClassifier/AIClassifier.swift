@@ -8,54 +8,54 @@
 import Foundation
 import os.log
 
-// 导入自定义模型 - 使用SettingsModels中定义的Category
-// 为了避免与系统内置Category类型冲突，我们需要明确指定使用自定义的Category类型
+// Import custom models - using Category defined in SettingsModels
+// To avoid conflicts with the built-in Category type, we need to explicitly specify our custom Category type
 typealias CategoryModel = Category
 
-/// AI智能分类器组件，用于对OCR识别后的文本进行智能分类
+/// AI Intelligent Classifier Component for classifying text after OCR recognition
 ///
-/// `AIClassifier` 使用DeepSeek API（与OpenAI兼容）对文本内容进行分类，将截图按照预定义的类别进行归类，
-/// 支持用户自定义分类类别和关键词列表。组件设计遵循高内聚低耦合原则，易于集成到现有项目中。
+/// `AIClassifier` uses the DeepSeek API (OpenAI compatible) to classify text content, categorizing screenshots according to predefined categories,
+/// supporting user-defined categories and keyword lists. The component follows high cohesion and low coupling principles for easy integration.
 ///
-/// ## 使用示例
+/// ## Usage Example
 ///
 /// ```swift
-/// // 初始化分类器
+/// // Initialize classifier
 /// let apiClient = SimpleOpenAIClient(apiToken: "your_api_key", baseURL: URL(string: "https://api.deepseek.com/v1")!)
 /// let classifier = AIClassifier(apiClient: apiClient)
 ///
-/// // 可选：自定义提示词模板
-/// classifier.systemPromptTemplate = "你是一个专业的文本分类专家，请根据文本内容将其分类到以下类别之一：{categories}。输出必须是JSON格式。"
+/// // Optional: customize prompt template
+/// classifier.systemPromptTemplate = "You are a professional text classification expert. Please classify the text into one of these categories: {categories}. Output must be in JSON format."
 ///
-/// // 执行分类
+/// // Perform classification
 /// do {
 ///     let result = try await classifier.classify(
-///         text: "项目需求分析会议纪要",
-///         categories: ["工作", "学习", "生活", "娱乐"]
+///         text: "Project requirements analysis meeting minutes",
+///         categories: ["Work", "Study", "Life", "Entertainment"]
 ///     )
-///     print("分类结果: \(result.category)")
+///     print("Classification result: \(result.category)")
 /// } catch {
-///     print("分类失败: \(error)")
+///     print("Classification failed: \(error)")
 /// }
 /// ```
 ///
-/// ## 注意事项
+/// ## Notes
 ///
-/// 1. 需要提供有效的DeepSeek API密钥
-/// 2. 建议提供足够的分类类别，以获得更准确的分类结果
-/// 3. 默认使用"deepseek-chat"模型，可以通过`modelName`属性自定义
-/// 4. 组件会处理API错误和响应解析错误，并通过`AIClassifierError`类型抛出
+/// 1. A valid DeepSeek API key is required
+/// 2. Providing sufficient categories is recommended for more accurate classification results
+/// 3. Uses "deepseek-chat" model by default, can be customized via the `modelName` property
+/// 4. The component handles API errors and response parsing errors, throwing them as `AIClassifierError` types
 public final class AIClassifier {
 
     private let logger = Logger(subsystem: "com.snapsort.services", category: "AIClassifier")
 
-    /// API客户端实例
+    /// API client instance
     private let apiClient: OpenAIProtocol
 
-    /// 使用的AI模型名称，默认为"deepseek-chat"
+    /// AI model name used, defaults to "deepseek-chat"
     public var modelName: String = "deepseek-chat"
 
-    /// 系统提示词模板，用于指导AI如何执行分类任务
+    /// System prompt template, guides the AI on how to perform classification tasks
     public var systemPromptTemplate: String = """
         你是一个专业的文本分类专家。请根据提供的文本内容，将其分类到以下预定义类别中的一个。
 
@@ -77,7 +77,7 @@ public final class AIClassifier {
         {"category": "工作", "confidence": 0.92, "matchedKeywords": ["会议", "项目"]}
         """
 
-    /// 用户提示词模板，用于构建与用户需求相关的提示
+    /// User prompt template, for building prompts related to user requirements
     public var userPromptTemplate: String = """
         请分析以下文本内容，根据关键词匹配将其分类到最合适的类别中：
 
@@ -96,18 +96,18 @@ public final class AIClassifier {
         请输出有效的JSON格式。
         """
 
-    /// 初始化AI分类器
-    /// - Parameter apiClient: OpenAI API客户端实例
+    /// Initialize AI classifier
+    /// - Parameter apiClient: OpenAI API client instance
     public init(apiClient: OpenAIProtocol) {
         self.apiClient = apiClient
     }
 
-    /// 对文本内容进行智能分类（支持CategoryItem类型）
+    /// Intelligently classify text content (supports CategoryItem type)
     /// - Parameters:
-    ///   - text: 需要分类的文本内容，通常是OCR识别的结果
-    ///   - categories: 预定义的分类类别列表，包含类别名和关键词
-    /// - Returns: 分类结果，包含类别和可选的置信度
-    /// - Throws: 分类过程中可能出现的错误，如API错误或解析错误
+    ///   - text: Text content to classify, typically OCR recognition results
+    ///   - categories: Predefined category list, containing category names and keywords
+    /// - Returns: Classification result, including category and optional confidence level
+    /// - Throws: Errors that may occur during classification, such as API errors or parsing errors
     func classify(text: String, categories: [CategoryItem]) async throws
         -> ClassificationResult
     {
@@ -200,12 +200,12 @@ public final class AIClassifier {
         }
     }
 
-    /// 对文本内容进行智能分类（原有方法，保持向后兼容）
+    /// Intelligently classify text content (original method, maintained for backward compatibility)
     /// - Parameters:
-    ///   - text: 需要分类的文本内容，通常是OCR识别的结果
-    ///   - categories: 预定义的分类类别列表
-    /// - Returns: 分类结果，包含类别和可选的置信度
-    /// - Throws: 分类过程中可能出现的错误，如API错误或解析错误
+    ///   - text: Text content to classify, typically OCR recognition results
+    ///   - categories: Predefined category list
+    /// - Returns: Classification result, including category and optional confidence level
+    /// - Throws: Errors that may occur during classification, such as API errors or parsing errors
     public func classify(text: String, categories: [String]) async throws -> ClassificationResult {
         guard !text.isEmpty else {
             throw AIClassifierError.invalidInput("Text content cannot be empty")
@@ -215,13 +215,13 @@ public final class AIClassifier {
             throw AIClassifierError.invalidInput("Category list cannot be empty")
         }
 
-        // 准备系统提示
+        // Prepare system prompt
         let systemPrompt = systemPromptTemplate.replacingOccurrences(
             of: "{categories}",
             with: categories.joined(separator: "、")
         )
 
-        // 准备用户提示
+        // Prepare user prompt
         let userPrompt =
             userPromptTemplate
             .replacingOccurrences(of: "{categories}", with: categories.joined(separator: "、"))
@@ -234,12 +234,12 @@ public final class AIClassifier {
         ]
 
         do {
-            // 调用API并获取响应
+            // Call API and get response
             print("📤 Sending request to API...")
             let content = try await apiClient.chat(model: modelName, messages: messages)
             print("📥 Received API response: \(content.prefix(100))...")
 
-            // 尝试预处理响应内容，移除可能导致JSON解析失败的内容
+            // Pre-process response content, remove content that may cause JSON parsing to fail
             let processedContent = preprocessJsonContent(content)
             print("🔄 Preprocessed JSON: \(processedContent)")
 
@@ -277,14 +277,14 @@ public final class AIClassifier {
         }
     }
 
-    /// 预处理JSON内容，移除可能导致解析失败的部分
-    /// - Parameter content: 原始内容
-    /// - Returns: 处理后的JSON字符串
+    /// Preprocess JSON content, remove parts that may cause parsing failures
+    /// - Parameter content: Original content
+    /// - Returns: Processed JSON string
     private func preprocessJsonContent(_ content: String) -> String {
-        // 1. 移除可能的马克唐语法
+        // 1. Remove possible markdown syntax
         var processedContent = content
 
-        // 2. 提取JSON部分 - 如果响应包含了JSON块
+        // 2. Extract JSON part - if the response contains JSON blocks
         if let jsonStart = processedContent.range(of: "{"),
             let jsonEnd = processedContent.range(of: "}", options: .backwards)
         {
@@ -293,24 +293,24 @@ public final class AIClassifier {
             processedContent = String(processedContent[startIndex..<endIndex])
         }
 
-        // 3. 移除特殊字符和空白
+        // 3. Remove special characters and whitespace
         processedContent = processedContent.trimmingCharacters(in: .whitespacesAndNewlines)
 
         return processedContent
     }
 
-    /// 尝试通过备用方法解析JSON
+    /// Attempt to parse JSON using alternative methods
     /// - Parameters:
-    ///   - content: JSON字符串
-    ///   - availableCategories: 可用的类别列表
-    /// - Returns: 解析结果，如果失败则返回nil
+    ///   - content: JSON string
+    ///   - availableCategories: List of available categories
+    /// - Returns: Parsing result, returns nil if failed
     private func tryAlternativeJsonParsing(_ content: String, availableCategories: [String])
         -> ClassificationResult?
     {
         logger.debug(
             "Attempting alternative parsing methods, content: \(content, privacy: .private)")
 
-        // 尝试使用JSONSerialization解析
+        // Try parsing with JSONSerialization
         if let data = content.data(using: .utf8),
             let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
             let category = json["category"] as? String
@@ -322,7 +322,7 @@ public final class AIClassifier {
             return ClassificationResult(category: category, confidence: confidence)
         }
 
-        // 如果上面方法失败，尝试从文本中提取JSON对象
+        // If the above method fails, try extracting JSON objects from the text
         if let jsonPattern = try? NSRegularExpression(
             pattern: "\\{[^\\{\\}]*\\\"category\\\"[^\\{\\}]*\\}",
             options: .caseInsensitive
@@ -334,7 +334,7 @@ public final class AIClassifier {
                     let jsonString = String(content[range])
                     logger.debug("📋 Found JSON substring: \(jsonString, privacy: .private)")
 
-                    // 尝试解析提取出的JSON子串
+                    // Try parsing the extracted JSON substring
                     if let jsonData = jsonString.data(using: .utf8),
                         let json = try? JSONSerialization.jsonObject(with: jsonData)
                             as? [String: Any],
@@ -350,10 +350,10 @@ public final class AIClassifier {
             }
         }
 
-        // 如果上面方法失败，通过正则表达式提取单独的字段
+        // If the above method fails, extract individual fields using regular expressions
         logger.debug("🔍 Using regex to extract individual fields")
 
-        // 提取类别
+        // Extract category
         var category: String?
         let categoryPattern = "\"category\"\\s*:\\s*\"([^\"]+)\""
         if let regex = try? NSRegularExpression(pattern: categoryPattern, options: []) {
@@ -369,7 +369,7 @@ public final class AIClassifier {
             }
         }
 
-        // 提取置信度
+        // Extract confidence
         var confidence: Double?
         let confidencePattern = "\"confidence\"\\s*:\\s*([0-9.]+)"
         if let regex = try? NSRegularExpression(pattern: confidencePattern, options: []) {
@@ -387,13 +387,13 @@ public final class AIClassifier {
             }
         }
 
-        // 如果找到了类别，则返回结果
+        // If a category is found, return the result
         if let category = category {
             logger.info("✅ Regex parsing succeeded with category: \(category, privacy: .private)")
             return ClassificationResult(category: category, confidence: confidence)
         }
 
-        // 最后的尝试 - 直接从文本中提取最可能的类别
+        // Final attempt - directly extract the most likely category from the text
         logger.debug(
             "⚠️ All JSON parsing methods failed, attempting to infer category directly from content")
         for possibleCategory in availableCategories {

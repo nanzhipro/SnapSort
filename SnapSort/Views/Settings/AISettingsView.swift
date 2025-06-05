@@ -7,11 +7,11 @@
 
 import SwiftUI
 
-/// AI设置视图
+/// AI Settings View
 ///
-/// 管理人工智能分类功能的配置选项，包括API密钥管理。
-/// 提供云端AI处理模式，支持安全的API密钥输入和二进制存储功能。
-/// 采用标准macOS设置页面风格，使用Form布局展示相关配置选项。
+/// Manages configuration options for AI classification functionality, including API key management.
+/// Provides cloud-based AI processing mode, supporting secure API key input and binary storage.
+/// Uses standard macOS settings page style with Form layout to display relevant configuration options.
 struct AISettingsView: View {
 
     @AppStorage("enableAIClassification") private var enableAIClassification: Bool = true
@@ -85,13 +85,13 @@ struct AISettingsView: View {
         }
     }
 
-    // MARK: - API密钥管理
+    // MARK: - API Key Management
 
-    /// 验证并保存API密钥
+    /// Validate and save API key
     private func validateAndSaveApiKey(_ key: String) {
         let trimmedKey = key.trimmingCharacters(in: .whitespacesAndNewlines)
 
-        // 基本验证：检查是否为有效的API密钥格式
+        // Basic validation: check if it's a valid API key format
         isApiKeyValid = isValidApiKeyFormat(trimmedKey)
 
         if isApiKeyValid && !trimmedKey.isEmpty {
@@ -101,19 +101,19 @@ struct AISettingsView: View {
         }
     }
 
-    /// 验证API密钥格式
+    /// Validate API key format
     private func isValidApiKeyFormat(_ key: String) -> Bool {
-        // DeepSeek API密钥通常以"sk-"开头，长度在40-60字符之间
+        // DeepSeek API keys typically start with "sk-" and are between 40-60 characters long
         return key.hasPrefix("sk-") && key.count >= 20 && key.count <= 100
     }
 
-    /// 将API密钥以二进制形式保存到UserDefaults
+    /// Save API key in binary form to UserDefaults
     private func saveApiKeyToUserDefaults(_ key: String) {
         guard let keyData = key.data(using: .utf8) else { return }
         UserDefaults.standard.set(keyData, forKey: "ai_api_key_data")
     }
 
-    /// 从UserDefaults加载API密钥
+    /// Load API key from UserDefaults
     private func loadApiKey() {
         guard let keyData = UserDefaults.standard.data(forKey: "ai_api_key_data"),
             let key = String(data: keyData, encoding: .utf8)
@@ -127,7 +127,7 @@ struct AISettingsView: View {
         isApiKeyValid = isValidApiKeyFormat(key)
     }
 
-    /// 清除API密钥
+    /// Clear API key
     private func clearApiKey() {
         apiKey = ""
         isApiKeyValid = false

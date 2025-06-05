@@ -7,10 +7,10 @@
 
 import SwiftUI
 
-/// 关于视图
+/// About View
 ///
-/// 显示应用程序的版本信息和开发者信息。
-/// 采用标准macOS设置页面风格，提供清晰的应用信息展示。
+/// Displays version information and developer information for the application.
+/// Uses standard macOS settings page style, providing clear application information display.
 struct AboutView: View {
 
     private let appVersion =

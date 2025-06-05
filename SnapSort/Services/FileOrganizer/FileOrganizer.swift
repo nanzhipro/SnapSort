@@ -9,37 +9,38 @@ import Foundation
 import os
 import os.log
 
-/// 文件组织器
+/// File Organizer
 ///
-/// 负责管理截图文件的组织和分类，支持将截图移动到指定分类目录，
-/// 并自动处理文件名冲突、目录创建等操作。该组件确保文件操作的
-/// 原子性和安全性，并提供详细的错误处理和日志记录。
+/// Responsible for managing the organization and classification of screenshot files,
+/// supporting moving screenshots to specified category directories,
+/// and automatically handling filename conflicts, directory creation, etc. This component ensures
+/// atomicity and safety of file operations, and provides detailed error handling and logging.
 public final class FileOrganizer: FileOrganizerProtocol {
-    /// 文件操作的基础目录URL
+    /// Base directory URL for file operations
     public private(set) var baseDirectory: URL
 
-    /// 文件系统操作日志记录器
+    /// File system operation logger
     private let logger = Logger(
         subsystem: Bundle.main.bundleIdentifier ?? "com.snapsort.filesystem",
         category: "FileOrganizer")
 
-    /// 文件管理器实例
+    /// File manager instance
     private let fileManager = FileManager.default
 
-    /// 初始化文件组织器
+    /// Initialize file organizer
     ///
-    /// - Parameter baseDirectory: 基础目录的URL，所有分类目录将在此目录下创建
-    /// - Throws: 如果基础目录无效或无法创建，将抛出相应异常
+    /// - Parameter baseDirectory: URL of the base directory, all category directories will be created under this directory
+    /// - Throws: If the base directory is invalid or cannot be created, an appropriate exception will be thrown
     public init(baseDirectory: URL) throws {
         self.baseDirectory = baseDirectory
         try createDirectoryIfNeeded(at: baseDirectory)
         logger.info("Initialized file organizer with base directory: \(baseDirectory.path)")
     }
 
-    /// 初始化文件组织器
+    /// Initialize file organizer
     ///
-    /// - Parameter baseDirectoryPath: 基础目录的路径字符串，所有分类目录将在此目录下创建
-    /// - Throws: 如果基础目录无效或无法创建，将抛出相应异常
+    /// - Parameter baseDirectoryPath: Path string of the base directory, all category directories will be created under this directory
+    /// - Throws: If the base directory is invalid or cannot be created, an appropriate exception will be thrown
     public convenience init(baseDirectoryPath: String) throws {
         try self.init(baseDirectory: URL(fileURLWithPath: baseDirectoryPath, isDirectory: true))
     }
@@ -110,12 +111,12 @@ public final class FileOrganizer: FileOrganizerProtocol {
         return destinationURL.path
     }
 
-    // MARK: - 私有辅助方法
+    // MARK: - Private Helper Methods
 
-    /// 创建目录（如果不存在）
+    /// Create directory (if it doesn't exist)
     ///
-    /// - Parameter url: 要创建的目录URL
-    /// - Throws: 如果目录创建失败，将抛出异常
+    /// - Parameter url: URL of the directory to create
+    /// - Throws: If directory creation fails, an exception will be thrown
     private func createDirectoryIfNeeded(at url: URL) throws {
         if !fileManager.fileExists(atPath: url.path) {
             logger.debug("Creating directory at \(url.path, privacy: .public)")
@@ -137,11 +138,11 @@ public final class FileOrganizer: FileOrganizerProtocol {
         }
     }
 
-    /// 解决文件名冲突，通过添加计数器后缀生成唯一文件名
+    /// Resolve filename conflicts by adding counter suffixes to generate unique filenames
     ///
-    /// - Parameter originalURL: 原始文件URL
-    /// - Returns: 一个不会产生冲突的文件URL
-    /// - Throws: 如果无法解析文件路径，将抛出异常
+    /// - Parameter originalURL: Original file URL
+    /// - Returns: A file URL that won't cause conflicts
+    /// - Throws: If the file path cannot be resolved, an exception will be thrown
     private func resolveDuplicateFilename(at originalURL: URL) throws -> URL {
         var counter = 1
         var finalURL = originalURL

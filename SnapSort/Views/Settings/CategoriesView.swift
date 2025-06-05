@@ -8,35 +8,35 @@
 import Foundation
 import SwiftUI
 
-// MARK: - 导入依赖模块
+// MARK: - Import Dependencies
 
-// 导入模型和视图模型
-// CategoryItem 定义在 Models/CategoryModels.swift
-// CategoriesViewModel 定义在 ViewModels/CategoriesViewModel.swift
+// Import models and view models
+// CategoryItem is defined in Models/CategoryModels.swift
+// CategoriesViewModel is defined in ViewModels/CategoriesViewModel.swift
 
-/// 分类管理视图
+/// Categories Management View
 ///
-/// 提供截图分类的完整管理功能，包括分类列表展示、新增、编辑和删除操作。
-/// 采用标准macOS设置页面风格，使用Form布局展示所有分类。
-/// 提供简洁清晰的分类管理界面，支持直观的编辑和删除操作。
-/// 遵循 MVVM 架构，通过 CategoriesViewModel 进行数据管理。
+/// Provides complete management functionality for screenshot categories, including category list display, adding, editing, and deleting operations.
+/// Uses standard macOS settings page style with Form layout to display all categories.
+/// Provides a clean and clear category management interface with intuitive editing and deletion operations.
+/// Follows MVVM architecture, using CategoriesViewModel for data management.
 struct CategoriesView: View {
 
     // MARK: - Properties
 
-    /// 分类管理视图模型
+    /// Categories management view model
     @StateObject private var viewModel = CategoriesViewModel()
 
-    /// 是否显示添加分类表单
+    /// Whether to display the add category form
     @State private var showingAddSheet = false
 
-    /// 正在编辑的分类
+    /// Category being edited
     @State private var editingCategory: CategoryItem?
 
-    /// 是否显示删除确认对话框
+    /// Whether to display delete confirmation dialog
     @State private var showingDeleteAlert = false
 
-    /// 待删除的分类
+    /// Category to be deleted
     @State private var categoryToDelete: CategoryItem?
 
     // MARK: - Body
@@ -99,7 +99,7 @@ struct CategoriesView: View {
 
     // MARK: - View Components
 
-    /// 加载状态视图
+    /// Loading state view
     private var loadingView: some View {
         HStack {
             ProgressView()
@@ -112,7 +112,7 @@ struct CategoriesView: View {
         .padding(.vertical, 16)
     }
 
-    /// 空状态视图
+    /// Empty state view
     private var emptyStateView: some View {
         VStack(spacing: 12) {
             Image(systemName: "folder.badge.plus")
@@ -132,7 +132,7 @@ struct CategoriesView: View {
         .padding(.vertical, 24)
     }
 
-    /// 分类列表视图
+    /// Categories list view
     private var categoriesListView: some View {
         VStack(spacing: 0) {
             ForEach(viewModel.categories) { category in
@@ -152,7 +152,7 @@ struct CategoriesView: View {
         .cornerRadius(8)
     }
 
-    /// 添加分类按钮
+    /// Add category button
     private var addCategoryButton: some View {
         Button(LocalizedStringKey("settings.categories.add")) {
             showingAddSheet = true
@@ -162,14 +162,14 @@ struct CategoriesView: View {
 
     // MARK: - Actions
 
-    /// 显示删除确认对话框
-    /// - Parameter category: 要删除的分类项目
+    /// Show delete confirmation dialog
+    /// - Parameter category: Category item to be deleted
     private func showDeleteConfirmation(for category: CategoryItem) {
         categoryToDelete = category
         showingDeleteAlert = true
     }
 
-    /// 执行删除操作
+    /// Execute delete operation
     private func performDeletion() {
         if let category = categoryToDelete {
             viewModel.deleteCategory(category)
@@ -178,12 +178,12 @@ struct CategoriesView: View {
     }
 }
 
-// MARK: - 分类行视图
+// MARK: - Category Row View
 
-/// 分类行视图组件
+/// Category row view component
 ///
-/// 显示单个分类的信息，包括名称、关键词和操作按钮。
-/// 采用简洁的设计风格，提供直观的编辑和删除操作。
+/// Displays information for a single category, including name, keywords, and action buttons.
+/// Uses a clean design style, providing intuitive edit and delete operations.
 struct CategoryRowView: View {
     let category: CategoryItem
     let onEdit: () -> Void
@@ -225,12 +225,12 @@ struct CategoryRowView: View {
     }
 }
 
-// MARK: - 编辑表单
+// MARK: - Edit Form
 
-/// 分类编辑表单视图
+/// Category edit form view
 ///
-/// 提供分类信息的新增和编辑功能，包括分类名称和关键词的输入。
-/// 支持表单验证和数据保存操作。
+/// Provides functionality to add and edit category information, including input for category name and keywords.
+/// Supports form validation and data saving operations.
 struct CategoryEditSheet: View {
     let category: CategoryItem?
     let onSave: (CategoryItem) -> Void
@@ -294,7 +294,7 @@ struct CategoryEditSheet: View {
         }
     }
 
-    /// 保存分类数据
+    /// Save category data
     private func saveCategory() {
         let trimmedName = name.trimmingCharacters(in: .whitespacesAndNewlines)
         let keywords =

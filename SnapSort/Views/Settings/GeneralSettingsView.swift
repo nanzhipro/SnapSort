@@ -8,11 +8,11 @@
 import LaunchAtLogin
 import SwiftUI
 
-/// 通用设置视图
+/// General Settings View
 ///
-/// 提供应用程序的基本设置选项，包括启动行为、通知配置和存储位置设置。
-/// 采用标准macOS设置页面风格，使用Form布局确保设置项的清晰展示。
-/// 遵循Apple HIG设计规范，提供原生macOS用户体验。
+/// Provides basic settings options for the application, including startup behavior, notification configuration, and storage location settings.
+/// Uses standard macOS settings page style with Form layout to ensure clear display of settings items.
+/// Follows Apple HIG design guidelines, providing native macOS user experience.
 struct GeneralSettingsView: View {
 
     @AppStorage("showNotifications") private var showNotifications: Bool = true
@@ -82,13 +82,13 @@ struct GeneralSettingsView: View {
 
     // MARK: - Private Methods
 
-    /// 处理通知设置变化
+    /// Handle notification settings changes
     private func handleNotificationSettingChange(_ enabled: Bool) {
         if enabled {
             Task {
                 let granted = await notificationManager.requestAuthorization()
                 if !granted {
-                    // 如果用户拒绝授权，可以显示提示信息
+                    // If the user denies authorization, can display a prompt
                     await MainActor.run {
                         showNotifications = false
                     }
@@ -113,7 +113,7 @@ struct GeneralSettingsView: View {
 
     private func resetToDefaultLocation() {
         Task {
-            // 删除自定义设置，恢复系统默认
+            // Remove custom settings, restore system defaults
             _ = try? await executeShellCommand("defaults delete com.apple.screencapture location")
             _ = try? await executeShellCommand("killall SystemUIServer")
 
@@ -127,11 +127,11 @@ struct GeneralSettingsView: View {
     private func setScreenshotDirectory(_ path: String) {
         Task {
             do {
-                // 设置新的截屏位置
+                // Set new screenshot location
                 _ = try await executeShellCommand(
                     "defaults write com.apple.screencapture location '\(path)'")
 
-                // 重启SystemUIServer使设置生效
+                // Restart SystemUIServer to apply settings
                 _ = try await executeShellCommand("killall SystemUIServer")
 
                 await MainActor.run {

@@ -7,35 +7,35 @@
 
 import Foundation
 
-/// 文件组织器协议，负责管理和组织截图文件
+/// File Organizer Protocol, responsible for managing and organizing screenshot files
 ///
-/// 该协议定义了文件组织器组件应提供的核心功能，包括将截图移动到指定分类目录，
-/// 并提供相关的配置选项。实现此协议的类应当负责文件系统操作的原子性和安全性。
+/// This protocol defines the core functionality that a file organizer component should provide, including moving screenshots to specified category directories,
+/// and providing related configuration options. Classes implementing this protocol should be responsible for the atomicity and safety of file system operations.
 public protocol FileOrganizerProtocol {
-    /// 组织器的基础目录，所有分类目录将在此目录下创建
+    /// Base directory of the organizer, all category directories will be created under this directory
     var baseDirectory: URL { get }
 
-    /// 更新组织器的基础目录
+    /// Update the organizer's base directory
     ///
-    /// - Parameter path: 新的基础目录路径
-    /// - Throws: 如果目录更新过程中发生错误，将抛出相应异常
+    /// - Parameter path: Path to the new base directory
+    /// - Throws: If an error occurs during directory update, an appropriate exception will be thrown
     func updateBaseDirectory(path: String) throws
 
-    /// 将截图文件移动到指定分类目录
+    /// Move screenshot file to specified category directory
     ///
     /// - Parameters:
-    ///   - sourceURL: 截图文件的原始URL
-    ///   - category: 目标分类名称，将作为子目录名
-    /// - Returns: 移动后文件的新URL
-    /// - Throws: 如果文件移动过程中发生错误，将抛出相应异常
+    ///   - sourceURL: Original URL of the screenshot file
+    ///   - category: Target category name, used as subdirectory name
+    /// - Returns: New URL of the file after moving
+    /// - Throws: If an error occurs during file movement, an appropriate exception will be thrown
     func moveScreenshot(from sourceURL: URL, to category: String) throws -> URL
 
-    /// 将截图文件移动到指定分类目录，使用完整路径表示
+    /// Move screenshot file to specified category directory, using full path representation
     ///
     /// - Parameters:
-    ///   - sourcePath: 截图文件的原始路径（字符串形式）
-    ///   - category: 目标分类名称，将作为子目录名
-    /// - Returns: 移动后文件的新路径（字符串形式）
-    /// - Throws: 如果文件移动过程中发生错误，将抛出相应异常
+    ///   - sourcePath: Original path of the screenshot file (as string)
+    ///   - category: Target category name, used as subdirectory name
+    /// - Returns: New path of the file after moving (as string)
+    /// - Throws: If an error occurs during file movement, an appropriate exception will be thrown
     func moveScreenshot(from sourcePath: String, to category: String) throws -> String
 }

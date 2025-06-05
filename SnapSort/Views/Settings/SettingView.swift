@@ -8,11 +8,11 @@
 import AppKit
 import SwiftUI
 
-/// 应用程序设置视图
+/// Application Settings View
 ///
-/// 提供应用程序的配置和关于信息界面，采用标准macOS设置页面风格。
-/// 使用TabView组织各个设置模块，遵循Apple HIG设计规范。
-/// 提供简洁清晰的设置管理入口。
+/// Provides configuration and about information interface for the application, using standard macOS settings page style.
+/// Organizes each settings module using TabView, following Apple HIG design guidelines.
+/// Provides a clean and clear entry point for settings management.
 struct SettingView: View {
 
     var body: some View {
