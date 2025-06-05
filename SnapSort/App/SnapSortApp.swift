@@ -13,15 +13,6 @@ struct SnapSortApp: App {
     @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
 
     var body: some Scene {
-        // 主窗口组 - 在LSUIElement模式下隐藏
-        WindowGroup("Main") {
-            ContentView()
-        }
-        .windowStyle(.hiddenTitleBar)
-        .windowResizability(.contentSize)
-        .defaultSize(width: 0, height: 0)
-        .windowToolbarStyle(.unifiedCompact(showsTitle: false))
-
         // 设置窗口组 - 用于LSUIElement模式下的设置显示
         WindowGroup("Settings", id: "settings") {
             SettingView()
@@ -30,6 +21,7 @@ struct SnapSortApp: App {
         .windowResizability(.contentSize)
         .defaultSize(width: 600, height: 500)
         .windowToolbarStyle(.unifiedCompact(showsTitle: true))
+        .defaultLaunchBehavior(.suppressed)
 
         // 菜单栏额外项
         MenuBarExtra {
