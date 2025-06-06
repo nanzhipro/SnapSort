@@ -261,11 +261,21 @@ public final class ServiceManager {
 
             // 2. AI classification
             logger.info("Starting AI classification for screenshot content")
+
+            // Check if AI classification is enabled in settings
+            let isAIClassificationEnabled = UserDefaults.standard.bool(
+                forKey: "enableAIClassification")
+
+            // Get user categories
             let userCategories = getUserCategories()
 
             // Determine classification result
             let category: String
-            if userCategories.isEmpty {
+            if !isAIClassificationEnabled {
+                // Skip AI classification if disabled in settings
+                logger.info("AI classification is disabled in settings, using default category")
+                category = "Unclassified"
+            } else if userCategories.isEmpty {
                 // If user has not set up categories, skip AI classification and use default category name
                 logger.info("No user categories defined, skipping AI classification")
                 category = "Unclassified"
