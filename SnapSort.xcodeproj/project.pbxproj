@@ -36,9 +36,22 @@
 		D517E89B2DCADEBC006FE803 /* SnapSortUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SnapSortUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		D5105A062DF7AA2F00E90508 /* Exceptions for "SnapSort" folder in "SnapSort" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Services/FileOrganizer/README.md,
+			);
+			target = D517E87F2DCADEBB006FE803 /* SnapSort */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		D517E8822DCADEBB006FE803 /* SnapSort */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				D5105A062DF7AA2F00E90508 /* Exceptions for "SnapSort" folder in "SnapSort" target */,
+			);
 			path = SnapSort;
 			sourceTree = "<group>";
 		};
@@ -418,7 +431,7 @@
 				CODE_SIGN_ENTITLEMENTS = SnapSort/SnapSort.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_ASSET_PATHS = "\"SnapSort/Preview Content\"";
 				DEVELOPMENT_TEAM = YSM8K853CQ;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -432,7 +445,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MARKETING_VERSION = 1.2;
+				MARKETING_VERSION = 1.0.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.tiwenlab.snapsort;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -448,7 +461,7 @@
 				CODE_SIGN_ENTITLEMENTS = SnapSort/SnapSort.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_ASSET_PATHS = "\"SnapSort/Preview Content\"";
 				DEVELOPMENT_TEAM = YSM8K853CQ;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -462,7 +475,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MARKETING_VERSION = 1.2;
+				MARKETING_VERSION = 1.0.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.tiwenlab.snapsort;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
