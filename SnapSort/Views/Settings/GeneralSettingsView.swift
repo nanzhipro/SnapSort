@@ -77,6 +77,9 @@ struct GeneralSettingsView: View {
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .onAppear {
             loadCurrentScreenshotLocation()
+            Task {
+                await checkInitialNotificationStatus()
+            }
         }
     }
 
@@ -195,6 +198,13 @@ struct GeneralSettingsView: View {
             } catch {
                 continuation.resume(throwing: error)
             }
+        }
+    }
+
+    private func checkInitialNotificationStatus() async {
+        let granted = await notificationManager.requestAuthorization()
+        await MainActor.run {
+            showNotifications = granted
         }
     }
 }

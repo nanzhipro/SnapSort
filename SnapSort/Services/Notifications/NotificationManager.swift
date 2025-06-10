@@ -92,6 +92,10 @@ public final class NotificationManager: NotificationManagerProtocol {
     ///   - category: The category assigned to the screenshot
     ///   - filename: The filename of the screenshot
     public func sendClassificationNotification(category: String, filename: String) {
+        // 添加通知状态检查
+        guard UserDefaults.standard.bool(forKey: "showNotifications") else {
+            return
+        }
         let content = UNMutableNotificationContent()
         content.title = "Screenshot Classified"
         content.body = "Screenshot \"\(filename)\" has been classified as \"\(category)\""
@@ -104,6 +108,10 @@ public final class NotificationManager: NotificationManagerProtocol {
     /// Send notification about processing errors
     /// - Parameter error: The error that occurred
     public func sendErrorNotification(error: Error) {
+        // 添加通知状态检查
+        guard UserDefaults.standard.bool(forKey: "showNotifications") else {
+            return
+        }
         let content = UNMutableNotificationContent()
         content.title = "Processing Error"
         content.body = "Error processing screenshot: \(error.localizedDescription)"
