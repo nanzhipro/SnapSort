@@ -64,6 +64,9 @@ public final class ServiceManager {
     /// Notification management service
     public private(set) var notificationManager: NotificationManagerProtocol
 
+    /// Animation manager for visual feedback
+    public private(set) var animationManager = ScreenshotAnimationManager.shared
+
     /// System logger
     private let logger = Logger(subsystem: "com.snapsort.services", category: "ServiceManager")
 
@@ -118,6 +121,8 @@ public final class ServiceManager {
         // Initialize notification manager
         self.notificationManager = NotificationManager()
         logger.info("Notification manager successfully initialized")
+
+        logger.info("Animation manager successfully initialized")
 
         logger.info("Service initialization completed")
     }
@@ -237,9 +242,14 @@ public final class ServiceManager {
     private func processScreenshot(url: URL) async {
         logger.info("Processing new screenshot captured at: \(url.path)")
 
+        // Start animation sequence for the screenshot
+        animationManager.startAnimation(for: url)
+
         do {
             // 1. OCR text recognition
             logger.info("Starting OCR text recognition for: \(url.lastPathComponent)")
+            animationManager.updateToOCRProcessing()
+
             let ocrResults = try await ocrProcessor.process(
                 imagePath: url.path,
                 languages: []
@@ -261,6 +271,7 @@ public final class ServiceManager {
 
             // 2. AI classification
             logger.info("Starting AI classification for screenshot content")
+            animationManager.updateToClassifying()
 
             // Check if AI classification is enabled in settings
             let isAIClassificationEnabled = UserDefaults.standard.bool(
@@ -291,6 +302,8 @@ public final class ServiceManager {
 
             // 3. File organization
             logger.info("Moving screenshot to classification directory: '\(category)'")
+            animationManager.updateToFileOrganizing()
+
             let newFilePath = try fileOrganizer.moveScreenshot(
                 from: url,
                 to: category
@@ -300,6 +313,8 @@ public final class ServiceManager {
 
             // 4. Database update
             logger.info("Updating database with screenshot metadata")
+            animationManager.updateToDatabaseUpdating()
+
             try databaseManager.saveScreenshot(
                 path: newFilePath.path,
                 text: recognizedText,
@@ -315,22 +330,30 @@ public final class ServiceManager {
                 filename: url.lastPathComponent
             )
 
+            // 6. Update animation to completed state
+            animationManager.updateToCompleted(category: category)
+
             logger.info("Screenshot processing workflow completed successfully")
         } catch let error as AIClassifierError {
             logger.error("AI classification failed: \(error.localizedDescription)")
+            animationManager.updateToError(error: error)
             notificationManager.sendErrorNotification(error: error)
         } catch let error as FileOrganizerError {
             logger.error("File organization failed: \(error.localizedDescription)")
+            animationManager.updateToError(error: error)
             notificationManager.sendErrorNotification(error: error)
         } catch let error as OCRError {
             logger.error("OCR processing failed: \(error.localizedDescription)")
+            animationManager.updateToError(error: error)
             notificationManager.sendErrorNotification(error: error)
         } catch let error as DatabaseManager.DatabaseError {
             logger.error("Database operation failed: \(error.localizedDescription)")
+            animationManager.updateToError(error: error)
             notificationManager.sendErrorNotification(error: error)
         } catch {
             logger.error(
                 "Unexpected error during screenshot processing: \(error.localizedDescription)")
+            animationManager.updateToError(error: error)
             notificationManager.sendErrorNotification(error: error)
         }
     }
