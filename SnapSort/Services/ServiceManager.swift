@@ -248,7 +248,6 @@ public final class ServiceManager {
         do {
             // 1. OCR text recognition
             logger.info("Starting OCR text recognition for: \(url.lastPathComponent)")
-            animationManager.updateToOCRProcessing()
 
             let ocrResults = try await ocrProcessor.process(
                 imagePath: url.path,
@@ -302,7 +301,6 @@ public final class ServiceManager {
 
             // 3. File organization
             logger.info("Moving screenshot to classification directory: '\(category)'")
-            animationManager.updateToFileOrganizing()
 
             let newFilePath = try fileOrganizer.moveScreenshot(
                 from: url,
@@ -313,7 +311,6 @@ public final class ServiceManager {
 
             // 4. Database update
             logger.info("Updating database with screenshot metadata")
-            animationManager.updateToDatabaseUpdating()
 
             try databaseManager.saveScreenshot(
                 path: newFilePath.path,
