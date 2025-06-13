@@ -9,32 +9,31 @@ import Combine
 import Foundation
 import os.log
 
-/// General settings view model
+/// 通用设置视图模型
 ///
-/// Manages basic application settings including notification permissions and
-/// system screenshot directory configuration. Follows MVVM architecture pattern
-/// and provides reactive settings state management and business logic processing.
-/// Uses Combine framework for reactive state change updates.
+/// 管理应用程序的基本设置，包括通知权限、系统截屏目录配置等功能。
+/// 遵循MVVM架构模式，提供响应式的设置状态管理和业务逻辑处理。
+/// 通过Combine框架实现状态变化的响应式更新。
 @MainActor
 final class GeneralSettingsViewModel: ObservableObject {
 
     // MARK: - Published Properties
 
-    /// Whether to show notifications
+    /// 是否显示通知
     @Published var showNotifications: Bool = true {
         didSet {
             handleNotificationSettingChange()
         }
     }
 
-    /// Current screenshot storage directory
+    /// 当前截屏存储目录
     @Published var screenshotDirectory: String = ""
 
-    /// Directory selection state
+    /// 目录选择状态
     @Published var isDirectorySelected: Bool = false
 
-    /// Notification permission status
-    @Published var notificationAuthorizationStatus: String = "Unknown"
+    /// 通知权限状态
+    @Published var notificationAuthorizationStatus: String = "未知"
 
     // MARK: - Dependencies
 
@@ -44,8 +43,8 @@ final class GeneralSettingsViewModel: ObservableObject {
 
     // MARK: - Initialization
 
-    /// Initialize view model
-    /// - Parameter notificationManager: Notification manager instance
+    /// 初始化视图模型
+    /// - Parameter notificationManager: 通知管理器实例
     init(notificationManager: NotificationManagerProtocol = NotificationManager()) {
         self.notificationManager = notificationManager
         loadInitialSettings()
@@ -53,15 +52,15 @@ final class GeneralSettingsViewModel: ObservableObject {
 
     // MARK: - Public Methods
 
-    /// Select screenshot storage directory
-    /// - Parameter directoryURL: User selected directory URL
+    /// 选择截屏存储目录
+    /// - Parameter directoryURL: 用户选择的目录URL
     func selectScreenshotDirectory(_ directoryURL: URL) {
-        // This functionality is now handled by ScreenshotMonitor directly
-        // through the UI, so this method is simplified
-        logger.info("Screenshot directory selection handled by ScreenshotMonitor")
+        Task {
+            await setSystemScreenshotLocation(directoryURL.path)
+        }
     }
 
-    /// Refresh current settings state
+    /// 刷新当前设置状态
     func refreshSettings() {
         Task {
             await loadCurrentScreenshotLocation()
@@ -71,9 +70,9 @@ final class GeneralSettingsViewModel: ObservableObject {
 
     // MARK: - Private Methods
 
-    /// Load initial settings
+    /// 加载初始设置
     private func loadInitialSettings() {
-        // Load notification settings from UserDefaults
+        // 从UserDefaults加载通知设置
         showNotifications = UserDefaults.standard.bool(forKey: "showNotifications")
 
         Task {
@@ -82,7 +81,7 @@ final class GeneralSettingsViewModel: ObservableObject {
         }
     }
 
-    /// Handle notification setting changes
+    /// 处理通知设置变化
     private func handleNotificationSettingChange() {
         UserDefaults.standard.set(showNotifications, forKey: "showNotifications")
 
@@ -90,45 +89,113 @@ final class GeneralSettingsViewModel: ObservableObject {
             Task {
                 let granted = await notificationManager.requestAuthorization()
                 await MainActor.run {
-                    notificationAuthorizationStatus = granted ? "Authorized" : "Denied"
+                    notificationAuthorizationStatus = granted ? "已授权" : "被拒绝"
                 }
             }
         } else {
-            notificationAuthorizationStatus = "Disabled"
+            notificationAuthorizationStatus = "已禁用"
         }
 
         logger.info("Notification setting changed to: \(self.showNotifications)")
     }
 
-    /// Check notification authorization status
+    /// 检查通知授权状态
     private func checkNotificationAuthorization() async {
-        // Logic for checking current notification permission status can be added here
-        // Since NotificationManager currently doesn't provide status query method, using setting value temporarily
+        // 这里可以添加检查当前通知权限状态的逻辑
+        // 由于NotificationManager当前没有提供状态查询方法，暂时使用设置值
         await MainActor.run {
-            notificationAuthorizationStatus = self.showNotifications ? "Enabled" : "Disabled"
+            notificationAuthorizationStatus = self.showNotifications ? "已启用" : "已禁用"
         }
     }
 
-    /// Load current system screenshot storage location
+    /// 加载当前系统截屏存储位置
     private func loadCurrentScreenshotLocation() async {
-        // Use ScreenshotMonitor to get current location (sandbox-compatible)
-        await MainActor.run {
-            screenshotDirectory = ScreenshotMonitor.shared.getScreenshotLocation()
-            isDirectorySelected = ScreenshotMonitor.shared.hasUserSelectedFolder()
+        do {
+            let location = try await executeShellCommand(
+                "defaults read com.apple.screencapture location")
+            await MainActor.run {
+                if location.isEmpty {
+                    // 默认桌面路径
+                    screenshotDirectory = NSHomeDirectory() + "/Desktop"
+                    isDirectorySelected = false
+                } else {
+                    screenshotDirectory = location.trimmingCharacters(in: .whitespacesAndNewlines)
+                    isDirectorySelected = true
+                }
+            }
+        } catch {
+            logger.error("Failed to read screenshot location: \(error.localizedDescription)")
+            await MainActor.run {
+                screenshotDirectory = NSHomeDirectory() + "/Desktop"
+                isDirectorySelected = false
+            }
+        }
+    }
+
+    /// 设置系统截屏存储位置
+    /// - Parameter path: 新的存储路径
+    private func setSystemScreenshotLocation(_ path: String) async {
+        do {
+            // 设置新的截屏位置
+            _ = try await executeShellCommand(
+                "defaults write com.apple.screencapture location '\(path)'")
+
+            // 重启SystemUIServer使设置生效
+            _ = try await executeShellCommand("killall SystemUIServer")
+
+            await MainActor.run {
+                screenshotDirectory = path
+                isDirectorySelected = true
+            }
+
+            logger.info("Screenshot location updated to: \(path)")
+        } catch {
+            logger.error("Failed to set screenshot location: \(error.localizedDescription)")
+        }
+    }
+
+    /// 执行Shell命令
+    /// - Parameter command: 要执行的命令
+    /// - Returns: 命令输出结果
+    private func executeShellCommand(_ command: String) async throws -> String {
+        return try await withCheckedThrowingContinuation { continuation in
+            let process = Process()
+            let pipe = Pipe()
+
+            process.standardOutput = pipe
+            process.standardError = pipe
+            process.arguments = ["-c", command]
+            process.executableURL = URL(fileURLWithPath: "/bin/sh")
+
+            do {
+                try process.run()
+                process.waitUntilExit()
+
+                let data = pipe.fileHandleForReading.readDataToEndOfFile()
+                let output = String(data: data, encoding: .utf8) ?? ""
+
+                if process.terminationStatus == 0 {
+                    continuation.resume(returning: output)
+                } else {
+                    continuation.resume(throwing: SettingsError.commandFailed(output))
+                }
+            } catch {
+                continuation.resume(throwing: error)
+            }
         }
     }
 }
 
 // MARK: - Error Types
 
-/// Settings related error types
+/// 设置相关错误类型
 enum SettingsError: LocalizedError {
     case commandFailed(String)
 
     var errorDescription: String? {
         switch self {
         case .commandFailed(let output):
-            return "Command execution failed: \(output)"
+            return "命令执行失败: \(output)"
         }
     }
 }
