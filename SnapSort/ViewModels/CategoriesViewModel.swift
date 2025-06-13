@@ -9,46 +9,47 @@ import Foundation
 import SwiftUI
 import os.log
 
-/// 分类管理视图模型
+/// Categories management view model
 ///
-/// 负责处理分类管理的业务逻辑和数据操作，包括分类的增删改查、
-/// 数据库交互和状态管理。遵循 MVVM 架构模式，为 CategoriesView 提供数据绑定。
+/// Handles business logic and data operations for category management, including
+/// CRUD operations for categories, database interactions, and state management.
+/// Follows MVVM architecture pattern and provides data binding for CategoriesView.
 ///
-/// ## 主要功能
-/// - 分类数据的 CRUD 操作
-/// - 与 DatabaseManager 的集成
-/// - UI 状态管理（加载、错误处理）
-/// - 分类数据的实时更新
+/// ## Key Features
+/// - CRUD operations for category data
+/// - Integration with DatabaseManager
+/// - UI state management (loading, error handling)
+/// - Real-time category data updates
 @MainActor
 final class CategoriesViewModel: ObservableObject {
 
     // MARK: - Published Properties
 
-    /// 分类列表数据
+    /// Category list data
     @Published var categories: [CategoryItem] = []
 
-    /// 加载状态
+    /// Loading state
     @Published var isLoading = false
 
-    /// 错误信息
+    /// Error message
     @Published var errorMessage: String?
 
-    /// 是否显示错误警告
+    /// Whether to show error alert
     @Published var showingError = false
 
     // MARK: - Private Properties
 
-    /// 数据库管理器
+    /// Database manager
     private let databaseManager: DatabaseManager
 
-    /// 日志记录器
+    /// Logger instance
     private let logger = Logger(
         subsystem: "com.snapsort.viewmodels", category: "CategoriesViewModel")
 
     // MARK: - Initialization
 
-    /// 初始化分类视图模型
-    /// - Parameter databaseManager: 数据库管理器实例
+    /// Initialize categories view model
+    /// - Parameter databaseManager: Database manager instance
     init(databaseManager: DatabaseManager = try! DatabaseManager()) {
         self.databaseManager = databaseManager
         loadCategories()
@@ -56,7 +57,7 @@ final class CategoriesViewModel: ObservableObject {
 
     // MARK: - Public Methods
 
-    /// 加载所有分类数据
+    /// Load all category data
     func loadCategories() {
         logger.debug("Loading categories from database")
         isLoading = true
@@ -82,8 +83,8 @@ final class CategoriesViewModel: ObservableObject {
         }
     }
 
-    /// 添加新分类
-    /// - Parameter category: 要添加的分类项目
+    /// Add new category
+    /// - Parameter category: Category item to add
     func addCategory(_ category: CategoryItem) {
         logger.debug("Adding new category: \(category.name)")
         isLoading = true
@@ -106,10 +107,10 @@ final class CategoriesViewModel: ObservableObject {
         }
     }
 
-    /// 更新现有分类
+    /// Update existing category
     /// - Parameters:
-    ///   - categoryId: 分类 ID
-    ///   - updatedCategory: 更新后的分类数据
+    ///   - categoryId: Category ID
+    ///   - updatedCategory: Updated category data
     func updateCategory(categoryId: CategoryItem.ID, updatedCategory: CategoryItem) {
         logger.debug("Updating category: \(updatedCategory.name)")
         isLoading = true
@@ -117,7 +118,7 @@ final class CategoriesViewModel: ObservableObject {
 
         Task {
             do {
-                // 先删除旧分类，再添加新分类（因为名称可能改变）
+                // Delete old category first, then add new one (since name might change)
                 if let oldCategory = categories.first(where: { $0.id == categoryId }) {
                     try databaseManager.deleteCategory(name: oldCategory.name)
                 }
@@ -139,8 +140,8 @@ final class CategoriesViewModel: ObservableObject {
         }
     }
 
-    /// 删除单个分类
-    /// - Parameter category: 要删除的分类项目
+    /// Delete single category
+    /// - Parameter category: Category item to delete
     func deleteCategory(_ category: CategoryItem) {
         logger.debug("Deleting category: \(category.name)")
         isLoading = true
@@ -163,8 +164,8 @@ final class CategoriesViewModel: ObservableObject {
         }
     }
 
-    /// 批量删除分类
-    /// - Parameter categoryIds: 要删除的分类 ID 集合
+    /// Batch delete categories
+    /// - Parameter categoryIds: Set of category IDs to delete
     func deleteCategories(_ categoryIds: Set<CategoryItem.ID>) {
         logger.debug("Batch deleting \(categoryIds.count) categories")
         isLoading = true
@@ -191,16 +192,16 @@ final class CategoriesViewModel: ObservableObject {
         }
     }
 
-    /// 检查分类名称是否已存在
-    /// - Parameter name: 分类名称
-    /// - Returns: 是否存在同名分类
+    /// Check if category name already exists
+    /// - Parameter name: Category name
+    /// - Returns: Whether a category with the same name exists
     func isCategoryNameExists(_ name: String) -> Bool {
         return categories.contains { $0.name.lowercased() == name.lowercased() }
     }
 
-    /// 搜索包含指定关键词的分类
-    /// - Parameter keyword: 搜索关键词
-    /// - Returns: 匹配的分类列表
+    /// Search categories containing specified keyword
+    /// - Parameter keyword: Search keyword
+    /// - Returns: List of matching categories
     func searchCategories(byKeyword keyword: String) -> [CategoryItem] {
         guard !keyword.isEmpty else { return categories }
 
@@ -210,13 +211,13 @@ final class CategoriesViewModel: ObservableObject {
         }
     }
 
-    /// 获取所有分类名称，以顿号分隔
-    /// - Returns: 包含所有分类名称的字符串，使用顿号分隔
+    /// Get all category names separated by Chinese punctuation marks
+    /// - Returns: String containing all category names separated by Chinese punctuation marks
     public func getAllCategoryNamesString() -> String {
         return categories.map { $0.name }.joined(separator: "、")
     }
 
-    /// 清除错误状态
+    /// Clear error state
     func clearError() {
         errorMessage = nil
         showingError = false
@@ -224,10 +225,10 @@ final class CategoriesViewModel: ObservableObject {
 
     // MARK: - Private Methods
 
-    /// 处理错误
+    /// Handle error
     /// - Parameters:
-    ///   - error: 错误对象
-    ///   - operation: 操作描述
+    ///   - error: Error object
+    ///   - operation: Operation description
     private func handleError(_ error: Error, operation: String) {
         isLoading = false
 
